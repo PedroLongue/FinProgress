@@ -1,29 +1,36 @@
 import {
-  AlertCircle,
+  ArrowRight,
   Calendar,
-  Check,
   ChevronLeft,
   ChevronRight,
-  Clock,
   FileText,
-  MoreVertical,
   PlusCircle,
   Sparkles,
+  Trash2,
 } from "lucide-react";
-import type { IBill } from "../../types/bills";
+import type { IBill, ICreateBillBody } from "../../types/bills";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { cn } from "../../lib/utils";
 import { Badge } from "../ui/badge";
 import type { BillsResponse } from "../../queries/bills";
 import { useState } from "react";
+import { BillEditModal } from "./BillEditModal";
+import {
+  formatCurrency,
+  formatDate,
+  getStatusIcon,
+  getStatusStyles,
+} from "../../utils/bills.utils";
+import { useBillsActions } from "../../hooks/useBills";
+import { BillDeleteModal } from "./BillDeleteModal";
+import { Link } from "@tanstack/react-router";
 
 interface IBillsList {
   bills: BillsResponse;
   isEmpty: boolean;
   dashpage?: boolean;
   onAddBill?: () => void;
-  onBillClick?: (bill: IBill) => void;
   onPageChange?: (page: number) => void;
 }
 
@@ -31,12 +38,34 @@ export const BillsList = ({
   bills,
   isEmpty,
   onAddBill,
-  onBillClick,
   onPageChange,
   dashpage = false,
 }: IBillsList) => {
+  const { updateBill, deleteBill } = useBillsActions();
+
   const [currentPage, setCurrentPage] = useState(bills.page || 1);
   const totalPages = bills.totalPages;
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const [selectedBill, setSelectedBill] = useState<IBill | null>(null);
+
+  const handleBillClick = (bill: IBill) => {
+    setSelectedBill(bill);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDeleteBillClick = (bill: IBill) => {
+    setSelectedBill(bill);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedBill(null);
+    setIsDeleteModalOpen(false);
+  };
 
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return;
@@ -45,52 +74,16 @@ export const BillsList = ({
     onPageChange?.(newPage);
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
+  const handleBillSave = async (updatedBill: Partial<ICreateBillBody>) => {
+    if (!selectedBill?.id) return;
+    await updateBill.mutateAsync({ id: selectedBill.id, body: updatedBill });
+    handleCloseModal();
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    const diffDays = Math.ceil(
-      (date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
-    );
-
-    if (diffDays === 0) return "Hoje";
-    if (diffDays === 1) return "Amanhã";
-    if (diffDays === -1) return "Ontem";
-    if (diffDays < 0) return `${Math.abs(diffDays)} dias atrás`;
-    if (diffDays <= 7) return `Em ${diffDays} dias`;
-
-    return date.toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "short",
-    });
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "PAID":
-        return <Check className="w-4 h-4" />;
-      case "OVERDUE":
-        return <AlertCircle className="w-4 h-4" />;
-      default:
-        return <Clock className="w-4 h-4" />;
-    }
-  };
-
-  const getStatusStyles = (status: string) => {
-    switch (status) {
-      case "PAID":
-        return "bg-success/20 text-success border-success/30";
-      case "OVERDUE":
-        return "bg-destructive/20 text-destructive border-destructive/30";
-      default:
-        return "bg-primary/20 text-primary border-primary/30";
-    }
+  const handleDeleteBill = async (bill: IBill) => {
+    if (!selectedBill?.id) return;
+    await deleteBill.mutateAsync(bill.id);
+    handleCloseModal();
   };
 
   return (
@@ -102,8 +95,10 @@ export const BillsList = ({
             {dashpage ? "Próximos Boletos não pagos" : "Boletos"}
           </CardTitle>
           {!isEmpty && dashpage && (
-            <Button variant="ghost" size="sm" className="text-primary">
-              Ver todos →
+            <Button variant="ghost" size="sm" className="text-primary" asChild>
+              <Link to="/bills">
+                Ver todos <ArrowRight />
+              </Link>
             </Button>
           )}
         </div>
@@ -167,7 +162,7 @@ export const BillsList = ({
               {bills.bills.map((bill, index) => (
                 <div
                   key={bill.id}
-                  onClick={() => onBillClick?.(bill)}
+                  onClick={() => handleBillClick(bill)}
                   className={cn(
                     "group flex items-center gap-4 p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 cursor-pointer transition-all duration-200 animate-slide-up"
                   )}
@@ -227,10 +222,13 @@ export const BillsList = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-                    onClick={(e) => e.stopPropagation()}
+                    className="h-8 w-8 transition-opacity shrink-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteBillClick(bill);
+                    }}
                   >
-                    <MoreVertical className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
               ))}
@@ -267,6 +265,24 @@ export const BillsList = ({
           </>
         )}
       </CardContent>
+      {selectedBill && isEditModalOpen && (
+        <BillEditModal
+          bill={selectedBill}
+          onClose={handleCloseModal}
+          onSave={() =>
+            handleBillSave(selectedBill as Partial<ICreateBillBody>)
+          }
+          isLoading={updateBill.isPending}
+        />
+      )}
+      {selectedBill && isDeleteModalOpen && (
+        <BillDeleteModal
+          bill={selectedBill}
+          onClose={handleCloseModal}
+          isLoading={deleteBill.isPending}
+          onDelete={() => handleDeleteBill(selectedBill)}
+        />
+      )}
     </Card>
   );
 };

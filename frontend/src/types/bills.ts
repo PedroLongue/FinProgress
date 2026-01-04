@@ -10,11 +10,22 @@ export interface IBill {
   title: string;
   amount: number;
   dueDate: string;
-  category: string | null;
+  category?: string | null;
   status: BillStatusKey;
-  createdAt: string;
-  barcode: string | null;
-  description: string | null;
-  paidAt: string | null;
+  createdAt?: string;
+  barcode?: string | null;
+  description?: string | null;
+  paidAt?: string | null;
   userId: string;
+}
+
+export interface ICreateBillBody {
+  title: string;
+  amount: number;
+  dueDate: string;
+  category?: string;
+  barcode?: string;
+  description?: string;
+  status?: BillStatusKey;
+  paidAt?: string | null;
 }

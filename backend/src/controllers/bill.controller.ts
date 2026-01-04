@@ -150,6 +150,8 @@ export const updateBill = async (req: AuthRequest, res: Response) => {
 
   const { id } = req.params;
 
+  console.log("Update bill ID:", id);
+
   // garante propriedade antes de atualizar (evita update em item de outro usuário)
   const existing = await prisma.bill.findFirst({ where: { id, userId } });
   if (!existing)

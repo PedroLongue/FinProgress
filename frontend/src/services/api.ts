@@ -23,3 +23,20 @@ export async function postData<TResponse, TBody>(
   const { data } = await client.post<TResponse>(endpoint, body, config);
   return data;
 }
+
+export const patchData = async <TResponse, TBody>(
+  endpoint: string,
+  body?: TBody,
+  config?: AxiosRequestConfig
+): Promise<TResponse> => {
+  const { data } = await client.patch<TResponse>(endpoint, body, config);
+  return data;
+};
+
+export const deleteData = async <TResponse>(
+  endpoint: string,
+  config?: AxiosRequestConfig
+): Promise<TResponse> => {
+  const { data } = await client.delete<TResponse>(endpoint, config);
+  return data;
+};

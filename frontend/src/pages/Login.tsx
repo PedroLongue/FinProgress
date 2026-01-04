@@ -8,7 +8,7 @@ import {
   Shield,
   TrendingUp,
 } from "lucide-react";
-import type { AxiosError } from "axios";
+
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import {
@@ -19,8 +19,6 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { useAuthActions } from "../hooks/useAuth";
-
-type ApiError = { erros?: string[]; errors?: string[] };
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -36,21 +34,18 @@ const AuthPage = () => {
     e.preventDefault();
     setErrors({});
 
-    try {
-      if (isLogin) {
-        await login.mutateAsync({ email, password });
-      } else {
-        await register.mutateAsync({ name, email, password, confirmPassword });
-      }
+    if (isLogin) {
+      await login.mutateAsync({ email, password });
+    } else {
+      await register.mutateAsync({ name, email, password, confirmPassword });
+    }
 
-      setEmail("");
-      setPassword("");
-      setName("");
-    } catch (err) {
-      const ax = err as AxiosError<ApiError>;
-      const msgs = ax.response?.data?.erros ?? ax.response?.data?.errors;
-
-      setErrors({ form: msgs?.length ? msgs : ["Erro ao autenticar"] });
+    if (login.isError || register.isError) {
+      setErrors({
+        form: login.isError
+          ? [(login.error as Error).message]
+          : [(register.error as Error).message],
+      });
     }
   };
 

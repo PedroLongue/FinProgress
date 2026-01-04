@@ -1,7 +1,7 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { queryOptions, mutationOptions } from "@tanstack/react-query";
-import { getData, postData } from "../services/api";
-import type { BillStatusKey, IBill } from "../types/bills";
+import { deleteData, getData, patchData, postData } from "../services/api";
+import type { BillStatusKey, IBill, ICreateBillBody } from "../types/bills";
 
 export type BillsResponse = {
   bills: IBill[];
@@ -9,6 +9,10 @@ export type BillsResponse = {
   pageSize: number;
   total: number;
   totalPages: number;
+};
+
+export type CreateBillResponse = {
+  bill: IBill;
 };
 
 export const billsQueries = {
@@ -24,5 +28,54 @@ export const billsQueries = {
         return getData<BillsResponse>(`/bills?${qs.toString()}`);
       },
       retry: false,
+    }),
+};
+
+export const billsMutations = {
+  create: (qc: QueryClient) =>
+    mutationOptions({
+      mutationKey: ["createBill"],
+      mutationFn: async (body: ICreateBillBody) => {
+        const res = await postData<CreateBillResponse, ICreateBillBody>(
+          "/bills",
+          body
+        );
+        return res.bill;
+      },
+      onSuccess: () => {
+        qc.invalidateQueries({ queryKey: ["bills"] });
+      },
+    }),
+
+  update: (qc: QueryClient) =>
+    mutationOptions({
+      mutationKey: ["updateBill"],
+      mutationFn: async ({
+        id,
+        body,
+      }: {
+        id: string;
+        body: Partial<ICreateBillBody>;
+      }) => {
+        const res = await patchData<{ bill: IBill }, Partial<ICreateBillBody>>(
+          `/bills/${id}`,
+          body
+        );
+        return res.bill;
+      },
+      onSuccess: () => {
+        qc.invalidateQueries({ queryKey: ["bills"] });
+      },
+    }),
+
+  delete: (qc: QueryClient) =>
+    mutationOptions({
+      mutationKey: ["deleteBill"],
+      mutationFn: async (id: string) => {
+        await deleteData<void>(`/bills/${id}`);
+      },
+      onSuccess: () => {
+        qc.invalidateQueries({ queryKey: ["bills"] });
+      },
     }),
 };
