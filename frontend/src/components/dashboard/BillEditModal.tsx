@@ -29,7 +29,6 @@ export const BillEditModal = ({
   });
   const [barcode, setBarcode] = useState(bill.barcode ?? "");
   const [description, setDescription] = useState(bill.description ?? "");
-  const [isMarkingAsPaid, setIsMarkingAsPaid] = useState(false);
 
   const status = bill.status;
   const isPaid = status === "PAID";
@@ -51,16 +50,11 @@ export const BillEditModal = ({
   };
 
   const handleMarkAsPaid = async () => {
-    if (onSave && !isPaid) {
-      setIsMarkingAsPaid(true);
-      try {
-        await onSave({
-          status: "PAID",
-          paidAt: new Date().toISOString(),
-        });
-      } finally {
-        setIsMarkingAsPaid(false);
-      }
+    if (onSave) {
+      await onSave({
+        status: "PAID",
+        paidAt: new Date().toISOString(),
+      });
     }
   };
 
@@ -165,19 +159,10 @@ export const BillEditModal = ({
                   variant="outline"
                   className="w-full border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800"
                   onClick={handleMarkAsPaid}
-                  disabled={isLoading || isMarkingAsPaid}
+                  disabled={isLoading}
                 >
-                  {isMarkingAsPaid ? (
-                    <>
-                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                      Marcando como pago...
-                    </>
-                  ) : (
-                    <>
-                      <Check className="mr-2 h-4 w-4" />
-                      Marcar como Pago
-                    </>
-                  )}
+                  <Check className="mr-2 h-4 w-4" />
+                  Marcar como Pago
                 </Button>
                 <p className="text-xs text-muted-foreground mt-2 text-center">
                   Ao marcar como pago, a data atual será registrada
@@ -219,7 +204,7 @@ export const BillEditModal = ({
                 variant="outline"
                 className="flex-1"
                 onClick={onClose}
-                disabled={isLoading || isMarkingAsPaid}
+                disabled={isLoading}
               >
                 Cancelar
               </Button>
@@ -227,7 +212,7 @@ export const BillEditModal = ({
                 type="submit"
                 variant="premium"
                 className="flex-1"
-                disabled={isLoading || isMarkingAsPaid}
+                disabled={isLoading}
               >
                 {isLoading ? "Salvando..." : "Salvar Alterações"}
               </Button>
