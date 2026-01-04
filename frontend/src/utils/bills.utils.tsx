@@ -1,4 +1,5 @@
 import { AlertCircle, Check, Clock } from "lucide-react";
+import type { BillStatusKey } from "../types/bills.type";
 
 export const formatCurrency = (value: number) => {
   return new Intl.NumberFormat("pt-BR", {
@@ -26,7 +27,7 @@ export const formatDate = (dateString: string) => {
   });
 };
 
-export const getStatusIcon = (status: string) => {
+export const getStatusIcon = (status: BillStatusKey) => {
   switch (status) {
     case "PAID":
       return <Check className="w-4 h-4" />;
@@ -37,7 +38,7 @@ export const getStatusIcon = (status: string) => {
   }
 };
 
-export const getStatusStyles = (status: string) => {
+export const getStatusStyles = (status: BillStatusKey) => {
   switch (status) {
     case "PAID":
       return "bg-success/20 text-success border-success/30";
@@ -45,5 +46,29 @@ export const getStatusStyles = (status: string) => {
       return "bg-destructive/20 text-destructive border-destructive/30";
     default:
       return "bg-primary/20 text-primary border-primary/30";
+  }
+};
+
+export const getStatusBadge = (status: BillStatusKey) => {
+  switch (status) {
+    case "PAID":
+      return (
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+          {getStatusIcon("PAID")}
+          Pago
+        </div>
+      );
+    case "OVERDUE":
+      return (
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+          {getStatusIcon("OVERDUE")} <span>Vencido</span>
+        </div>
+      );
+    default:
+      return (
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+          {getStatusIcon("PENDING")} <span>Pendente</span>
+        </div>
+      );
   }
 };

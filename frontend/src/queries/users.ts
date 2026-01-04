@@ -7,7 +7,7 @@ import type {
   IRegisterUser,
   LoginBody,
   RegisterBody,
-} from "../types/user";
+} from "../types/user.type";
 
 type LoginResponse = { user: ILoginUser };
 type RegisterResponse = { user: IRegisterUser };

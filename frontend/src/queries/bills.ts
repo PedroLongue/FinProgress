@@ -1,7 +1,11 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { queryOptions, mutationOptions } from "@tanstack/react-query";
 import { deleteData, getData, patchData, postData } from "../services/api";
-import type { BillStatusKey, IBill, ICreateBillBody } from "../types/bills";
+import type {
+  BillStatusKey,
+  IBill,
+  ICreateBillBody,
+} from "../types/bills.type";
 
 export type BillsResponse = {
   bills: IBill[];

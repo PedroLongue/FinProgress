@@ -1,7 +1,9 @@
 import { Trash2 } from "lucide-react";
-import type { IBill } from "../../types/bills";
+import type { IBill } from "../../types/bills.type";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
+import { useOnClickOutside } from "../../hooks/useOnClickOutside";
+import { useRef } from "react";
 
 interface IBillDeleteModal {
   bill: IBill;
@@ -22,16 +24,18 @@ export const BillDeleteModal = ({
     onClose();
   };
 
+  const deleteModalRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(deleteModalRef, () => onClose());
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
 
       <Card
         variant="elevated"
         className="relative w-full max-w-sm animate-scale-in"
+        ref={deleteModalRef}
       >
         <CardContent className="p-6">
           <div className="flex justify-center mb-4">

@@ -20,7 +20,6 @@ export const Bills = () => {
         isEmpty={bills?.bills.length === 0}
         onPageChange={setCurrentPage}
         onAddBill={() => console.log()}
-        onBillClick={() => console.log()}
       />
     </div>
   );

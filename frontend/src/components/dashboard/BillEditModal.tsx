@@ -1,10 +1,11 @@
 import { Card, CardContent } from "../ui/card";
-import { Barcode, Calendar, DollarSign, Tag, ChevronDown } from "lucide-react";
+import { Barcode, Calendar, DollarSign, Tag, Check } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import type { IBill, BillStatusKey } from "../../types/bills";
-import { useState } from "react";
-import { cn } from "../../lib/utils";
+import type { IBill } from "../../types/bills.type";
+import { useRef, useState } from "react";
+import { useOnClickOutside } from "../../hooks/useOnClickOutside";
+import { getStatusBadge } from "../../utils/bills.utils";
 
 interface IEditBillModal {
   bill: IBill;
@@ -28,35 +29,10 @@ export const BillEditModal = ({
   });
   const [barcode, setBarcode] = useState(bill.barcode ?? "");
   const [description, setDescription] = useState(bill.description ?? "");
-  const [status, setStatus] = useState<BillStatusKey>(bill.status ?? "PENDING");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMarkingAsPaid, setIsMarkingAsPaid] = useState(false);
 
-  const statusOptions: Array<{
-    value: BillStatusKey;
-    label: string;
-    color: string;
-  }> = [
-    { value: "PENDING", label: "Pendente", color: "text-yellow-500" },
-    { value: "PAID", label: "Pago", color: "text-green-500" },
-    { value: "OVERDUE", label: "Vencido", color: "text-red-500" },
-  ];
-
-  const getStatusRoundedColor = (status: BillStatusKey) => {
-    switch (status) {
-      case "PAID":
-        return <div className="w-2 h-2 rounded-full bg-green-500" />;
-      case "OVERDUE":
-        return <div className="w-2 h-2 rounded-full bg-red-500" />;
-      default:
-        return <div className="w-2 h-2 rounded-full bg-yellow-500" />;
-    }
-  };
-
-  const getStatusLabel = (status: BillStatusKey) => {
-    return (
-      statusOptions.find((opt) => opt.value === status)?.label || "Pendente"
-    );
-  };
+  const status = bill.status;
+  const isPaid = status === "PAID";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,7 +43,6 @@ export const BillEditModal = ({
       dueDate: dueDate ? new Date(dueDate).toISOString() : bill.dueDate,
       barcode,
       description,
-      status,
     };
 
     if (onSave) {
@@ -75,17 +50,40 @@ export const BillEditModal = ({
     }
   };
 
+  const handleMarkAsPaid = async () => {
+    if (onSave && !isPaid) {
+      setIsMarkingAsPaid(true);
+      try {
+        await onSave({
+          status: "PAID",
+          paidAt: new Date().toISOString(),
+        });
+      } finally {
+        setIsMarkingAsPaid(false);
+      }
+    }
+  };
+
+  const editModalRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside(editModalRef, () => onClose());
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
-        onClick={() => onClose()}
-      />
+      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
+
       <Card
         variant="elevated"
         className="relative w-full max-w-lg animate-scale-in"
+        ref={editModalRef}
       >
         <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b">
+            <h3 className="text-lg font-semibold text-foreground">
+              Editar Boleto
+            </h3>
+            {getStatusBadge(status)}
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
@@ -140,58 +138,53 @@ export const BillEditModal = ({
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">
-                Status
-              </label>
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className={cn(
-                    "w-full flex items-center justify-between px-3 py-2 text-sm",
-                    "border border-input rounded-md bg-background",
-                    "transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
-                  )}
-                >
-                  <div className="flex items-center gap-2">
-                    {getStatusRoundedColor(status)}
-                    <span>{getStatusLabel(status)}</span>
-                  </div>
-                  <ChevronDown
-                    className={cn(
-                      "w-4 h-4 transition-transform",
-                      isDropdownOpen && "rotate-180"
-                    )}
-                  />
-                </button>
-
-                {isDropdownOpen && (
-                  <div className="absolute z-10 w-full mt-1 bg-popover border border-input rounded-md shadow-lg">
-                    {statusOptions.map((option) => (
-                      <button
-                        key={option.value}
-                        type="button"
-                        onClick={() => {
-                          setStatus(option.value);
-                          setIsDropdownOpen(false);
-                        }}
-                        className={cn(
-                          "w-full flex items-center gap-2 px-3 py-2 text-sm",
-                          "hover:bg-gray-800 transition-colors",
-                          status === option.value && "bg-gray-800"
-                        )}
-                      >
-                        <div
-                          className={`w-2 h-2 rounded-full ${option.color.replace("text-", "bg-")}`}
-                        />
-                        <span>{option.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
+            <div className="space-y-3 p-4 bg-muted/30 rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">
+                  Status atual
+                </span>
+                <span className="font-medium">{getStatusBadge(status)}</span>
               </div>
+
+              {bill.paidAt && (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    Data do pagamento
+                  </span>
+                  <span className="font-medium">
+                    {new Date(bill.paidAt).toLocaleDateString("pt-BR")}
+                  </span>
+                </div>
+              )}
             </div>
+
+            {!isPaid && (
+              <div className="pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800"
+                  onClick={handleMarkAsPaid}
+                  disabled={isLoading || isMarkingAsPaid}
+                >
+                  {isMarkingAsPaid ? (
+                    <>
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      Marcando como pago...
+                    </>
+                  ) : (
+                    <>
+                      <Check className="mr-2 h-4 w-4" />
+                      Marcar como Pago
+                    </>
+                  )}
+                </Button>
+                <p className="text-xs text-muted-foreground mt-2 text-center">
+                  Ao marcar como pago, a data atual será registrada
+                  automaticamente
+                </p>
+              </div>
+            )}
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
@@ -225,8 +218,8 @@ export const BillEditModal = ({
                 type="button"
                 variant="outline"
                 className="flex-1"
-                onClick={() => onClose()}
-                disabled={isLoading}
+                onClick={onClose}
+                disabled={isLoading || isMarkingAsPaid}
               >
                 Cancelar
               </Button>
@@ -234,7 +227,7 @@ export const BillEditModal = ({
                 type="submit"
                 variant="premium"
                 className="flex-1"
-                disabled={isLoading}
+                disabled={isLoading || isMarkingAsPaid}
               >
                 {isLoading ? "Salvando..." : "Salvar Alterações"}
               </Button>

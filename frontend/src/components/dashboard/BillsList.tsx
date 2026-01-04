@@ -8,7 +8,7 @@ import {
   Sparkles,
   Trash2,
 } from "lucide-react";
-import type { IBill, ICreateBillBody } from "../../types/bills";
+import type { IBill, ICreateBillBody } from "../../types/bills.type";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { cn } from "../../lib/utils";
@@ -51,6 +51,19 @@ export const BillsList = ({
 
   const [selectedBill, setSelectedBill] = useState<IBill | null>(null);
 
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+
+    setCurrentPage(newPage);
+    onPageChange?.(newPage);
+  };
+
+  const handleBillSave = async (updatedBill: Partial<ICreateBillBody>) => {
+    if (!selectedBill?.id) return;
+    await updateBill.mutateAsync({ id: selectedBill.id, body: updatedBill });
+    handleCloseModal();
+  };
+
   const handleBillClick = (bill: IBill) => {
     setSelectedBill(bill);
     setIsEditModalOpen(true);
@@ -65,19 +78,6 @@ export const BillsList = ({
     setIsEditModalOpen(false);
     setSelectedBill(null);
     setIsDeleteModalOpen(false);
-  };
-
-  const handlePageChange = (newPage: number) => {
-    if (newPage < 1 || newPage > totalPages) return;
-
-    setCurrentPage(newPage);
-    onPageChange?.(newPage);
-  };
-
-  const handleBillSave = async (updatedBill: Partial<ICreateBillBody>) => {
-    if (!selectedBill?.id) return;
-    await updateBill.mutateAsync({ id: selectedBill.id, body: updatedBill });
-    handleCloseModal();
   };
 
   const handleDeleteBill = async (bill: IBill) => {
@@ -269,9 +269,7 @@ export const BillsList = ({
         <BillEditModal
           bill={selectedBill}
           onClose={handleCloseModal}
-          onSave={() =>
-            handleBillSave(selectedBill as Partial<ICreateBillBody>)
-          }
+          onSave={(updated) => handleBillSave(updated as ICreateBillBody)}
           isLoading={updateBill.isPending}
         />
       )}
