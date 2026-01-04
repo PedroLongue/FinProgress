@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { prisma } from "../db/prisma";
 import { categorizeBillAI } from "../services/billCategorizer";
+import { calculateBillStatus } from "../utils/billStatusCalculator";
 
 interface AuthRequest extends Request {
   userId?: string;
@@ -26,7 +27,7 @@ export const createBill = async (req: AuthRequest, res: Response) => {
     amount: number;
     dueDate: string; // ISO
     category: string;
-    status?: "PENDING" | "PAID" | "OVERDUE" | "CANCELLED";
+    status?: "PENDING" | "PAID" | "PAID_LATE" | "OVERDUE";
     barcode?: string | null;
     description?: string | null;
     paidAt?: string | null;
@@ -60,13 +61,17 @@ export const createBill = async (req: AuthRequest, res: Response) => {
     finalCategory = ai.category;
   }
 
+  const dueDateObj = new Date(dueDate);
+  const paidAtObj = paidAt ? new Date(paidAt) : null;
+  const finalStatus = calculateBillStatus(dueDateObj, paidAtObj);
+
   const bill = await prisma.bill.create({
     data: {
       title: String(title).trim(),
       amount: Number(amount),
       dueDate: new Date(dueDate),
       category: finalCategory,
-      status: status ?? "PENDING",
+      status: finalStatus,
       barcode: barcode?.trim() || null,
       description: description?.trim() || null,
       paidAt: paidAt ? new Date(paidAt) : null,
@@ -88,8 +93,8 @@ export const listBills = async (req: AuthRequest, res: Response) => {
   const status = req.query.status as
     | "PENDING"
     | "PAID"
+    | "PAID_LATE"
     | "OVERDUE"
-    | "CANCELLED"
     | "UNPAID";
 
   const category = req.query.category ? String(req.query.category) : undefined;
@@ -155,32 +160,20 @@ export const updateBill = async (req: AuthRequest, res: Response) => {
   if (!existing)
     return res.status(404).json({ errors: ["Boleta não encontrada"] });
 
-  const {
-    title,
-    amount,
-    dueDate,
-    category,
-    status,
-    barcode,
-    description,
-    paidAt,
-  } = req.body as {
-    title?: string;
-    amount?: number;
-    dueDate?: string; // ISO
-    category?: string;
-    status?: "PENDING" | "PAID" | "OVERDUE" | "CANCELLED";
-    barcode?: string | null;
-    description?: string | null;
-    paidAt?: string | null;
-  };
+  const { title, category, status, barcode, description, paidAt } =
+    req.body as {
+      title?: string;
+      category?: string;
+      status?: "PENDING" | "PAID" | "OVERDUE";
+      barcode?: string | null;
+      description?: string | null;
+      paidAt?: string | null;
+    };
 
-  const bill = await prisma.bill.update({
+  const updateData = await prisma.bill.update({
     where: { id },
     data: {
       ...(title !== undefined ? { title: title.trim() } : {}),
-      ...(amount !== undefined ? { amount: Number(amount) } : {}),
-      ...(dueDate !== undefined ? { dueDate: new Date(dueDate) } : {}),
       ...(category !== undefined ? { category: category.trim() } : {}),
       ...(status !== undefined ? { status } : {}),
       ...(barcode !== undefined
@@ -193,6 +186,18 @@ export const updateBill = async (req: AuthRequest, res: Response) => {
         ? { paidAt: paidAt ? new Date(paidAt) : null }
         : {}),
     },
+  });
+
+  const newDueDate = existing.dueDate;
+  const newPaidAt = updateData.paidAt ? updateData.paidAt : existing.paidAt;
+
+  const newStatus = calculateBillStatus(newDueDate, newPaidAt);
+
+  updateData.status = newStatus;
+
+  const bill = await prisma.bill.update({
+    where: { id },
+    data: updateData,
   });
 
   return res.json({ bill });

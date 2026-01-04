@@ -2,7 +2,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import { queryOptions, mutationOptions } from "@tanstack/react-query";
 import { deleteData, getData, patchData, postData } from "../services/api";
 import type {
-  BillStatusKey,
+  BillFilterStatus,
   IBill,
   ICreateBillBody,
 } from "../types/bills.type";
@@ -20,7 +20,7 @@ export type CreateBillResponse = {
 };
 
 export const billsQueries = {
-  getAll: (page: number, status?: BillStatusKey, category?: string) =>
+  getAll: (page: number, status?: BillFilterStatus, category?: string) =>
     queryOptions({
       queryKey: ["bills", { page, status: status ?? null }],
       queryFn: () => {

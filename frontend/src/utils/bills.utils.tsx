@@ -1,12 +1,10 @@
-import { AlertCircle, Check, Clock } from "lucide-react";
+import { AlertCircle, Check, Clock, AlertTriangle } from "lucide-react";
 import type { BillStatusKey } from "../types/bills.type";
 
-export const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value);
-};
+export const formatCurrency = (value: number) =>
+  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
+    value
+  );
 
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -21,54 +19,77 @@ export const formatDate = (dateString: string) => {
   if (diffDays < 0) return `${Math.abs(diffDays)} dias atrás`;
   if (diffDays <= 7) return `Em ${diffDays} dias`;
 
-  return date.toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "short",
-  });
+  return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
 };
 
+const STATUS_CONFIG = {
+  PENDING: {
+    icon: Clock,
+    label: "Pendente",
+    color: "text-yellow-500",
+    bgColor: "bg-yellow-100",
+    borderColor: "border-yellow-200",
+    textColor: "text-yellow-800",
+  },
+  PAID: {
+    icon: Check,
+    label: "Pago",
+    color: "text-green-500",
+    bgColor: "bg-green-100",
+    borderColor: "border-green-200",
+    textColor: "text-green-800",
+  },
+  PAID_LATE: {
+    icon: AlertTriangle,
+    label: "Pago com atraso",
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-50",
+    borderColor: "border-emerald-200",
+    textColor: "text-emerald-800",
+  },
+  OVERDUE: {
+    icon: AlertCircle,
+    label: "Vencido",
+    color: "text-red-500",
+    bgColor: "bg-red-100",
+    borderColor: "border-red-200",
+    textColor: "text-red-800",
+  },
+} as const;
+
 export const getStatusIcon = (status: BillStatusKey) => {
-  switch (status) {
-    case "PAID":
-      return <Check className="w-4 h-4" />;
-    case "OVERDUE":
-      return <AlertCircle className="w-4 h-4" />;
-    default:
-      return <Clock className="w-4 h-4" />;
-  }
+  const Icon = STATUS_CONFIG[status].icon;
+  return <Icon className="w-4 h-4" />;
 };
 
 export const getStatusStyles = (status: BillStatusKey) => {
-  switch (status) {
-    case "PAID":
-      return "bg-success/20 text-success border-success/30";
-    case "OVERDUE":
-      return "bg-destructive/20 text-destructive border-destructive/30";
-    default:
-      return "bg-primary/20 text-primary border-primary/30";
-  }
+  const config = STATUS_CONFIG[status];
+  return `${config.bgColor} ${config.textColor} border ${config.borderColor}`;
 };
 
 export const getStatusBadge = (status: BillStatusKey) => {
-  switch (status) {
-    case "PAID":
-      return (
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-          {getStatusIcon("PAID")}
-          Pago
-        </div>
-      );
-    case "OVERDUE":
-      return (
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
-          {getStatusIcon("OVERDUE")} <span>Vencido</span>
-        </div>
-      );
-    default:
-      return (
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
-          {getStatusIcon("PENDING")} <span>Pendente</span>
-        </div>
-      );
-  }
+  const config = STATUS_CONFIG[status];
+  const Icon = config.icon;
+
+  return (
+    <div
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.bgColor} ${config.textColor} border ${config.borderColor}`}
+    >
+      <Icon className="w-3 h-3" />
+      <span>{config.label}</span>
+    </div>
+  );
 };
+
+export const getStatusLabel = (status: BillStatusKey) =>
+  STATUS_CONFIG[status].label;
+
+export const getStatusColor = (status: BillStatusKey) =>
+  STATUS_CONFIG[status].color;
+
+export const isPaid = (status: BillStatusKey) =>
+  status === "PAID" || status === "PAID_LATE";
+
+export const isOverdue = (status: BillStatusKey) => status === "OVERDUE";
+
+export const isPending = (status: BillStatusKey) => status === "PENDING";

@@ -46,6 +46,6 @@ model Bill {
 enum BillStatus {
   PENDING // Pendente
   PAID // Pago
+  PAID_LATE // Pago com atraso
   OVERDUE // Vencido
-  CANCELLED // Cancelado
 }

@@ -5,13 +5,14 @@ import { Button } from "../ui/button";
 import type { IBill } from "../../types/bills.type";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "../../hooks/useOnClickOutside";
-import { getStatusBadge } from "../../utils/bills.utils";
+import { getStatusBadge, isPaid } from "../../utils/bills.utils";
 
 interface IEditBillModal {
   bill: IBill;
   onClose: () => void;
   onSave?: (updatedBill: Partial<IBill>) => Promise<void> | void;
   isLoading?: boolean;
+  isEditing?: boolean;
 }
 
 export const BillEditModal = ({
@@ -19,6 +20,7 @@ export const BillEditModal = ({
   onClose,
   onSave,
   isLoading = false,
+  isEditing = false,
 }: IEditBillModal) => {
   const [title, setTitle] = useState(bill.title ?? "");
   const [amount, setAmount] = useState(bill.amount?.toString() ?? "");
@@ -31,7 +33,6 @@ export const BillEditModal = ({
   const [description, setDescription] = useState(bill.description ?? "");
 
   const status = bill.status;
-  const isPaid = status === "PAID";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,7 +111,7 @@ export const BillEditModal = ({
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="0,00"
                     className="pl-10"
-                    required
+                    disabled={isEditing}
                   />
                 </div>
               </div>
@@ -126,7 +127,7 @@ export const BillEditModal = ({
                     value={dueDate}
                     onChange={(e) => setDueDate(e.target.value)}
                     className="pl-10"
-                    required
+                    disabled={isEditing}
                   />
                 </div>
               </div>
@@ -152,7 +153,7 @@ export const BillEditModal = ({
               )}
             </div>
 
-            {!isPaid && (
+            {!isPaid(status) && (
               <div className="pt-2">
                 <Button
                   type="button"

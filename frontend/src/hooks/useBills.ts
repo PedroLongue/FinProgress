@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { billsMutations, billsQueries } from "../queries/bills";
-import type { BillStatusKey } from "../types/bills.type";
+import type { BillFilterStatus } from "../types/bills.type";
 
 export const useBill = (
   page = 1,
-  status?: BillStatusKey,
+  status?: BillFilterStatus,
   category?: string
 ) => {
   const {

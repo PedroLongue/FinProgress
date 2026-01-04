@@ -66,8 +66,6 @@ export const updateBillValidation = () => [
   body().custom((_, { req }) => {
     const allowed = [
       "title",
-      "amount",
-      "dueDate",
       "category",
       "status",
       "barcode",
@@ -90,16 +88,6 @@ export const updateBillValidation = () => [
     .trim()
     .isLength({ min: 2, max: 120 })
     .withMessage("Título deve ter entre 2 e 120 caracteres."),
-
-  body("amount")
-    .optional()
-    .isFloat({ gt: 0 })
-    .withMessage("amount deve ser maior que 0."),
-
-  body("dueDate")
-    .optional()
-    .custom((v) => isIsoDate(v))
-    .withMessage("dueDate deve ser uma data válida (ISO)."),
 
   body("category")
     .optional()

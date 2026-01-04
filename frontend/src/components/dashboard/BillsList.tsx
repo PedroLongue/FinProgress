@@ -21,6 +21,8 @@ import {
   formatDate,
   getStatusIcon,
   getStatusStyles,
+  isOverdue,
+  isPaid,
 } from "../../utils/bills.utils";
 import { useBillsActions } from "../../hooks/useBills";
 import { BillDeleteModal } from "./BillDeleteModal";
@@ -188,7 +190,7 @@ export const BillsList = ({
                       <span
                         className={cn(
                           "text-xs",
-                          bill.status === "OVERDUE"
+                          isOverdue(bill.status)
                             ? "text-destructive font-medium"
                             : "text-muted-foreground"
                         )}
@@ -208,9 +210,9 @@ export const BillsList = ({
                     <span
                       className={cn(
                         "font-semibold",
-                        bill.status === "PAID"
+                        isPaid(bill.status)
                           ? "text-success"
-                          : bill.status === "OVERDUE"
+                          : isOverdue(bill.status)
                             ? "text-destructive"
                             : "text-foreground"
                       )}
@@ -271,6 +273,7 @@ export const BillsList = ({
           onClose={handleCloseModal}
           onSave={(updated) => handleBillSave(updated as ICreateBillBody)}
           isLoading={updateBill.isPending}
+          isEditing={true}
         />
       )}
       {selectedBill && isDeleteModalOpen && (
