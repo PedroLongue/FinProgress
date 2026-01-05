@@ -5,6 +5,10 @@ import { useAuth } from "../hooks/useAuth";
 import Login from "../pages/Login";
 import Header from "../components/layout/Header";
 import { Loading } from "../components/ui/loading";
+import { Button } from "../components/ui/button";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { BillCreateModal } from "../components/dashboard/BillCreateModal";
 
 export const Route = createRootRoute({
   component: RootLayout,
@@ -12,6 +16,7 @@ export const Route = createRootRoute({
 
 function RootLayout() {
   const { isLoading, isAuthenticated } = useAuth();
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   if (isLoading) return <Loading />;
 
@@ -26,6 +31,21 @@ function RootLayout() {
           <Outlet />
         </div>
       </main>
+
+      <Button
+        variant="fab"
+        size="fab"
+        className="fixed right-6 bottom-24 lg:bottom-6 z-20"
+        onClick={() => setIsAddModalOpen(true)}
+      >
+        <Plus className="w-6 h-6" />
+      </Button>
+
+      <BillCreateModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onAdd={() => {}}
+      />
     </div>
   );
 }
