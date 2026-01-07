@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { prisma } from "../db/prisma";
 import { categorizeBillAI } from "../services/billCategorizer";
 import { calculateBillStatus } from "../utils/billStatusCalculator";
+import { extractBillFromPdfAI } from "../services/billPdfExtractor";
 
 interface AuthRequest extends Request {
   userId?: string;
@@ -216,4 +217,65 @@ export const deleteBill = async (req: AuthRequest, res: Response) => {
   await prisma.bill.delete({ where: { id } });
 
   return res.status(204).send();
+};
+
+export const createBillFromPdf = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId;
+  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
+
+  if (!req.file) return res.status(400).json({ errors: ["PDF não enviado"] });
+  if (req.file.mimetype !== "application/pdf") {
+    return res.status(400).json({ errors: ["Arquivo precisa ser PDF"] });
+  }
+
+  const pdfBase64 = req.file.buffer.toString("base64");
+  const extracted = await extractBillFromPdfAI({ pdfBase64 });
+
+  // se não conseguiu extrair o mínimo, devolve pro front revisar
+  if (!extracted.amount || !extracted.dueDate) {
+    return res.status(422).json({
+      errors: ["Não foi possível extrair valor e/ou vencimento com segurança"],
+      extracted,
+    });
+  }
+
+  const normalizedBarcode = extracted.barcode
+    ? String(extracted.barcode).replace(/\D/g, "")
+    : null;
+
+  if (normalizedBarcode) {
+    const existing = await prisma.bill.findFirst({
+      where: { userId, barcode: normalizedBarcode },
+    });
+    if (existing) {
+      return res
+        .status(409)
+        .json({ errors: ["Código de barras já cadastrado para este usuário"] });
+    }
+  }
+
+  const aiCategory = await categorizeBillAI({
+    title: extracted.title ?? undefined,
+    description: extracted.description ?? null,
+    barcode: normalizedBarcode,
+  });
+
+  const dueDateObj = new Date(`${extracted.dueDate}T00:00:00.000Z`);
+  const finalStatus = calculateBillStatus(dueDateObj, null);
+
+  const bill = await prisma.bill.create({
+    data: {
+      title: (extracted.title ?? "Conta").trim(),
+      amount: Number(extracted.amount),
+      dueDate: dueDateObj,
+      category: aiCategory.category,
+      status: finalStatus,
+      barcode: normalizedBarcode,
+      description: extracted.description?.trim() || null,
+      paidAt: null,
+      userId,
+    },
+  });
+
+  return res.status(201).json({ bill });
 };
