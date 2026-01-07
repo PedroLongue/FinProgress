@@ -24,6 +24,11 @@ export async function postData<TResponse, TBody>(
   return data;
 }
 
+export async function postFormData<TResponse>(url: string, formData: FormData) {
+  const { data } = await client.post<TResponse>(url, formData);
+  return data;
+}
+
 export const patchData = async <TResponse, TBody>(
   endpoint: string,
   body?: TBody,

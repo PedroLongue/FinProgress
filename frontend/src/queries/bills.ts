@@ -1,6 +1,12 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { queryOptions, mutationOptions } from "@tanstack/react-query";
-import { deleteData, getData, patchData, postData } from "../services/api";
+import {
+  deleteData,
+  getData,
+  patchData,
+  postData,
+  postFormData,
+} from "../services/api";
 import type {
   BillFilterStatus,
   IBill,
@@ -44,6 +50,25 @@ export const billsMutations = {
           "/bills",
           body
         );
+        return res.bill;
+      },
+      onSuccess: () => {
+        qc.invalidateQueries({ queryKey: ["bills"] });
+      },
+    }),
+
+  createByPdf: (qc: QueryClient) =>
+    mutationOptions({
+      mutationKey: ["createBillByPdf"],
+      mutationFn: async (file: File) => {
+        const fd = new FormData();
+        fd.append("file", file);
+
+        const res = await postFormData<CreateBillResponse>(
+          "/bills/from-pdf",
+          fd
+        );
+
         return res.bill;
       },
       onSuccess: () => {

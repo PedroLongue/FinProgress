@@ -34,6 +34,17 @@ export const useBillsActions = () => {
     },
   });
 
+  const baseCreateBillByPdf = billsMutations.createByPdf(queryClient);
+  const createNewBillByPdfMutation = useMutation({
+    ...baseCreateBillByPdf,
+    onSuccess: (data, variables, onMutateResult, context) => {
+      baseCreateBillByPdf.onSuccess?.(data, variables, onMutateResult, context);
+    },
+    onError: (error) => {
+      console.error("Create bill error:", error);
+    },
+  });
+
   const baseUpdateBill = billsMutations.update(queryClient);
   const updateBillMutation = useMutation({
     ...baseUpdateBill,
@@ -58,6 +69,7 @@ export const useBillsActions = () => {
 
   return {
     createBill: createNewBillMutation,
+    createBillByPdf: createNewBillByPdfMutation,
     updateBill: updateBillMutation,
     deleteBill: deleteBillMutation,
   };
