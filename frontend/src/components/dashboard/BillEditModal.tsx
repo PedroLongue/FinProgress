@@ -6,6 +6,7 @@ import type { IBill } from "../../types/bills.type";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "../../hooks/useOnClickOutside";
 import { getStatusBadge, isPaid } from "../../utils/bills.utils";
+import { cn } from "../../lib/utils";
 
 interface IEditBillModal {
   bill: IBill;
@@ -22,7 +23,7 @@ export const BillEditModal = ({
   isLoading = false,
   isEditing = false,
 }: IEditBillModal) => {
-  const [title, setTitle] = useState(bill.title ?? "");
+  const [title, setTitle] = useState(bill.title);
   const [amount, setAmount] = useState(bill.amount?.toString() ?? "");
   const [dueDate, setDueDate] = useState(() => {
     if (!bill.dueDate) return "";
@@ -31,6 +32,8 @@ export const BillEditModal = ({
   });
   const [barcode, setBarcode] = useState(bill.barcode ?? "");
   const [description, setDescription] = useState(bill.description ?? "");
+
+  const [titleError, setTitleError] = useState<string | null>("");
 
   const status = bill.status;
 
@@ -62,6 +65,14 @@ export const BillEditModal = ({
   const editModalRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(editModalRef, () => onClose());
 
+  const validateTitle = (value: string) => {
+    const v = value.trim();
+    if (!v) return "Informe o título";
+    if (v.length < 2) return "Título deve ter no mínimo 2 caracteres";
+    if (v.length > 20) return "Título deve ter no máximo 20 caracteres";
+    return null;
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
@@ -88,12 +99,25 @@ export const BillEditModal = ({
                 <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setTitle(v);
+                    if (titleError) setTitleError(validateTitle(v));
+                  }}
+                  onBlur={() => setTitleError(validateTitle(title))}
                   placeholder="Ex: Conta de Luz"
-                  className="pl-10"
+                  className={cn(
+                    "pl-10",
+                    titleError
+                      ? "!border-red-500 focus-visible:ring-red-500"
+                      : ""
+                  )}
                   required
                 />
               </div>
+              {titleError && (
+                <p className="text-sm text-destructive">{titleError}</p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">

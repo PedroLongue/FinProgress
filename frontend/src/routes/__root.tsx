@@ -9,6 +9,7 @@ import { Button } from "../components/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { BillCreateModal } from "../components/dashboard/BillCreateModal";
+import { useBillsActions } from "../hooks/useBills";
 
 export const Route = createRootRoute({
   component: RootLayout,
@@ -16,7 +17,14 @@ export const Route = createRootRoute({
 
 function RootLayout() {
   const { isLoading, isAuthenticated } = useAuth();
+  const { createBill, createBillByPdf } = useBillsActions();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const handleCloseModal = () => {
+    createBillByPdf.reset();
+    createBill.reset();
+    setIsAddModalOpen(false);
+  };
 
   if (isLoading) return <Loading />;
 
@@ -43,8 +51,13 @@ function RootLayout() {
 
       <BillCreateModal
         isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onAdd={() => {}}
+        onClose={handleCloseModal}
+        onAdd={(body) => createBill.mutate(body)}
+        onScan={(file) => createBillByPdf.mutate(file)}
+        isScanning={createBillByPdf.isPending}
+        scanComplete={createBillByPdf.isSuccess}
+        isManualSaving={createBill.isPending}
+        manualSaveComplete={createBill.isSuccess}
       />
     </div>
   );
