@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { cn } from "../../lib/utils";
 import { Badge } from "../ui/badge";
 import type { BillsResponse } from "../../queries/bills";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BillEditModal } from "./BillEditModal";
 import {
   formatCurrency,
@@ -27,6 +27,7 @@ import {
 import { useBillsActions } from "../../hooks/useBills";
 import { BillDeleteModal } from "./BillDeleteModal";
 import { Link } from "@tanstack/react-router";
+import { useSnackbarStore } from "../../stores/snackbar.store";
 
 interface IBillsList {
   bills: BillsResponse;
@@ -44,6 +45,7 @@ export const BillsList = ({
   dashpage = false,
 }: IBillsList) => {
   const { updateBill, deleteBill } = useBillsActions();
+  const showSnackbar = useSnackbarStore((s) => s.show);
 
   const [currentPage, setCurrentPage] = useState(bills.page || 1);
   const totalPages = bills.totalPages;
@@ -87,6 +89,39 @@ export const BillsList = ({
     await deleteBill.mutateAsync(bill.id);
     handleCloseModal();
   };
+
+  useEffect(() => {
+    if (isEditModalOpen) return;
+    if (updateBill.isSuccess)
+      showSnackbar({
+        severity: "success",
+        message: "Boleto editado com sucesso.",
+      });
+    if (updateBill.isError)
+      showSnackbar({
+        severity: "error",
+        message: "Erro ao editar boleto, tente novamente.",
+      });
+  }, [isEditModalOpen, updateBill.isError, updateBill.isSuccess, showSnackbar]);
+
+  useEffect(() => {
+    if (isDeleteModalOpen) return;
+    if (deleteBill.isSuccess)
+      showSnackbar({
+        severity: "warning",
+        message: "Boleto excluído com sucesso.",
+      });
+    if (deleteBill.isError)
+      showSnackbar({
+        severity: "error",
+        message: "Erro ao excluir boleto, tente novamente.",
+      });
+  }, [
+    isDeleteModalOpen,
+    deleteBill.isError,
+    deleteBill.isSuccess,
+    showSnackbar,
+  ]);
 
   return (
     <Card variant="default">

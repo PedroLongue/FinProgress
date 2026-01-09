@@ -7,9 +7,11 @@ import Header from "../components/layout/Header";
 import { Loading } from "../components/ui/loading";
 import { Button } from "../components/ui/button";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BillCreateModal } from "../components/dashboard/BillCreateModal";
 import { useBillsActions } from "../hooks/useBills";
+import { SnackbarHost } from "../components/ui/SnackbarHost";
+import { useSnackbarStore } from "../stores/snackbar.store";
 
 export const Route = createRootRoute({
   component: RootLayout,
@@ -19,6 +21,7 @@ function RootLayout() {
   const { isLoading, isAuthenticated } = useAuth();
   const { createBill, createBillByPdf } = useBillsActions();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const showSnackbar = useSnackbarStore((s) => s.show);
 
   const handleCloseModal = () => {
     createBillByPdf.reset();
@@ -29,6 +32,45 @@ function RootLayout() {
   if (isLoading) return <Loading />;
 
   if (!isAuthenticated) return <Login />;
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    if (!isAddModalOpen) return;
+    if (createBill.isSuccess)
+      showSnackbar({ severity: "success", message: "Boleto cadastrado." });
+    if (createBill.isError)
+      showSnackbar({
+        severity: "error",
+        message: "Ocorreu um erro ao cadastrar, tente novamente.",
+      });
+  }, [
+    isAddModalOpen,
+    createBill.isSuccess,
+    createBill.isError,
+    createBill.error,
+    showSnackbar,
+  ]);
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    if (!isAddModalOpen) return;
+    if (createBillByPdf.isSuccess)
+      showSnackbar({
+        severity: "success",
+        message: "Boleto via PDF cadastrado.",
+      });
+    if (createBillByPdf.isError)
+      showSnackbar({
+        severity: "error",
+        message: "Ocorreu um erro ao extrair os dados, tente novamente.",
+      });
+  }, [
+    isAddModalOpen,
+    createBillByPdf.isSuccess,
+    createBillByPdf.isError,
+    createBillByPdf.error,
+    showSnackbar,
+  ]);
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100">
@@ -59,6 +101,7 @@ function RootLayout() {
         isManualSaving={createBill.isPending}
         manualSaveComplete={createBill.isSuccess}
       />
+      <SnackbarHost />
     </div>
   );
 }
