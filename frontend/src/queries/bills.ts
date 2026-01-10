@@ -19,6 +19,7 @@ export type BillsResponse = {
   pageSize: number;
   total: number;
   totalPages: number;
+  userCategories: string[] | null;
 };
 
 export type CreateBillResponse = {
@@ -28,7 +29,10 @@ export type CreateBillResponse = {
 export const billsQueries = {
   getAll: (page: number, status?: BillFilterStatus, category?: string) =>
     queryOptions({
-      queryKey: ["bills", { page, status: status ?? null }],
+      queryKey: [
+        "bills",
+        { page, status: status ?? null, category: category ?? null },
+      ],
       queryFn: () => {
         const qs = new URLSearchParams();
         qs.set("page", String(page));

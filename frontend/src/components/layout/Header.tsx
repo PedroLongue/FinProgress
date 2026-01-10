@@ -1,13 +1,11 @@
-import { Pencil, Search, User } from "lucide-react";
+import { Pencil, User } from "lucide-react";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { useRef, useState } from "react";
 import { cn } from "../../lib/utils";
 import { useOnClickOutside } from "../../hooks/useOnClickOutside";
 import { Link } from "@tanstack/react-router";
 
 const Header = () => {
-  const [search, setSearch] = useState("");
   const [openUserMenu, setOpenUserMenu] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);

@@ -10,7 +10,7 @@ import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BillCreateModal } from "../components/dashboard/BillCreateModal";
 import { useBillsActions } from "../hooks/useBills";
-import { SnackbarHost } from "../components/ui/SnackbarHost";
+import { SnackbarHost } from "../components/ui/snackbar-host";
 import { useSnackbarStore } from "../stores/snackbar.store";
 
 export const Route = createRootRoute({

@@ -1,4 +1,4 @@
-export type BillStatusKey = "PENDING" | "PAID" | "PAID_LATE" | "OVERDUE";
+export type BillStatusKey = "PENDING" | "PAID" | "PAID_LATE" | "OVERDUE" | "";
 export type BillFilterStatus = BillStatusKey | "UNPAID";
 
 export interface IBill {

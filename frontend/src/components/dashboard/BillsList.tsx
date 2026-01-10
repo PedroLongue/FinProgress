@@ -5,17 +5,27 @@ import {
   ChevronRight,
   FileText,
   PlusCircle,
-  Search,
+  SearchAlertIcon,
   Sparkles,
   Trash2,
 } from "lucide-react";
-import type { IBill, ICreateBillBody } from "../../types/bills.type";
+import type {
+  BillStatusKey,
+  IBill,
+  ICreateBillBody,
+} from "../../types/bills.type";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { cn } from "../../lib/utils";
 import { Badge } from "../ui/badge";
 import type { BillsResponse } from "../../queries/bills";
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { BillEditModal } from "./BillEditModal";
 import {
   formatCurrency,
@@ -29,14 +39,19 @@ import { useBillsActions } from "../../hooks/useBills";
 import { BillDeleteModal } from "./BillDeleteModal";
 import { Link } from "@tanstack/react-router";
 import { useSnackbarStore } from "../../stores/snackbar.store";
-import { Input } from "../ui/input";
-
+import { AppSelect } from "../ui/app-select";
 interface IBillsList {
   bills: BillsResponse;
   isEmpty: boolean;
   dashpage?: boolean;
   onAddBill?: () => void;
   onPageChange?: (page: number) => void;
+
+  categoryFilter?: string;
+  setCategoryFilter?: Dispatch<SetStateAction<string>>;
+
+  statusFilter?: BillStatusKey | "";
+  setStatusFilter?: Dispatch<SetStateAction<BillStatusKey | "">>;
 }
 
 export const BillsList = ({
@@ -45,19 +60,37 @@ export const BillsList = ({
   onAddBill,
   onPageChange,
   dashpage = false,
+  categoryFilter,
+  setCategoryFilter,
+  statusFilter,
+  setStatusFilter,
 }: IBillsList) => {
   const { updateBill, deleteBill } = useBillsActions();
-  const showSnackbar = useSnackbarStore((s) => s.show);
 
   const [currentPage, setCurrentPage] = useState(bills.page || 1);
   const totalPages = bills.totalPages;
 
+  const showSnackbar = useSnackbarStore((s) => s.show);
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const [search, setSearch] = useState("");
-
   const [selectedBill, setSelectedBill] = useState<IBill | null>(null);
+
+  const userCategories = useMemo(() => {
+    const fromApi = bills?.userCategories;
+    if (Array.isArray(fromApi) && fromApi.length) return fromApi;
+  }, [bills]);
+
+  const categoryOptions =
+    userCategories?.map((cat) => ({ value: cat, label: cat })) ?? [];
+
+  const statusOptions = [
+    { value: "PENDING", label: "Pendente" },
+    { value: "PAID", label: "Pago" },
+    { value: "PAID_LATE", label: "Pago com atraso" },
+    { value: "OVERDUE", label: "Vencido" },
+  ];
 
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return;
@@ -143,17 +176,28 @@ export const BillsList = ({
             </Button>
           )}
           {!dashpage && (
-            <div className="hidden md:flex flex-1 max-w-md">
-              <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Buscar boletos, categorias..."
-                  className="pl-10 bg-secondary/30 border-transparent focus-visible:border-primary"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </div>
+            <div className="hidden md:flex items-center gap-2">
+              <AppSelect
+                value={categoryFilter ?? ""}
+                onChange={(v) => {
+                  setCategoryFilter?.(v);
+                  onPageChange?.(1);
+                }}
+                placeholder="Todas as categorias"
+                ariaLabel="Filtrar por categoria"
+                options={categoryOptions}
+              />
+
+              <AppSelect
+                value={statusFilter ?? ""}
+                onChange={(v) => {
+                  setStatusFilter?.(v as BillStatusKey | "");
+                  onPageChange?.(1);
+                }}
+                placeholder="Todos os status"
+                ariaLabel="Filtrar por status"
+                options={statusOptions}
+              />
             </div>
           )}
         </div>
@@ -170,7 +214,11 @@ export const BillsList = ({
               </div>
 
               <div className="relative w-14 h-14 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                <FileText className="w-7 h-7 text-primary-foreground" />
+                {userCategories ? (
+                  <SearchAlertIcon className="w-7 h-7 text-primary-foreground" />
+                ) : (
+                  <FileText className="w-7 h-7 text-primary-foreground" />
+                )}
               </div>
 
               <div className="absolute -top-2 -right-3 w-6 h-6 rounded-lg bg-success/20 flex items-center justify-center animate-bounce-slow">
@@ -180,11 +228,14 @@ export const BillsList = ({
             </div>
 
             <h3 className="text-lg font-semibold text-foreground mb-2">
-              Nenhum boleto cadastrado
+              {userCategories
+                ? "Nenhum boleto cadastrado no filtro"
+                : "Nenhum boleto cadastrado"}
             </h3>
             <p className="text-sm text-muted-foreground max-w-xs mb-6 leading-relaxed">
-              Comece adicionando seus boletos para acompanhar vencimentos e
-              nunca mais perca prazos.
+              {userCategories
+                ? "Não encontramos boletos com os filtros aplicados. Tente alterar a categoria ou status."
+                : "Comece adicionando seus boletos para acompanhar vencimentos enunca mais perca prazos."}
             </p>
 
             <div className="w-full max-w-sm space-y-2 mb-6">
@@ -204,7 +255,7 @@ export const BillsList = ({
               ))}
             </div>
 
-            {onAddBill && (
+            {onAddBill && !userCategories && (
               <Button onClick={onAddBill} size="sm" className="gap-2">
                 <PlusCircle className="w-4 h-4" />
                 Cadastrar primeiro boleto
