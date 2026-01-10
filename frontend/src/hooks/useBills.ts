@@ -20,6 +20,16 @@ export const useBill = (
   };
 };
 
+export const useBillDetails = () => {
+  const {
+    data: billDatils,
+    isLoading,
+    isError,
+  } = useQuery(billsQueries.details());
+
+  return { billDatils, isLoading, isError };
+};
+
 export const useBillsActions = () => {
   const queryClient = useQueryClient();
 

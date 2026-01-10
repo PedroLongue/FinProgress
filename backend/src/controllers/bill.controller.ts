@@ -290,3 +290,43 @@ export const createBillFromPdf = async (req: AuthRequest, res: Response) => {
 
   return res.status(201).json({ bill });
 };
+
+export const usersBillsDetails = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId;
+  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
+
+  const [totalBills, totalPaidNotLate, totalPaidLate, totalPending, totalLate] =
+    await Promise.all([
+      prisma.bill.count({ where: { userId } }),
+      prisma.bill.count({ where: { userId, status: "PAID" } }),
+      prisma.bill.count({ where: { userId, status: "PAID_LATE" } }),
+      prisma.bill.count({
+        where: { userId, status: { in: ["PENDING"] } },
+      }),
+      prisma.bill.count({ where: { userId, status: "OVERDUE" } }),
+    ]);
+
+  const denom = Math.max(totalBills, 1);
+
+  const raw =
+    totalPaidNotLate * 1.0 - // recompensa pagamento sem atraso
+    totalPaidLate * 0.5 - // penaliza atraso, mas menos (porque foi pago)
+    totalPending * 1.0 - // pendente reduz o score (ainda é risco)
+    totalLate * 2.0; // vencido não pago pesa mais
+
+  const maxScore = denom * 1.0; // melhor caso
+  const minScore = denom * -2.0; // pior caso
+
+  const normalized = (raw - minScore) / (maxScore - minScore);
+
+  const score = Math.round(Math.max(0, Math.min(1, normalized)) * 100);
+
+  return res.json({
+    totalBills,
+    totalPaidNotLate,
+    totalPaidLate,
+    totalPending,
+    totalLate,
+    score,
+  });
+};

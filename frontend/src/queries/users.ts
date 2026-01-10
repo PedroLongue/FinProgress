@@ -65,6 +65,8 @@ export const usersMutations = {
       onSuccess: () => {
         qc.setQueryData(["me"], null);
         qc.removeQueries({ queryKey: ["me"] });
+        qc.invalidateQueries({ queryKey: ["bills"] });
+        qc.invalidateQueries({ queryKey: ["bill-details"] });
       },
     }),
 };

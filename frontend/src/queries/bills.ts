@@ -26,6 +26,15 @@ export type CreateBillResponse = {
   bill: IBill;
 };
 
+export type BillDetailsResponse = {
+  totalBills: number;
+  totalPaidNotLate: number;
+  totalPaidLate: number;
+  totalPending: number;
+  totalLate: number;
+  score: number;
+};
+
 export const billsQueries = {
   getAll: (page: number, status?: BillFilterStatus, category?: string) =>
     queryOptions({
@@ -42,6 +51,14 @@ export const billsQueries = {
         return getData<BillsResponse>(`/bills?${qs.toString()}`);
       },
       retry: false,
+    }),
+
+  details: () =>
+    queryOptions({
+      queryKey: ["bill-details"],
+      queryFn: () => {
+        return getData<BillDetailsResponse>("/bills/bill-details");
+      },
     }),
 };
 

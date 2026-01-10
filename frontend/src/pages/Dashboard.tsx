@@ -3,7 +3,7 @@ import { BillsList } from "../components/dashboard/BillsList";
 import { HealthScoreCard } from "../components/dashboard/HealthScoreCard";
 import { Loading } from "../components/ui/loading";
 import { useAuth } from "../hooks/useAuth";
-import { useBill } from "../hooks/useBills";
+import { useBill, useBillDetails } from "../hooks/useBills";
 import type { BillsResponse } from "../queries/bills";
 
 export const Dashboard = () => {
@@ -11,10 +11,14 @@ export const Dashboard = () => {
 
   const { user } = useAuth();
   const { bills, isLoading } = useBill(currentPage, "UNPAID");
+  const { billDatils } = useBillDetails();
 
   if (isLoading) {
     return <Loading />;
   }
+
+  const isScoreEmpty =
+    billDatils?.totalBills === 0 && billDatils?.totalPending === 0;
 
   return (
     <div className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6">
@@ -27,8 +31,8 @@ export const Dashboard = () => {
         </p>
       </div>
       <HealthScoreCard
-        score={70}
-        isEmpty={false}
+        score={billDatils ? billDatils?.score : 0}
+        isEmpty={isScoreEmpty}
         onAction={() => console.log()}
       />
       <BillsList
@@ -36,7 +40,6 @@ export const Dashboard = () => {
         bills={bills as BillsResponse}
         isEmpty={bills?.bills.length === 0}
         onPageChange={setCurrentPage}
-        onAddBill={() => console.log()}
       />
     </div>
   );
