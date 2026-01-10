@@ -25,3 +25,11 @@ export interface ICreateBillBody {
   status?: BillStatusKey;
   paidAt?: string | null;
 }
+
+export interface IScoreExplanation {
+  title: string;
+  summary: string;
+  bills: string[];
+  nextSteps: string[];
+  confidence: number;
+}

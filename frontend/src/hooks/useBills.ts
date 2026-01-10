@@ -22,12 +22,22 @@ export const useBill = (
 
 export const useBillDetails = () => {
   const {
-    data: billDatils,
+    data: billDetails,
     isLoading,
     isError,
   } = useQuery(billsQueries.details());
 
-  return { billDatils, isLoading, isError };
+  return { billDetails, isLoading, isError };
+};
+
+export const useBillExplanation = () => {
+  const {
+    data: scoreExplanation,
+    isLoading,
+    isError,
+  } = useQuery(billsQueries.explanation());
+
+  return { scoreExplanation, isLoading, isError };
 };
 
 export const useBillsActions = () => {

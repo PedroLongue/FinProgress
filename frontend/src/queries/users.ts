@@ -67,6 +67,7 @@ export const usersMutations = {
         qc.removeQueries({ queryKey: ["me"] });
         qc.invalidateQueries({ queryKey: ["bills"] });
         qc.invalidateQueries({ queryKey: ["bill-details"] });
+        qc.invalidateQueries({ queryKey: ["bill-score-explanation"] });
       },
     }),
 };

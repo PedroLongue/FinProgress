@@ -11,6 +11,7 @@ import type {
   BillFilterStatus,
   IBill,
   ICreateBillBody,
+  IScoreExplanation,
 } from "../types/bills.type";
 
 export type BillsResponse = {
@@ -33,6 +34,10 @@ export type BillDetailsResponse = {
   totalPending: number;
   totalLate: number;
   score: number;
+};
+
+export type BillScoreExplanation = {
+  scoreExplanation: IScoreExplanation;
 };
 
 export const billsQueries = {
@@ -59,6 +64,24 @@ export const billsQueries = {
       queryFn: () => {
         return getData<BillDetailsResponse>("/bills/bill-details");
       },
+    }),
+
+  explanation: () =>
+    queryOptions({
+      queryKey: ["bill-score-explanation"],
+      queryFn: () => {
+        return getData<BillScoreExplanation>("/bills/bill-score-explanation");
+      },
+      // só considera "stale" depois de 24h
+      staleTime: 24 * 60 * 60 * 1000,
+
+      // mantém no cache por 24h (ou mais) mesmo sem componente usando
+      gcTime: 24 * 60 * 60 * 1000,
+
+      // não refaz automaticamente quando montar o componente
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     }),
 };
 

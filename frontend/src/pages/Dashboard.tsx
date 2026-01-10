@@ -11,14 +11,14 @@ export const Dashboard = () => {
 
   const { user } = useAuth();
   const { bills, isLoading } = useBill(currentPage, "UNPAID");
-  const { billDatils } = useBillDetails();
+  const { billDetails, isLoading: isDetailsLoading } = useBillDetails();
 
   if (isLoading) {
     return <Loading />;
   }
 
   const isScoreEmpty =
-    billDatils?.totalBills === 0 && billDatils?.totalPending === 0;
+    billDetails?.totalBills === 0 && billDetails?.totalPending === 0;
 
   return (
     <div className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6">
@@ -31,9 +31,9 @@ export const Dashboard = () => {
         </p>
       </div>
       <HealthScoreCard
-        score={billDatils ? billDatils?.score : 0}
+        score={billDetails ? billDetails?.score : 0}
         isEmpty={isScoreEmpty}
-        onAction={() => console.log()}
+        isLoading={isDetailsLoading}
       />
       <BillsList
         dashpage
