@@ -15,27 +15,10 @@ const Header = () => {
   useOnClickOutside(menuRef, () => setOpenUserMenu(false));
 
   return (
-    <header className="relative h-16 px-4 lg:px-6 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-between gap-4">
-      <div className="hidden md:flex flex-1 max-w-md">
-        <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Buscar boletos, categorias..."
-            className="pl-10 bg-secondary/30 border-transparent focus-visible:border-primary"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-      </div>
-
+    <header className="relative h-16 px-4 lg:px-6 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-end gap-4">
       <div className="md:hidden w-8" />
 
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" className="md:hidden">
-          <Search className="w-5 h-5" />
-        </Button>
-
         <div ref={menuRef} className="relative">
           <Button
             variant="ghost"

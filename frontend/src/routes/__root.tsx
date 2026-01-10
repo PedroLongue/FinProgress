@@ -23,17 +23,6 @@ function RootLayout() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const showSnackbar = useSnackbarStore((s) => s.show);
 
-  const handleCloseModal = () => {
-    createBillByPdf.reset();
-    createBill.reset();
-    setIsAddModalOpen(false);
-  };
-
-  if (isLoading) return <Loading />;
-
-  if (!isAuthenticated) return <Login />;
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     if (!isAddModalOpen) return;
     if (createBill.isSuccess)
@@ -51,7 +40,6 @@ function RootLayout() {
     showSnackbar,
   ]);
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     if (!isAddModalOpen) return;
     if (createBillByPdf.isSuccess)
@@ -71,6 +59,16 @@ function RootLayout() {
     createBillByPdf.error,
     showSnackbar,
   ]);
+
+  const handleCloseModal = () => {
+    createBillByPdf.reset();
+    createBill.reset();
+    setIsAddModalOpen(false);
+  };
+
+  if (isLoading) return <Loading />;
+
+  if (!isAuthenticated) return <Login />;
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100">

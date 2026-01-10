@@ -5,6 +5,7 @@ import {
   ChevronRight,
   FileText,
   PlusCircle,
+  Search,
   Sparkles,
   Trash2,
 } from "lucide-react";
@@ -28,6 +29,7 @@ import { useBillsActions } from "../../hooks/useBills";
 import { BillDeleteModal } from "./BillDeleteModal";
 import { Link } from "@tanstack/react-router";
 import { useSnackbarStore } from "../../stores/snackbar.store";
+import { Input } from "../ui/input";
 
 interface IBillsList {
   bills: BillsResponse;
@@ -52,6 +54,8 @@ export const BillsList = ({
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const [search, setSearch] = useState("");
 
   const [selectedBill, setSelectedBill] = useState<IBill | null>(null);
 
@@ -137,6 +141,20 @@ export const BillsList = ({
                 Ver todos <ArrowRight />
               </Link>
             </Button>
+          )}
+          {!dashpage && (
+            <div className="hidden md:flex flex-1 max-w-md">
+              <div className="relative w-full">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Buscar boletos, categorias..."
+                  className="pl-10 bg-secondary/30 border-transparent focus-visible:border-primary"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+            </div>
           )}
         </div>
       </CardHeader>
