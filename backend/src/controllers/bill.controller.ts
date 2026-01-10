@@ -116,7 +116,7 @@ export const listBills = async (req: AuthRequest, res: Response) => {
     where.category = category;
   }
 
-  const [total, bills] = await Promise.all([
+  const [total, bills, categoryRows] = await Promise.all([
     prisma.bill.count({ where }),
     prisma.bill.findMany({
       where,
@@ -124,7 +124,17 @@ export const listBills = async (req: AuthRequest, res: Response) => {
       skip,
       take,
     }),
+    prisma.bill.findMany({
+      where: { userId },
+      select: { category: true },
+      distinct: ["category"],
+      orderBy: { category: "asc" },
+    }),
   ]);
+
+  const userCategories = categoryRows
+    .map((r) => r.category)
+    .filter((c): c is string => !!c && c.trim() !== "");
 
   return res.json({
     page,
@@ -132,6 +142,7 @@ export const listBills = async (req: AuthRequest, res: Response) => {
     total,
     totalPages: Math.ceil(total / take),
     bills,
+    userCategories,
   });
 };
 
