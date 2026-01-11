@@ -45,7 +45,7 @@ export interface ButtonProps
   extends
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
+  asChild?: boolean; // Se asChild=true, renderiza um Slot, que não cria um elemento novo; ele “injeta” as props/classes no filho.
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
