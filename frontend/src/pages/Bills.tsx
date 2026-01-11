@@ -8,10 +8,18 @@ import type { BillStatusKey } from "../types/bills.type";
 export const Bills = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [categoryFilter, setCategoryFilter] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<BillStatusKey | "">("");
+  const [statusFilter, setStatusFilter] = useState<
+    BillStatusKey | "" | "__all__"
+  >("");
 
-  const statusParam = statusFilter === "" ? undefined : statusFilter;
-  const categoryParam = categoryFilter === "" ? undefined : categoryFilter;
+  const statusParam =
+    statusFilter === "" || statusFilter === "__all__"
+      ? undefined
+      : statusFilter;
+  const categoryParam =
+    categoryFilter === "" || categoryFilter === "__all__"
+      ? undefined
+      : categoryFilter;
 
   const { bills, isLoading } = useBill(currentPage, statusParam, categoryParam);
 
@@ -25,7 +33,6 @@ export const Bills = () => {
         bills={bills as BillsResponse}
         isEmpty={bills?.bills.length === 0}
         onPageChange={setCurrentPage}
-        onAddBill={() => console.log()}
         categoryFilter={categoryFilter}
         setCategoryFilter={setCategoryFilter}
         statusFilter={statusFilter}

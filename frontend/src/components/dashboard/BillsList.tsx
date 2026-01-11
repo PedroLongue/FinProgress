@@ -48,8 +48,8 @@ interface IBillsList {
   categoryFilter?: string;
   setCategoryFilter?: Dispatch<SetStateAction<string>>;
 
-  statusFilter?: BillStatusKey | "";
-  setStatusFilter?: Dispatch<SetStateAction<BillStatusKey | "">>;
+  statusFilter?: BillStatusKey | "" | "__all__";
+  setStatusFilter?: Dispatch<SetStateAction<BillStatusKey | "" | "__all__">>;
 }
 
 export const BillsList = ({
@@ -172,7 +172,7 @@ export const BillsList = ({
               </Link>
             </Button>
           )}
-          {!dashpage && !isEmpty && (
+          {!dashpage && (
             <div className="hidden md:flex items-center gap-2">
               <AppSelect
                 value={categoryFilter ?? ""}
