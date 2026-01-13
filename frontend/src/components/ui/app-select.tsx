@@ -8,22 +8,26 @@ import {
 } from "./select";
 
 type Option = {
-  value: string;
+  value: string | number;
   label: string;
   disabled?: boolean;
 };
 
 type AppSelectProps = {
-  value: string;
-  onChange: (value: string) => void;
+  value: string | number;
+  onChange: (value: string | number) => void;
 
-  placeholder: string;
+  placeholder?: string;
   options: Option[];
 
   className?: string;
 
   disabled?: boolean;
   ariaLabel?: string;
+};
+
+const toSelectValue = (v: string | number): string => {
+  return String(v);
 };
 
 export function AppSelect({
@@ -38,7 +42,7 @@ export function AppSelect({
   return (
     <div className={cn(className)}>
       <Select
-        value={value}
+        value={toSelectValue(value)}
         onValueChange={(v) => onChange(v)}
         disabled={disabled}
       >
@@ -73,7 +77,7 @@ export function AppSelect({
           {options.map((opt) => (
             <SelectItem
               key={opt.value}
-              value={opt.value}
+              value={toSelectValue(opt.value)}
               disabled={opt.disabled}
               className="text-sm"
             >

@@ -138,6 +138,7 @@ export const billsMutations = {
       },
       onSuccess: () => {
         qc.invalidateQueries({ queryKey: ["bills"] });
+        qc.invalidateQueries({ queryKey: ["spending-report"] });
       },
     }),
 
@@ -149,6 +150,7 @@ export const billsMutations = {
       },
       onSuccess: () => {
         qc.invalidateQueries({ queryKey: ["bills"] });
+        qc.invalidateQueries({ queryKey: ["spending-report"] });
       },
     }),
 };

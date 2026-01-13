@@ -55,6 +55,14 @@ const STATUS_CONFIG = {
     borderColor: "border-red-200",
     textColor: "text-red-800",
   },
+  "": {
+    icon: AlertCircle,
+    label: "Vencido",
+    color: "text-red-500",
+    bgColor: "bg-red-100",
+    borderColor: "border-red-200",
+    textColor: "text-red-800",
+  },
 } as const;
 
 export const getStatusIcon = (status: BillStatusKey) => {

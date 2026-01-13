@@ -177,7 +177,7 @@ export const BillsList = ({
               <AppSelect
                 value={categoryFilter ?? ""}
                 onChange={(v) => {
-                  setCategoryFilter?.(v);
+                  setCategoryFilter?.(v as string);
                   onPageChange?.(1);
                 }}
                 placeholder="Todas as categorias"
