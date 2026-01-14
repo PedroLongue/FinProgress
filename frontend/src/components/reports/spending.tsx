@@ -30,6 +30,7 @@ import {
 import { AppSelect } from "../ui/app-select";
 import type { ISpendingReportData } from "../../types/reports.type";
 import { formatCurrency } from "../../utils/bills.utils";
+import { EmptyState } from "../layout/EmptyState";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -42,12 +43,14 @@ interface ISpendingReports {
   spendingReportData: ISpendingReportData;
   monthFilter: 3 | 6 | 12;
   setMonthFilter: Dispatch<SetStateAction<3 | 6 | 12>>;
+  isEmpty: boolean;
 }
 
 export const SpendingReports = ({
   spendingReportData,
   monthFilter,
   setMonthFilter,
+  isEmpty,
 }: ISpendingReports) => {
   const labels = useMemo(
     () => spendingReportData.byMonth.map((m) => m.month),
@@ -179,93 +182,6 @@ export const SpendingReports = ({
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 md:grid-cols-3">
-        <Card className="border-border/60">
-          <CardHeader className="pb-2">
-            <CardDescription>Variação (mês atual vs anterior)</CardDescription>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <trend.Icon className={`h-4 w-4 ${trend.tone}`} />
-              <span className="font-semibold">{trend.label}</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="flex items-end justify-between gap-3">
-              <div>
-                <div className="text-2xl font-semibold">
-                  {formatCurrency(Math.abs(deltaValue))}
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  {prevMonth
-                    ? `Anterior: ${formatCurrency(prevMonth.total)}`
-                    : "—"}
-                </div>
-              </div>
-              <div className="text-right">
-                <div className={`text-sm font-medium ${trend.tone}`}>
-                  {deltaPct === null
-                    ? "—"
-                    : `${deltaPct >= 0 ? "+" : ""}${deltaPct.toFixed(1)}%`}
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Atual: {formatCurrency(currMonth.total)}
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border/60">
-          <CardHeader className="pb-2">
-            <CardDescription>Média de gastos</CardDescription>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Sigma className="h-4 w-4 text-primary" />
-              <span className="font-semibold">Por mês</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="text-2xl font-semibold">
-              {formatCurrency(avgSpend)}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              Considerando {monthsCount} {monthsCount === 1 ? "mês" : "meses"}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-border/60">
-          <CardHeader className="pb-2">
-            <CardDescription>Volume e pico</CardDescription>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Crown className="h-4 w-4 text-primary" />
-              <span className="font-semibold">Maior gasto</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0 space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Mês</span>
-              <span className="text-sm font-medium">
-                {topMonth?.month ?? "—"}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Valor</span>
-              <span className="text-sm font-medium">
-                {topMonth ? formatCurrency(topMonth.total) : "—"}
-              </span>
-            </div>
-            <div className="flex items-center justify-between pt-1">
-              <span className="text-sm text-muted-foreground flex items-center gap-1">
-                <DollarSign className="h-4 w-4" />
-                Média de contas
-              </span>
-              <span className="text-sm font-medium">
-                {avgBills.toFixed(1)}/mês
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       <Card variant="gradient" className="overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between">
           <div className="flex items-center gap-3">
@@ -278,22 +194,120 @@ export const SpendingReports = ({
               </CardDescription>
             </div>
           </div>
-          <AppSelect
-            value={monthFilter}
-            onChange={(v) => setMonthFilter(v as 3 | 6 | 12)}
-            ariaLabel="Filtrar por período"
-            options={monthOptions.map((o) => ({
-              ...o,
-              value: String(o.value),
-            }))}
-          />
+          {!isEmpty && (
+            <AppSelect
+              value={monthFilter}
+              onChange={(v) => setMonthFilter(v as 3 | 6 | 12)}
+              ariaLabel="Filtrar por período"
+              options={monthOptions.map((o) => ({
+                ...o,
+                value: String(o.value),
+              }))}
+            />
+          )}
         </CardHeader>
 
-        <CardContent className="p-6">
-          <div className="h-80">
-            <Bar options={options} data={data} />
-          </div>
-        </CardContent>
+        {isEmpty ? (
+          <EmptyState type="spending" />
+        ) : (
+          <>
+            <div className="grid gap-3 md:grid-cols-3 p-6">
+              <Card className="border-border/60">
+                <CardHeader className="pb-2">
+                  <CardDescription>
+                    Variação (mês atual vs anterior)
+                  </CardDescription>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <trend.Icon className={`h-4 w-4 ${trend.tone}`} />
+                    <span className="font-semibold">{trend.label}</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="flex items-end justify-between gap-3">
+                    <div>
+                      <div className="text-2xl font-semibold">
+                        {formatCurrency(Math.abs(deltaValue))}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {prevMonth
+                          ? `Anterior: ${formatCurrency(prevMonth.total)}`
+                          : "—"}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className={`text-sm font-medium ${trend.tone}`}>
+                        {deltaPct === null
+                          ? "—"
+                          : `${deltaPct >= 0 ? "+" : ""}${deltaPct.toFixed(1)}%`}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Atual: {formatCurrency(currMonth.total)}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border/60">
+                <CardHeader className="pb-2">
+                  <CardDescription>Média de gastos</CardDescription>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Sigma className="h-4 w-4 text-primary" />
+                    <span className="font-semibold">Por mês</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="text-2xl font-semibold">
+                    {formatCurrency(avgSpend)}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Considerando {monthsCount}{" "}
+                    {monthsCount === 1 ? "mês" : "meses"}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-border/60">
+                <CardHeader className="pb-2">
+                  <CardDescription>Volume e pico</CardDescription>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Crown className="h-4 w-4 text-primary" />
+                    <span className="font-semibold">Maior gasto</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Mês</span>
+                    <span className="text-sm font-medium">
+                      {topMonth?.month ?? "—"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Valor</span>
+                    <span className="text-sm font-medium">
+                      {topMonth ? formatCurrency(topMonth.total) : "—"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-sm text-muted-foreground flex items-center gap-1">
+                      <DollarSign className="h-4 w-4" />
+                      Média de contas
+                    </span>
+                    <span className="text-sm font-medium">
+                      {avgBills.toFixed(1)}/mês
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <CardContent className="p-6">
+              <div className="h-80">
+                <Bar options={options} data={data} />
+              </div>
+            </CardContent>
+          </>
+        )}
       </Card>
     </div>
   );

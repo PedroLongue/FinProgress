@@ -11,8 +11,6 @@ interface IScoreDetails {
 export const ScoreDetailsModal = ({ onClose }: IScoreDetails) => {
   const { scoreExplanation, isLoading } = useBillExplanation();
 
-  console.log({ scoreExplanation });
-
   const handleClose = () => onClose();
 
   return (

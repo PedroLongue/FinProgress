@@ -18,6 +18,7 @@ export const Insights = () => {
         spendingReportData={spendingReport as ISpendingReportData}
         monthFilter={monthFilter}
         setMonthFilter={setMonthFilter}
+        isEmpty={spendingReport?.totals.totalInRange === 0}
       />
     </div>
   );
