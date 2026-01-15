@@ -188,10 +188,12 @@ export const SpendingReports = ({
             <BarChart3 className="w-5 h-5 text-primary" />
             <div>
               <CardTitle>Gastos Mensais</CardTitle>
-              <CardDescription>
-                Últimos {spendingReportData.rangeMonths} meses (pagos). Passe o
-                mouse para ver valor e quantidade de contas.
-              </CardDescription>
+              {!isEmpty && (
+                <CardDescription>
+                  Últimos {spendingReportData.rangeMonths} meses (pagos). Passe
+                  o mouse para ver valor e quantidade de contas.
+                </CardDescription>
+              )}
             </div>
           </div>
           {!isEmpty && (
