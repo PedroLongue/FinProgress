@@ -20,7 +20,12 @@ import { useOnClickOutside } from "../../hooks/useOnClickOutside";
 const menu = [
   { id: "dashboard", label: "Dashboard", to: "/", icon: Home },
   { id: "bills", label: "Boletos", to: "/bills", icon: FileText },
-  { id: "insights", label: "Insights", to: "/insights", icon: BarChart3 },
+  {
+    id: "insights",
+    label: "Análise de gastos",
+    to: "/insights",
+    icon: BarChart3,
+  },
   {
     id: "notifications",
     label: "Notificações",
@@ -82,14 +87,14 @@ export const Sidebar = () => {
           "md:hidden fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-opacity",
           open
             ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
+            : "opacity-0 pointer-events-none",
         )}
       />
 
       <aside
         className={cn(
           "fixed md:static inset-y-0 left-0 z-50 w-64 bg-sidebar border-r border-sidebar-border flex flex-col transition-transform duration-300",
-          open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          open ? "translate-x-0" : "-translate-x-full md:translate-x-0",
         )}
         ref={sidebarRef}
       >

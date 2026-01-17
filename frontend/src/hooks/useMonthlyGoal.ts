@@ -30,5 +30,5 @@ export const useMonthlyGoalActions = () => {
     },
   });
 
-  return createOrUpdateGoal;
+  return { createOrUpdateGoal };
 };

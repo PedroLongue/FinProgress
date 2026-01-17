@@ -14,16 +14,19 @@ import {
 } from "lucide-react";
 import { dateToText, formatCurrency } from "../utils/bills.utils";
 import { Progress } from "../components/ui/progress";
-import { useMonthlyGoal } from "../hooks/useMonthlyGoal";
+import { useMonthlyGoal, useMonthlyGoalActions } from "../hooks/useMonthlyGoal";
 import { Button } from "../components/ui/button";
 import { EmptyInsightsCardsState } from "../components/layout/EmptyInsightsCardsState";
+import { CreateOrupdateGoalModal } from "../components/reports/CreateOrUpdateGoalModal";
 
 export const Insights = () => {
   const [monthFilter, setMonthFilter] = useState<3 | 6 | 12>(3);
   const [openGoalModal, setOpenGoalModal] = useState<boolean>(false);
+  const [goalMode, setGoalMode] = useState<"create" | "update">("create");
 
   const { spendingReport, isLoading: reportLoading } = useReports(monthFilter);
   const { monthlyGoal, isLoading: goalLoading } = useMonthlyGoal();
+  const { createOrUpdateGoal } = useMonthlyGoalActions();
 
   const isLoading = reportLoading || goalLoading;
 
@@ -96,7 +99,7 @@ export const Insights = () => {
 
   return (
     <div className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6">
-      <h1 className="text-2xl font-bold">Insights</h1>
+      <h1 className="text-2xl font-bold">Análise de gastos</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <Card variant="gradient" className="w-full">
@@ -116,6 +119,9 @@ export const Insights = () => {
                     </p>
                   </div>
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Contas pagas no mês atual, mesmo vencidas ou cadastradas antes
+                </p>
                 {showTrend && (
                   <div className="flex items-center gap-1 mt-3 text-sm">
                     <trend.Icon className={`h-4 w-4 ${trend.tone}`} />
@@ -153,11 +159,18 @@ export const Insights = () => {
                       </p>
                     </div>
                   </div>
-                  <Button>
+                  <Button
+                    onClick={() => {
+                      setOpenGoalModal(true);
+                      setGoalMode("update");
+                    }}
+                  >
                     <PencilIcon />
                   </Button>
                 </div>
-
+                <p className="text-xs text-muted-foreground mt-1">
+                  Baseado nas contas que vencem neste mês
+                </p>
                 <div className="mt-3">
                   <Progress value={percentUsed} className="h-2" />
                   <p className="text-xs text-muted-foreground mt-1">
@@ -192,6 +205,10 @@ export const Insights = () => {
                   </div>
                 </div>
 
+                <p className="text-xs text-muted-foreground mt-2">
+                  Considera apenas contas pagas no mês
+                </p>
+
                 <div className="mt-3 space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Mês</span>
@@ -221,6 +238,16 @@ export const Insights = () => {
         setMonthFilter={setMonthFilter}
         isEmpty={(spendingReport?.totals.totalInRange ?? 0) === 0}
       />
+
+      {openGoalModal && (
+        <CreateOrupdateGoalModal
+          mode={goalMode}
+          goal={monthlyGoal?.goalAmount as number}
+          isLoading={createOrUpdateGoal.isPending}
+          onSave={(body) => createOrUpdateGoal.mutate(body)}
+          onClose={() => setOpenGoalModal(false)}
+        />
+      )}
     </div>
   );
 };
