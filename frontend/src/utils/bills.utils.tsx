@@ -3,14 +3,14 @@ import type { BillStatusKey } from "../types/bills.type";
 
 export const formatCurrency = (value: number) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
-    value
+    value,
   );
 
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   const today = new Date();
   const diffDays = Math.ceil(
-    (date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    (date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
   );
 
   if (diffDays === 0) return "Hoje";
@@ -101,3 +101,28 @@ export const isPaid = (status: BillStatusKey) =>
 export const isOverdue = (status: BillStatusKey) => status === "OVERDUE";
 
 export const isPending = (status: BillStatusKey) => status === "PENDING";
+
+export const dateToText = (date: string) => {
+  const [year, month] = date.split("-");
+
+  const months: Record<string, string> = {
+    "01": "janeiro",
+    "02": "fevereiro",
+    "03": "março",
+    "04": "abril",
+    "05": "maio",
+    "06": "junho",
+    "07": "julho",
+    "08": "agosto",
+    "09": "setembro",
+    "10": "outubro",
+    "11": "novembro",
+    "12": "dezembro",
+  };
+
+  const monthText = months[month] ?? "";
+
+  if (!year || !monthText) return "";
+
+  return `${monthText} de ${year}`;
+};

@@ -32,7 +32,7 @@ export const usersMutations = {
       mutationFn: async (body: LoginBody) => {
         const res = await postData<LoginResponse, LoginBody>(
           "/users/login",
-          body
+          body,
         );
         return res.user;
       },
@@ -47,7 +47,7 @@ export const usersMutations = {
       mutationFn: async (body: RegisterBody) => {
         const res = await postData<RegisterResponse, RegisterBody>(
           "/users/register",
-          body
+          body,
         );
         return res.user;
       },
@@ -69,6 +69,7 @@ export const usersMutations = {
         qc.invalidateQueries({ queryKey: ["bill-details"] });
         qc.invalidateQueries({ queryKey: ["bill-score-explanation"] });
         qc.invalidateQueries({ queryKey: ["spending-report"] });
+        qc.invalidateQueries({ queryKey: ["monthly-goal"] });
       },
     }),
 };
