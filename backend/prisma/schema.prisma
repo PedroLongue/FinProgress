@@ -16,7 +16,8 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   phone     String?
 
-  bills Bill[]
+  bills                Bill[]
+  monthlySpendingGoals MonthlySpendingGoal[]
 
   @@map("users")
 }
@@ -48,4 +49,20 @@ enum BillStatus {
   PAID // Pago
   PAID_LATE // Pago com atraso
   OVERDUE // Vencido
+}
+
+model MonthlySpendingGoal {
+  id     String   @id @default(uuid())
+  userId String
+  month  DateTime
+  amount Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, month])
+  @@index([userId, month])
+  @@map("monthlyspendinggoal")
 }
