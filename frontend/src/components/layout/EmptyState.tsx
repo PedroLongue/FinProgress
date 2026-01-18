@@ -4,10 +4,12 @@ import {
   SearchAlertIcon,
   FileText,
   Sparkles,
+  PieChart,
+  Tag,
 } from "lucide-react";
 
 interface IEmptyState {
-  type: "spending" | "billList";
+  type: "spending" | "billList" | "category";
   emptyBillListFilter?: string[];
 }
 
@@ -27,6 +29,12 @@ export const EmptyState = ({ type, emptyBillListFilter }: IEmptyState) => {
       description: emptyBillListFilter
         ? "Não encontramos boletos com os filtros aplicados. Tente alterar a categoria ou status."
         : "Comece adicionando seus boletos para acompanhar vencimentos enunca mais perca prazos.",
+    },
+    category: {
+      icon: PieChart,
+      title: "Nenhuma categoria com gastos",
+      description:
+        "Não há gastos registrados nas categorias selecionadas. Tente alterar o período ou cadastre boletos.",
     },
   };
 
@@ -60,6 +68,15 @@ export const EmptyState = ({ type, emptyBillListFilter }: IEmptyState) => {
           <>
             <div className="absolute -top-2 -right-3 w-6 h-6 rounded-lg bg-success/20 flex items-center justify-center animate-bounce-slow">
               <Sparkles className="w-3 h-3 text-success" />
+            </div>
+            <div className="absolute -bottom-1 -left-2 w-5 h-5 rounded-full bg-warning/20" />
+          </>
+        )}
+
+        {type === "category" && (
+          <>
+            <div className="absolute -top-2 -right-3 w-6 h-6 rounded-lg bg-accent/20 flex items-center justify-center animate-bounce-slow">
+              <Tag className="w-3 h-3 text-accent" />
             </div>
             <div className="absolute -bottom-1 -left-2 w-5 h-5 rounded-full bg-warning/20" />
           </>

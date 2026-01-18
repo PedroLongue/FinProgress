@@ -2,7 +2,10 @@ import { useMemo, useState } from "react";
 import { SpendingReports } from "../components/reports/Spending";
 import { useSpendingReports } from "../hooks/useSpendingReports";
 import { Loading } from "../components/ui/loading";
-import type { ISpendingReportData } from "../types/reports.type";
+import type {
+  ISpendingByCategoryReportData,
+  ISpendingReportData,
+} from "../types/reports.type";
 import { Card, CardContent } from "../components/ui/card";
 import {
   DollarSign,
@@ -19,22 +22,23 @@ import { Button } from "../components/ui/button";
 import { EmptyInsightsCardsState } from "../components/layout/EmptyInsightsCardsState";
 import { CreateOrupdateGoalModal } from "../components/Modals/CreateOrUpdateGoalModal";
 import { useSpendingByCategoryReport } from "../hooks/useSpendingByCategoryReport ";
+import { SpendingByCategory } from "../components/reports/SpendingByCategory";
 
 export const Insights = () => {
   const [monthFilter, setMonthFilter] = useState<3 | 6 | 12>(3);
   const [openGoalModal, setOpenGoalModal] = useState<boolean>(false);
   const [goalMode, setGoalMode] = useState<"create" | "update">("create");
-  const [startCategoryDate, setStartCategoryDate] = useState("");
-  const [endCategoryDate, setEndCategoryDate] = useState("");
+  const [start, setStart] = useState<string | undefined>();
+  const [end, setEnd] = useState<string | undefined>();
 
   const { spendingReport, isLoading: reportLoading } =
     useSpendingReports(monthFilter);
   const { monthlyGoal, isLoading: goalLoading } = useMonthlyGoal();
   const { createOrUpdateGoal } = useMonthlyGoalActions();
   const { spendingByCategoryReport, isLoading: spendingByCategoryLoading } =
-    useSpendingByCategoryReport();
+    useSpendingByCategoryReport(start, end);
 
-  const isLoading = reportLoading || goalLoading;
+  const isLoading = reportLoading || goalLoading || spendingByCategoryLoading;
 
   const byMonth = useMemo(
     () => spendingReport?.byMonth ?? [],
@@ -106,7 +110,6 @@ export const Insights = () => {
   return (
     <div className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6">
       <h1 className="text-2xl font-bold">Análise de gastos</h1>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <Card variant="gradient" className="w-full">
           <CardContent className="pt-6">
@@ -238,12 +241,26 @@ export const Insights = () => {
           </CardContent>
         </Card>
       </div>
-
       <SpendingReports
         spendingReportData={spendingReport as ISpendingReportData}
         monthFilter={monthFilter}
         setMonthFilter={setMonthFilter}
         isEmpty={(spendingReport?.totals.totalInRange ?? 0) === 0}
+      />
+
+      <SpendingByCategory
+        spendingReportByCategoryData={
+          spendingByCategoryReport as ISpendingByCategoryReportData
+        }
+        isLoading={spendingByCategoryLoading}
+        onChangeRange={(s, e) => {
+          setStart(s);
+          setEnd(e);
+        }}
+        isEmpty={
+          (spendingByCategoryReport?.totals?.totalInRange ?? 0) === 0 ||
+          (spendingByCategoryReport?.byCategory?.length ?? 0) === 0
+        }
       />
 
       {openGoalModal && (

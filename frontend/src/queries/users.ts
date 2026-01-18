@@ -70,6 +70,7 @@ export const usersMutations = {
         qc.invalidateQueries({ queryKey: ["bill-score-explanation"] });
         qc.invalidateQueries({ queryKey: ["spending-report"] });
         qc.invalidateQueries({ queryKey: ["monthly-goal"] });
+        qc.invalidateQueries({ queryKey: ["spending-report-by-category"] });
       },
     }),
 };

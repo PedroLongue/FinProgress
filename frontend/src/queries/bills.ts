@@ -92,12 +92,14 @@ export const billsMutations = {
       mutationFn: async (body: ICreateBillBody) => {
         const res = await postData<CreateBillResponse, ICreateBillBody>(
           "/bills",
-          body
+          body,
         );
         return res.bill;
       },
       onSuccess: () => {
         qc.invalidateQueries({ queryKey: ["bills"] });
+        qc.invalidateQueries({ queryKey: ["spending-report"] });
+        qc.invalidateQueries({ queryKey: ["spending-report-by-category"] });
       },
     }),
 
@@ -110,13 +112,15 @@ export const billsMutations = {
 
         const res = await postFormData<CreateBillResponse>(
           "/bills/from-pdf",
-          fd
+          fd,
         );
 
         return res.bill;
       },
       onSuccess: () => {
         qc.invalidateQueries({ queryKey: ["bills"] });
+        qc.invalidateQueries({ queryKey: ["spending-report"] });
+        qc.invalidateQueries({ queryKey: ["spending-report-by-category"] });
       },
     }),
 
@@ -132,13 +136,14 @@ export const billsMutations = {
       }) => {
         const res = await patchData<{ bill: IBill }, Partial<ICreateBillBody>>(
           `/bills/${id}`,
-          body
+          body,
         );
         return res.bill;
       },
       onSuccess: () => {
         qc.invalidateQueries({ queryKey: ["bills"] });
         qc.invalidateQueries({ queryKey: ["spending-report"] });
+        qc.invalidateQueries({ queryKey: ["spending-report-by-category"] });
       },
     }),
 
@@ -151,6 +156,7 @@ export const billsMutations = {
       onSuccess: () => {
         qc.invalidateQueries({ queryKey: ["bills"] });
         qc.invalidateQueries({ queryKey: ["spending-report"] });
+        qc.invalidateQueries({ queryKey: ["spending-report-by-category"] });
       },
     }),
 };

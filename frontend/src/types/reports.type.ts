@@ -6,8 +6,8 @@ export interface ISpendingReportData {
 }
 
 type RangeType = {
-  start: Date;
-  end: Date;
+  start: string;
+  end: string;
 };
 
 type CategoryTotalType = {
@@ -22,6 +22,6 @@ type CategoriesType = {
 };
 export interface ISpendingByCategoryReportData {
   range: RangeType;
-  total: CategoryTotalType;
+  totals: CategoryTotalType;
   byCategory: CategoriesType[];
 }
