@@ -17,7 +17,7 @@ import { Progress } from "../components/ui/progress";
 import { useMonthlyGoal, useMonthlyGoalActions } from "../hooks/useMonthlyGoal";
 import { Button } from "../components/ui/button";
 import { EmptyInsightsCardsState } from "../components/layout/EmptyInsightsCardsState";
-import { CreateOrupdateGoalModal } from "../components/reports/CreateOrUpdateGoalModal";
+import { CreateOrupdateGoalModal } from "../components/Modals/CreateOrUpdateGoalModal";
 
 export const Insights = () => {
   const [monthFilter, setMonthFilter] = useState<3 | 6 | 12>(3);
@@ -160,6 +160,7 @@ export const Insights = () => {
                     </div>
                   </div>
                   <Button
+                    variant="secondary"
                     onClick={() => {
                       setOpenGoalModal(true);
                       setGoalMode("update");

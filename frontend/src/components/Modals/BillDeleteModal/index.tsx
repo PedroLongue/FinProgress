@@ -1,8 +1,8 @@
 import { Trash2 } from "lucide-react";
-import type { IBill } from "../../types/bills.type";
-import { Button } from "../ui/button";
-import { Card, CardContent } from "../ui/card";
-import { useOnClickOutside } from "../../hooks/useOnClickOutside";
+import type { IBill } from "../../../types/bills.type";
+import { Button } from "../../ui/button";
+import { Card, CardContent } from "../../ui/card";
+import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
 import { useRef } from "react";
 
 interface IBillDeleteModal {

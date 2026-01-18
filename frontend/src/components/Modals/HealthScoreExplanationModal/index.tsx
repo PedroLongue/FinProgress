@@ -1,8 +1,8 @@
 import { Info, X } from "lucide-react";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Loading } from "../ui/loading";
-import { useBillExplanation } from "../../hooks/useBills";
+import { Button } from "../../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
+import { Loading } from "../../ui/loading";
+import { useBillExplanation } from "../../../hooks/useBills";
 
 interface IScoreDetails {
   onClose: () => void;
@@ -73,7 +73,7 @@ export const ScoreDetailsModal = ({ onClose }: IScoreDetails) => {
                       <span className="mt-1 h-2 w-2 rounded-full bg-primary shrink-0" />
                       <span className="text-sm text-foreground">{item}</span>
                     </li>
-                  )
+                  ),
                 )}
               </ul>
             </div>
@@ -95,7 +95,7 @@ export const ScoreDetailsModal = ({ onClose }: IScoreDetails) => {
                       </span>
                       <span className="text-sm text-foreground">{step}</span>
                     </li>
-                  )
+                  ),
                 )}
               </ol>
             </div>

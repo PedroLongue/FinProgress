@@ -1,12 +1,12 @@
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "../../ui/card";
 import { Barcode, Calendar, DollarSign, Tag, Check } from "lucide-react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import type { IBill } from "../../types/bills.type";
+import { Input } from "../../ui/input";
+import { Button } from "../../ui/button";
+import type { IBill } from "../../../types/bills.type";
 import { useRef, useState } from "react";
-import { useOnClickOutside } from "../../hooks/useOnClickOutside";
-import { getStatusBadge, isPaid } from "../../utils/bills.utils";
-import { cn } from "../../lib/utils";
+import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
+import { getStatusBadge, isPaid } from "../../../utils/bills.utils";
+import { cn } from "../../../lib/utils";
 
 interface IEditBillModal {
   bill: IBill;
@@ -110,7 +110,7 @@ export const BillEditModal = ({
                     "pl-10",
                     titleError
                       ? "!border-red-500 focus-visible:ring-red-500"
-                      : ""
+                      : "",
                   )}
                   required
                 />

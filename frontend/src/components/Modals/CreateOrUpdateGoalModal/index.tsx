@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
-import type { ICreateOrUpdateGoalBody } from "../../types/goal.type";
-import { Card, CardContent } from "../ui/card";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { useOnClickOutside } from "../../hooks/useOnClickOutside";
+import type { ICreateOrUpdateGoalBody } from "../../../types/goal.type";
+import { Card, CardContent } from "../../ui/card";
+import { Input } from "../../ui/input";
+import { Button } from "../../ui/button";
+import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
 import { Target } from "lucide-react";
 
 interface ICreateOrupdateGoalModal {

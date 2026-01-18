@@ -8,7 +8,7 @@ import { Loading } from "../components/ui/loading";
 import { Button } from "../components/ui/button";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import { BillCreateModal } from "../components/dashboard/BillCreateModal";
+import { BillCreateModal } from "../components/Modals/BillCreateModal";
 import { useBillsActions } from "../hooks/useBills";
 import { SnackbarHost } from "../components/ui/snackbar-host";
 import { useSnackbarStore } from "../stores/snackbar.store";

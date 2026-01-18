@@ -22,7 +22,7 @@ import {
   type Dispatch,
   type SetStateAction,
 } from "react";
-import { BillEditModal } from "./BillEditModal";
+import { BillEditModal } from "../Modals/BillEditModal";
 import {
   formatCurrency,
   formatDate,
@@ -32,7 +32,7 @@ import {
   isPaid,
 } from "../../utils/bills.utils";
 import { useBillsActions } from "../../hooks/useBills";
-import { BillDeleteModal } from "./BillDeleteModal";
+import { BillDeleteModal } from "../Modals/BillDeleteModal";
 import { Link } from "@tanstack/react-router";
 import { useSnackbarStore } from "../../stores/snackbar.store";
 import { AppSelect } from "../ui/app-select";
@@ -209,14 +209,14 @@ export const BillsList = ({
                     key={bill.id}
                     onClick={() => handleBillClick(bill)}
                     className={cn(
-                      "group flex items-center gap-4 p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 cursor-pointer transition-all duration-200 animate-slide-up"
+                      "group flex items-center gap-4 p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 cursor-pointer transition-all duration-200 animate-slide-up",
                     )}
                     style={{ animationDelay: `${index * 0.05}s` }}
                   >
                     <div
                       className={cn(
                         "w-10 h-10 rounded-lg flex items-center justify-center border shrink-0",
-                        getStatusStyles(bill.status)
+                        getStatusStyles(bill.status),
                       )}
                     >
                       {getStatusIcon(bill.status)}
@@ -235,7 +235,7 @@ export const BillsList = ({
                             "text-xs",
                             isOverdue(bill.status)
                               ? "text-destructive font-medium"
-                              : "text-muted-foreground"
+                              : "text-muted-foreground",
                           )}
                         >
                           {formatDate(bill.dueDate)}
@@ -257,7 +257,7 @@ export const BillsList = ({
                             ? "text-success"
                             : isOverdue(bill.status)
                               ? "text-destructive"
-                              : "text-foreground"
+                              : "text-foreground",
                         )}
                       >
                         {formatCurrency(bill.amount)}

@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { HealthScoreChart } from "../../assets/HealthScoreChart";
 import { useState } from "react";
 import { Loading } from "../ui/loading";
-import { ScoreDetailsModal } from "./HealthScoreExplanationModal";
+import { ScoreDetailsModal } from "../Modals/HealthScoreExplanationModal";
 
 interface IHealthScoreCard {
   score: number;
