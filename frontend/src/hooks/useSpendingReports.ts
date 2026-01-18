@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { reportsQueries } from "../queries/reports";
 
-export const useReports = (range = 3) => {
+export const useSpendingReports = (range = 3) => {
   const {
     data: spendingReport,
     isLoading,

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { SpendingReports } from "../components/reports/Spending";
-import { useReports } from "../hooks/useReports";
+import { useSpendingReports } from "../hooks/useSpendingReports";
 import { Loading } from "../components/ui/loading";
 import type { ISpendingReportData } from "../types/reports.type";
 import { Card, CardContent } from "../components/ui/card";
@@ -18,15 +18,21 @@ import { useMonthlyGoal, useMonthlyGoalActions } from "../hooks/useMonthlyGoal";
 import { Button } from "../components/ui/button";
 import { EmptyInsightsCardsState } from "../components/layout/EmptyInsightsCardsState";
 import { CreateOrupdateGoalModal } from "../components/Modals/CreateOrUpdateGoalModal";
+import { useSpendingByCategoryReport } from "../hooks/useSpendingByCategoryReport ";
 
 export const Insights = () => {
   const [monthFilter, setMonthFilter] = useState<3 | 6 | 12>(3);
   const [openGoalModal, setOpenGoalModal] = useState<boolean>(false);
   const [goalMode, setGoalMode] = useState<"create" | "update">("create");
+  const [startCategoryDate, setStartCategoryDate] = useState("");
+  const [endCategoryDate, setEndCategoryDate] = useState("");
 
-  const { spendingReport, isLoading: reportLoading } = useReports(monthFilter);
+  const { spendingReport, isLoading: reportLoading } =
+    useSpendingReports(monthFilter);
   const { monthlyGoal, isLoading: goalLoading } = useMonthlyGoal();
   const { createOrUpdateGoal } = useMonthlyGoalActions();
+  const { spendingByCategoryReport, isLoading: spendingByCategoryLoading } =
+    useSpendingByCategoryReport();
 
   const isLoading = reportLoading || goalLoading;
 

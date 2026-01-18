@@ -18,7 +18,7 @@ export const formatMonthKey = (date: Date): string => {
 
 export const buildMonthBuckets = (
   start: Date,
-  monthsCount: number
+  monthsCount: number,
 ): string[] => {
   // Ex: mesesCount=3 => [YYYY-MM (2 atrás), YYYY-MM (1 atrás), YYYY-MM (atual)]
   const keys: string[] = [];
@@ -37,4 +37,10 @@ export const parseMonthYYYYMM = (monthStr: string) => {
   if (month < 1 || month > 12) return null;
 
   return new Date(Date.UTC(year, month - 1, 1, 0, 0, 0));
+};
+
+export const parseISODate = (value: unknown): Date | null => {
+  if (typeof value !== "string" || !value.trim()) return null;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
 };

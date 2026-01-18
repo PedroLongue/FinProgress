@@ -4,3 +4,24 @@ export interface ISpendingReportData {
   totals: { totalInRange: number; monthsCount: number };
   byMonth: { month: string; total: number; count: number }[];
 }
+
+type RangeType = {
+  start: Date;
+  end: Date;
+};
+
+type CategoryTotalType = {
+  totalInRange: number;
+  categoriesCount: number;
+};
+
+type CategoriesType = {
+  category: string;
+  total: number;
+  count: number;
+};
+export interface ISpendingByCategoryReportData {
+  range: RangeType;
+  total: CategoryTotalType;
+  byCategory: CategoriesType[];
+}

@@ -4,6 +4,7 @@ import {
   addMonths,
   buildMonthBuckets,
   formatMonthKey,
+  parseISODate,
   startOfMonth,
 } from "../utils/date";
 import { parseReportRange } from "../utils/report";
@@ -58,7 +59,7 @@ export const getSpendingReport = async (req: AuthRequest, res: Response) => {
   const monthKeys = buildMonthBuckets(currentMonthStart, range);
 
   const byMonthMap = new Map<string, MonthRow>(
-    monthKeys.map((m) => [m, { month: m, total: 0, count: 0 }])
+    monthKeys.map((m) => [m, { month: m, total: 0, count: 0 }]),
   );
 
   for (const r of rows) {
@@ -86,5 +87,64 @@ export const getSpendingReport = async (req: AuthRequest, res: Response) => {
       monthsCount: byMonth.length,
     },
     byMonth,
+  });
+};
+
+export const getSpendingByCategoryReport = async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  const userId = req.userId;
+  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
+
+  const startParam = parseISODate(req.query.start);
+  const endParam = parseISODate(req.query.end);
+
+  const now = new Date();
+  const defaultStart = startOfMonth(now);
+  const defaultEnd = addMonths(defaultStart, 1);
+
+  const start = startParam ?? defaultStart;
+  const end = endParam ?? defaultEnd;
+
+  if (start >= end) {
+    return res
+      .status(400)
+      .json({ errors: ["Intervalo inválido: start deve ser menor que end"] });
+  }
+
+  const where: Prisma.BillWhereInput = {
+    userId,
+    dueDate: { gte: start, lt: end },
+  };
+
+  const rows = await prisma.bill.groupBy({
+    by: ["category"],
+    where,
+    _sum: { amount: true },
+    _count: { _all: true },
+    orderBy: {
+      _sum: { amount: "desc" },
+    },
+  });
+
+  const categories = rows.map((r) => ({
+    category: r.category ?? "Sem categoria",
+    total: Number(r._sum.amount ?? 0),
+    count: Number(r._count._all ?? 0),
+  }));
+
+  const totalInRange = categories.reduce((acc, c) => acc + c.total, 0);
+
+  return res.json({
+    range: {
+      start: start.toISOString(),
+      end: end.toISOString(),
+    },
+    totals: {
+      totalInRange,
+      categoriesCount: categories.length,
+    },
+    byCategory: categories,
   });
 };
