@@ -22,10 +22,10 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { PieChart } from "lucide-react";
-import { Input } from "../ui/input";
+import { Filter, PieChart } from "lucide-react";
 import { Button } from "../ui/button";
 import { EmptyState } from "../layout/EmptyState";
+import { ModalDateFilter } from "../Modals/FilterModal";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -49,6 +49,7 @@ export const SpendingByCategory = ({
 
   const [startCategoryDate, setStartCategoryDate] = useState(initialStart);
   const [endCategoryDate, setEndCategoryDate] = useState(initialEnd);
+  const [openFilterModal, setOpenFilterModal] = useState(false);
 
   const labels = useMemo(
     () => spendingReportByCategoryData.byCategory.map((c) => c.category),
@@ -162,7 +163,7 @@ export const SpendingByCategory = ({
   return (
     <div className="space-y-4">
       <Card variant="gradient" className="overflow-hidden">
-        <CardHeader className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <CardHeader className="flex gap-3 flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-3">
             <PieChart className="w-5 h-5 text-primary" />
             <div>
@@ -176,50 +177,9 @@ export const SpendingByCategory = ({
           </div>
 
           {!isEmpty && (
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-              <div className="flex gap-2">
-                <div className="flex flex-col gap-1">
-                  <span className="text-xs text-muted-foreground">Início</span>
-                  <Input
-                    type="date"
-                    value={startCategoryDate}
-                    onChange={(e) => setStartCategoryDate(e.target.value)}
-                    className="h-9 w-full sm:w-40"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <span className="text-xs text-muted-foreground">Fim</span>
-                  <Input
-                    type="date"
-                    value={endCategoryDate}
-                    onChange={(e) => setEndCategoryDate(e.target.value)}
-                    className="h-9 w-full sm:w-40"
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="h-9"
-                  onClick={handleClear}
-                  disabled={isLoading}
-                >
-                  Limpar
-                </Button>
-                <Button
-                  type="button"
-                  variant="premium"
-                  className="h-9"
-                  onClick={handleApply}
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Aplicando..." : "Aplicar"}
-                </Button>
-              </div>
-            </div>
+            <Button onClick={() => setOpenFilterModal(true)}>
+              <Filter className="w-5 h-5" />
+            </Button>
           )}
         </CardHeader>
 
@@ -233,6 +193,19 @@ export const SpendingByCategory = ({
           </CardContent>
         )}
       </Card>
+
+      {openFilterModal && (
+        <ModalDateFilter
+          startDate={startCategoryDate}
+          setStartDate={setStartCategoryDate}
+          endDate={endCategoryDate}
+          setEndDate={setEndCategoryDate}
+          onClose={() => setOpenFilterModal(false)}
+          isLoading={isLoading}
+          onClear={handleClear}
+          OnAplly={handleApply}
+        />
+      )}
     </div>
   );
 };
