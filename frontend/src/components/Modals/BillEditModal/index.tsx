@@ -109,7 +109,7 @@ export const BillEditModal = ({
                   className={cn(
                     "pl-10",
                     titleError
-                      ? "!border-red-500 focus-visible:ring-red-500"
+                      ? "border-red-500! focus-visible:ring-red-500"
                       : "",
                   )}
                   required

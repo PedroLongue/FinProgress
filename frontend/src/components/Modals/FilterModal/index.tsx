@@ -4,30 +4,48 @@ import { Card, CardContent } from "../../ui/card";
 import { Calendar } from "lucide-react";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { dateFilterSchema, type DateFilterForm } from "./validator";
+import { useForm } from "react-hook-form";
+import { cn } from "../../../lib/utils";
 
 interface IModalDateFilter {
-  startDate: string;
-  setStartDate: (date: string) => void;
-  endDate: string;
-  setEndDate: (date: string) => void;
-  onClear?: () => void;
-  OnAplly: () => void;
+  OnAplly: (data: DateFilterForm) => void;
   onClose: () => void;
   isLoading: boolean;
+  startDate?: string;
+  endDate?: string;
 }
 
 export const ModalDateFilter = ({
-  startDate,
-  setStartDate,
-  endDate,
-  setEndDate,
-  onClear,
   OnAplly,
   onClose,
   isLoading,
+  startDate,
+  endDate,
 }: IModalDateFilter) => {
   const editModalRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(editModalRef, () => onClose());
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<DateFilterForm>({
+    resolver: zodResolver(dateFilterSchema),
+    defaultValues: {
+      startDate: startDate ?? "",
+      endDate: endDate ?? "",
+    },
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+  });
+
+  const onSubmit = (data: DateFilterForm) => {
+    OnAplly(data);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
@@ -45,7 +63,7 @@ export const ModalDateFilter = ({
             </h3>
           </div>
 
-          <form onSubmit={OnAplly} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="flex gap-5 justify-center flex-col sm:flex-row">
               <div>
                 <label className="text-sm font-medium text-foreground">
@@ -53,10 +71,18 @@ export const ModalDateFilter = ({
                 </label>
                 <Input
                   type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="h-9 w-full sm:w-40"
+                  className={cn(
+                    "h-9 w-full sm:w-40",
+                    errors.startDate &&
+                      "border-red-500! focus-visible:ring-red-500",
+                  )}
+                  {...register("startDate")}
                 />
+                {errors.startDate?.message && (
+                  <p className="text-sm text-destructive">
+                    {errors.startDate.message}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -64,11 +90,19 @@ export const ModalDateFilter = ({
                   Fim
                 </label>
                 <Input
+                  {...register("endDate")}
                   type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="h-9 w-full sm:w-40"
+                  className={cn(
+                    "h-9 w-full sm:w-40",
+                    errors.endDate &&
+                      "border-red-500! focus-visible:ring-red-500",
+                  )}
                 />
+                {errors.endDate?.message && (
+                  <p className="text-sm text-destructive">
+                    {errors.endDate.message}
+                  </p>
+                )}
               </div>
             </div>
             <div className="flex gap-3 pt-4">
@@ -81,26 +115,22 @@ export const ModalDateFilter = ({
               >
                 Cancelar
               </Button>
-              {onClear && (
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="flex-1"
-                  onClick={() => {
-                    onClear();
-                    onClose();
-                  }}
-                  disabled={isLoading}
-                >
-                  Limpar
-                </Button>
-              )}
+              <Button
+                type="button"
+                variant="secondary"
+                className="flex-1"
+                onClick={() => {
+                  reset({ startDate: "", endDate: "" });
+                }}
+                disabled={isLoading}
+              >
+                Limpar
+              </Button>
               <Button
                 type="submit"
                 variant="premium"
                 className="flex-1"
                 disabled={isLoading}
-                onClick={OnAplly}
               >
                 {isLoading ? "Aplicando..." : "Aplicar"}
               </Button>

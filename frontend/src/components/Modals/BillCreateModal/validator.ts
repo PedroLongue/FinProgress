@@ -20,7 +20,7 @@ export const billSchema = z.object({
     .transform((v) => (v?.trim() ? v.trim() : undefined))
     .refine(
       (v) => !v || /^\d+$/.test(v),
-      "Código de barras deve ter apenas dígitos"
+      "Código de barras deve ter apenas dígitos",
     ),
   description: z
     .string()
@@ -28,4 +28,4 @@ export const billSchema = z.object({
     .transform((v) => (v?.trim() ? v.trim() : undefined)),
 });
 
-export type BillFormValues = z.output<typeof billSchema>;
+export type BillFormValues = z.infer<typeof billSchema>;

@@ -26,6 +26,7 @@ import { Filter, PieChart } from "lucide-react";
 import { Button } from "../ui/button";
 import { EmptyState } from "../layout/EmptyState";
 import { ModalDateFilter } from "../Modals/FilterModal";
+import type { DateFilterForm } from "../Modals/FilterModal/validator";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -42,14 +43,12 @@ export const SpendingByCategory = ({
   onChangeRange,
   isEmpty,
 }: ISpendingByCategory) => {
+  const [openFilterModal, setOpenFilterModal] = useState(false);
+
   const initialStart = isoToDateInput(
     spendingReportByCategoryData?.range?.start,
   );
   const initialEnd = isoToDateInput(spendingReportByCategoryData?.range?.end);
-
-  const [startCategoryDate, setStartCategoryDate] = useState(initialStart);
-  const [endCategoryDate, setEndCategoryDate] = useState(initialEnd);
-  const [openFilterModal, setOpenFilterModal] = useState(false);
 
   const labels = useMemo(
     () => spendingReportByCategoryData.byCategory.map((c) => c.category),
@@ -136,19 +135,11 @@ export const SpendingByCategory = ({
     },
   };
 
-  const handleApply = () => {
-    const start = startCategoryDate
-      ? dateInputToISO(startCategoryDate)
-      : undefined;
-    const end = endCategoryDate ? dateInputToISO(endCategoryDate) : undefined;
+  const handleApply = (data: DateFilterForm) => {
+    const start = data.startDate ? dateInputToISO(data.startDate) : undefined;
+    const end = data.endDate ? dateInputToISO(data.endDate) : undefined;
 
     onChangeRange(start, end);
-  };
-
-  const handleClear = () => {
-    setStartCategoryDate("");
-    setEndCategoryDate("");
-    onChangeRange?.(undefined, undefined);
   };
 
   const rangeText = (() => {
@@ -196,14 +187,11 @@ export const SpendingByCategory = ({
 
       {openFilterModal && (
         <ModalDateFilter
-          startDate={startCategoryDate}
-          setStartDate={setStartCategoryDate}
-          endDate={endCategoryDate}
-          setEndDate={setEndCategoryDate}
           onClose={() => setOpenFilterModal(false)}
           isLoading={isLoading}
-          onClear={handleClear}
-          OnAplly={handleApply}
+          OnAplly={(data: DateFilterForm) => handleApply(data)}
+          startDate={initialStart}
+          endDate={initialEnd}
         />
       )}
     </div>

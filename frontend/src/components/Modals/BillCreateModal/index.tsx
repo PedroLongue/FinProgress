@@ -103,7 +103,7 @@ export const BillCreateModal = ({
 
       onScan(file);
     },
-    [onScan]
+    [onScan],
   );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -126,7 +126,7 @@ export const BillCreateModal = ({
       const file = e.dataTransfer.files?.[0];
       if (file) onScanFile(file);
     },
-    [isScanning, onScanFile]
+    [isScanning, onScanFile],
   );
 
   const onSubmitManual = (values: BillFormValues) => {
@@ -217,7 +217,7 @@ export const BillCreateModal = ({
                   isDragging
                     ? "border-primary bg-primary/5"
                     : "border-border hover:border-primary/50 hover:bg-secondary/30",
-                  disableUpload && "pointer-events-none"
+                  disableUpload && "pointer-events-none",
                 )}
               >
                 {isScanning ? (
@@ -290,7 +290,7 @@ export const BillCreateModal = ({
                         "pl-10",
                         errors.title
                           ? "!border-red-500 focus-visible:ring-red-500"
-                          : ""
+                          : "",
                       )}
                     />
                   </div>
@@ -315,12 +315,10 @@ export const BillCreateModal = ({
                         className={cn(
                           "pl-10",
                           errors.amount
-                            ? "!border-red-500 focus-visible:ring-red-500"
-                            : ""
+                            ? "border-red-500! focus-visible:ring-red-500"
+                            : "",
                         )}
-                        {...register("amount", {
-                          setValueAs: (v) => (v === "" ? undefined : Number(v)),
-                        })}
+                        {...register("amount")}
                       />
                     </div>
                     {errors.amount?.message && (
@@ -342,8 +340,8 @@ export const BillCreateModal = ({
                         className={cn(
                           "pl-10",
                           errors.dueDate
-                            ? "!border-red-500 focus-visible:ring-red-500"
-                            : ""
+                            ? "border-red-500! focus-visible:ring-red-500"
+                            : "",
                         )}
                       />
                     </div>
