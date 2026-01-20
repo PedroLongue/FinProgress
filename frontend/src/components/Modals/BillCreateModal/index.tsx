@@ -289,7 +289,7 @@ export const BillCreateModal = ({
                       className={cn(
                         "pl-10",
                         errors.title
-                          ? "!border-red-500 focus-visible:ring-red-500"
+                          ? "border-red-500! focus-visible:ring-red-500"
                           : "",
                       )}
                     />

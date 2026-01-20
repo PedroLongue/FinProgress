@@ -8,43 +8,53 @@ import {
   Shield,
   TrendingUp,
 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { cn } from "../../lib/utils";
 
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
-import { useAuthActions } from "../hooks/useAuth";
+} from "../../components/ui/card";
+import { useAuthActions } from "../../hooks/useAuth";
+import { loginSchema, registerSchema } from "./validator";
+
+type AuthFormData = {
+  email: string;
+  password: string;
+  name?: string;
+  confirmPassword?: string;
+};
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
-  const [errors, setErrors] = useState<{ form?: string[] }>({});
-
   const { login, register } = useAuthActions();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrors({});
+  const {
+    register: loginRegister,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AuthFormData>({
+    resolver: zodResolver(isLogin ? loginSchema : registerSchema),
+    defaultValues: isLogin
+      ? { email: "", password: "" }
+      : { name: "", email: "", password: "", confirmPassword: "" },
+  });
 
+  const onSubmit = async (data: AuthFormData) => {
     if (isLogin) {
-      await login.mutateAsync({ email, password });
+      await login.mutateAsync({ email: data.email, password: data.password });
     } else {
-      await register.mutateAsync({ name, email, password, confirmPassword });
-    }
-
-    if (login.isError || register.isError) {
-      setErrors({
-        form: login.isError
-          ? [(login.error as Error).message]
-          : [(register.error as Error).message],
+      await register.mutateAsync({
+        name: data.name ?? "",
+        email: data.email,
+        password: data.password,
+        confirmPassword: data.confirmPassword ?? "",
       });
     }
   };
@@ -140,53 +150,89 @@ const AuthPage = () => {
           </CardHeader>
 
           <CardContent className="pt-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {!isLogin && (
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="Seu nome"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="pl-11"
-                  />
-                </div>
+                <>
+                  <div className="relative">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      {...loginRegister("name")}
+                      type="text"
+                      placeholder="Seu nome"
+                      className={cn(
+                        "pl-11",
+                        errors.name &&
+                          "border-red-500! focus-visible:ring-red-500",
+                      )}
+                    />
+                  </div>
+                  {errors.name?.message && (
+                    <p className="text-sm text-destructive">
+                      {errors.name.message}
+                    </p>
+                  )}
+                </>
               )}
 
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
+                  {...loginRegister("email")}
                   type="email"
                   placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-11"
+                  className={cn(
+                    "pl-11",
+                    errors.email &&
+                      "border-red-500! focus-visible:ring-red-500",
+                  )}
                 />
               </div>
+              {errors.email?.message && (
+                <p className="text-sm text-destructive">
+                  {errors.email.message}
+                </p>
+              )}
 
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
+                  {...loginRegister("password")}
                   type="password"
                   placeholder="Senha"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-11"
+                  className={cn(
+                    "pl-11",
+                    errors.password &&
+                      "border-red-500! focus-visible:ring-red-500",
+                  )}
                 />
               </div>
+              {errors.password?.message && (
+                <p className="text-sm text-destructive">
+                  {errors.password.message}
+                </p>
+              )}
 
               {!isLogin && (
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    type="password"
-                    placeholder="Confirmar senha"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="pl-11"
-                  />
-                </div>
+                <>
+                  <div className="relative">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      {...loginRegister("confirmPassword")}
+                      type="password"
+                      placeholder="Confirmar senha"
+                      className={cn(
+                        "pl-11",
+                        errors.confirmPassword &&
+                          "border-red-500! focus-visible:ring-red-500",
+                      )}
+                    />
+                  </div>
+                  {errors.confirmPassword?.message && (
+                    <p className="text-sm text-destructive">
+                      {errors.confirmPassword.message}
+                    </p>
+                  )}
+                </>
               )}
 
               {isLogin && (
