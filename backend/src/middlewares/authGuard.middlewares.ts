@@ -9,12 +9,12 @@ interface AuthRequest extends Request {
 export const authGuard = (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const JWT_SECRET = process.env.JWT_SECRET;
   if (!JWT_SECRET) throw new Error("JWT_SECRET não definido no .env");
 
-  const token = (req as any).cookies?.[COOKIE_NAME];
+  const token = req.cookies?.[COOKIE_NAME];
 
   if (!token) return res.status(401).json({ erros: ["Token ausente"] });
 

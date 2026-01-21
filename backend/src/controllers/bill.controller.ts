@@ -5,6 +5,8 @@ import { calculateBillStatus } from "../utils/billStatusCalculator";
 import { extractBillFromPdfAI } from "../services/billPdfExtractor";
 import { explainScoreWithAI } from "../services/billScoreExplanation";
 import { billScoreCalculator, IBillScore } from "../utils/billScoreCalculator";
+import { parseISODate } from "../utils/date";
+import type { Prisma } from "../../generated/prisma/client";
 
 interface AuthRequest extends Request {
   userId?: string;
@@ -101,8 +103,10 @@ export const listBills = async (req: AuthRequest, res: Response) => {
     | "UNPAID";
 
   const category = req.query.category ? String(req.query.category) : undefined;
+  const startParam = parseISODate(req.query.start);
+  const endParam = parseISODate(req.query.end);
 
-  const where: any = {
+  const where: Prisma.BillWhereInput = {
     userId,
   };
 
@@ -116,6 +120,19 @@ export const listBills = async (req: AuthRequest, res: Response) => {
 
   if (category) {
     where.category = category;
+  }
+
+  if (startParam && endParam) {
+    if (startParam >= endParam) {
+      return res.status(400).json({
+        errors: ["Intervalo inválido: startDate deve ser menor que endDate"],
+      });
+    }
+
+    where.dueDate = {
+      gte: startParam,
+      lt: endParam,
+    };
   }
 
   const [total, bills, categoryRows] = await Promise.all([
@@ -328,7 +345,7 @@ export const usersBillsDetails = async (req: AuthRequest, res: Response) => {
 
 export const usersBillsScoreExplanation = async (
   req: AuthRequest,
-  res: Response
+  res: Response,
 ) => {
   const userId = req.userId;
   if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
