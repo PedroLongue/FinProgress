@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { BillsList } from "../components/dashboard/BillsList";
-import type { BillsResponse } from "../queries/bills";
-import { useBill } from "../hooks/useBills";
-import { Loading } from "../components/ui/loading";
-import type { BillStatusKey } from "../types/bills.type";
+import { BillsList } from "../../components/dashboard/BillsList";
+import type { BillsResponse } from "../../queries/bills";
+import { useBill } from "../../hooks/useBills";
+import { Loading } from "../../components/ui/loading";
+import type { BillStatusKey } from "../../types/bills.type";
 
 export const Bills = () => {
   const [currentPage, setCurrentPage] = useState(1);

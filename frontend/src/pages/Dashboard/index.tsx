@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { BillsList } from "../components/dashboard/BillsList";
-import { HealthScoreCard } from "../components/dashboard/HealthScoreCard";
-import { Loading } from "../components/ui/loading";
-import { useAuth } from "../hooks/useAuth";
-import { useBill, useBillDetails } from "../hooks/useBills";
-import type { BillsResponse } from "../queries/bills";
+import { BillsList } from "../../components/dashboard/BillsList";
+import { HealthScoreCard } from "../../components/dashboard/HealthScoreCard";
+import { Loading } from "../../components/ui/loading";
+import { useAuth } from "../../hooks/useAuth";
+import { useBill, useBillDetails } from "../../hooks/useBills";
+import type { BillsResponse } from "../../queries/bills";
 
 export const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);

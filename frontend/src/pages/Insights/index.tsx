@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
-import { SpendingReports } from "../components/reports/Spending";
-import { useSpendingReports } from "../hooks/useSpendingReports";
-import { Loading } from "../components/ui/loading";
+import { SpendingReports } from "../../components/reports/Spending";
+import { useSpendingReports } from "../../hooks/useSpendingReports";
+import { Loading } from "../../components/ui/loading";
 import type {
   ISpendingByCategoryReportData,
   ISpendingReportData,
-} from "../types/reports.type";
-import { Card, CardContent } from "../components/ui/card";
+} from "../../types/reports.type";
+import { Card, CardContent } from "../../components/ui/card";
 import {
   DollarSign,
   Minus,
@@ -15,14 +15,17 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
-import { dateToText, formatCurrency } from "../utils/bills.utils";
-import { Progress } from "../components/ui/progress";
-import { useMonthlyGoal, useMonthlyGoalActions } from "../hooks/useMonthlyGoal";
-import { Button } from "../components/ui/button";
-import { EmptyInsightsCardsState } from "../components/layout/EmptyInsightsCardsState";
-import { CreateOrupdateGoalModal } from "../components/Modals/CreateOrUpdateGoalModal";
-import { useSpendingByCategoryReport } from "../hooks/useSpendingByCategoryReport ";
-import { SpendingByCategory } from "../components/reports/SpendingByCategory";
+import { dateToText, formatCurrency } from "../../utils/bills.utils";
+import { Progress } from "../../components/ui/progress";
+import {
+  useMonthlyGoal,
+  useMonthlyGoalActions,
+} from "../../hooks/useMonthlyGoal";
+import { Button } from "../../components/ui/button";
+import { EmptyInsightsCardsState } from "../../components/layout/EmptyInsightsCardsState";
+import { CreateOrupdateGoalModal } from "../../components/Modals/CreateOrUpdateGoalModal";
+import { useSpendingByCategoryReport } from "../../hooks/useSpendingByCategoryReport ";
+import { SpendingByCategory } from "../../components/reports/SpendingByCategory";
 
 export const Insights = () => {
   const [monthFilter, setMonthFilter] = useState<3 | 6 | 12>(3);
