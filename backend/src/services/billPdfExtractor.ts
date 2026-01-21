@@ -2,7 +2,7 @@ import OpenAI from "openai";
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export async function extractBillFromPdfAI(params: { pdfBase64: string }) {
+export const extractBillFromPdfAI = async (params: { pdfBase64: string }) => {
   const prompt = `
 Extraia APENAS os campos abaixo de um PDF de boleto/conta brasileiro.
 
@@ -81,4 +81,4 @@ REGRAS:
     confidence: number;
     notes: string;
   };
-}
+};

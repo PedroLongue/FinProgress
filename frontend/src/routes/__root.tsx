@@ -13,11 +13,7 @@ import { useBillsActions } from "../hooks/useBills";
 import { SnackbarHost } from "../components/ui/snackbar-host";
 import { useSnackbarStore } from "../stores/snackbar.store";
 
-export const Route = createRootRoute({
-  component: RootLayout,
-});
-
-function RootLayout() {
+const RootLayout = () => {
   const { isLoading, isAuthenticated } = useAuth();
   const { createBill, createBillByPdf } = useBillsActions();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -102,4 +98,8 @@ function RootLayout() {
       <SnackbarHost />
     </div>
   );
-}
+};
+
+export const Route = createRootRoute({
+  component: RootLayout,
+});

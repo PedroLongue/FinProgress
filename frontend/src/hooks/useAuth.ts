@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { usersMutations, usersQueries } from "../queries/users";
 import { useNavigate } from "@tanstack/react-router";
 
-export function useAuth() {
+export const useAuth = () => {
   const { data: user, isLoading, isError } = useQuery(usersQueries.me());
 
   return {
@@ -10,9 +10,9 @@ export function useAuth() {
     isLoading,
     isAuthenticated: !!user && !isError,
   };
-}
+};
 
-export function useAuthActions() {
+export const useAuthActions = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -54,4 +54,4 @@ export function useAuthActions() {
     register: registerMutation,
     logout: logoutMutation,
   };
-}
+};

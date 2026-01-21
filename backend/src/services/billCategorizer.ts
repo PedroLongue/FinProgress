@@ -25,11 +25,11 @@ const CATEGORIES = [
   "Outros",
 ] as const;
 
-export async function categorizeBillAI(input: {
+export const categorizeBillAI = async (input: {
   title?: string;
   description?: string | null;
   barcode?: string | null;
-}) {
+}) => {
   const prompt = `
 Classifique a boleta em UMA categoria da lista.
 Se não der para inferir com segurança, use "Outros".
@@ -68,4 +68,4 @@ Dados:
   };
 
   return data;
-}
+};

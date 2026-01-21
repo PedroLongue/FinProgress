@@ -69,7 +69,7 @@ export const BillEditModal = ({
     const v = value.trim();
     if (!v) return "Informe o título";
     if (v.length < 2) return "Título deve ter no mínimo 2 caracteres";
-    if (v.length > 20) return "Título deve ter no máximo 20 caracteres";
+    if (v.length > 50) return "Título deve ter no máximo 50 caracteres";
     return null;
   };
 

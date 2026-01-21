@@ -2,7 +2,7 @@ import type { Response } from "express";
 
 export const COOKIE_NAME = "access_token";
 
-export function setAuthCookie(res: Response, token: string) {
+export const setAuthCookie = (res: Response, token: string) => {
   const isProd = process.env.NODE_ENV === "production";
 
   res.cookie(COOKIE_NAME, token, {
@@ -12,9 +12,9 @@ export function setAuthCookie(res: Response, token: string) {
     maxAge: 4 * 24 * 60 * 60 * 1000, // 4 dias
     path: "/",
   });
-}
+};
 
-export function clearAuthCookie(res: Response) {
+export const clearAuthCookie = (res: Response) => {
   const isProd = process.env.NODE_ENV === "production";
 
   res.clearCookie(COOKIE_NAME, {
@@ -23,4 +23,4 @@ export function clearAuthCookie(res: Response) {
     sameSite: isProd ? "none" : "lax",
     path: "/",
   });
-}
+};

@@ -160,7 +160,7 @@ export const SpendingByCategory = ({
             <div>
               <CardTitle>Gastos por categoria</CardTitle>
               {!isEmpty && (
-                <CardDescription>
+                <CardDescription className="mt-1">
                   {rangeText}. Passe o mouse para ver valor, % e quantidade.
                 </CardDescription>
               )}

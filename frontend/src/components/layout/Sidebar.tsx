@@ -130,7 +130,7 @@ export const Sidebar = () => {
           <Button
             type="button"
             variant="outline"
-            className="w-full justify-start gap-3"
+            className="w-full justify-start gap-3 hover:bg-destructive/80"
             onClick={() => logout.mutate()}
             disabled={logout.isPending}
           >

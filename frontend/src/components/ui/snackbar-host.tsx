@@ -2,7 +2,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { useSnackbarStore } from "../../stores/snackbar.store";
 
-export function SnackbarHost() {
+export const SnackbarHost = () => {
   const { open, message, severity, duration, close } = useSnackbarStore();
 
   return (
@@ -17,4 +17,4 @@ export function SnackbarHost() {
       </Alert>
     </Snackbar>
   );
-}
+};

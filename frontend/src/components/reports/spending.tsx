@@ -132,7 +132,7 @@ export const SpendingReports = ({
             <div>
               <CardTitle>Gastos Mensais</CardTitle>
               {!isEmpty && (
-                <CardDescription>
+                <CardDescription className="mt-1">
                   Últimos {spendingReportData.rangeMonths} meses (pagos). Passe
                   o mouse para ver valor e quantidade de contas.
                 </CardDescription>

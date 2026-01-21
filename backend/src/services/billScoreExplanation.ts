@@ -20,9 +20,9 @@ type ScoreExplainOutput = {
   notes: string;
 };
 
-export async function explainScoreWithAI(
-  input: ScoreExplainInput
-): Promise<ScoreExplainOutput> {
+export const explainScoreWithAI = async (
+  input: ScoreExplainInput,
+): Promise<ScoreExplainOutput> => {
   const prompt = `
 Gere uma explicação curta do score de boletos para o usuário final (PT-BR).
 
@@ -80,4 +80,4 @@ REGRAS:
   });
 
   return JSON.parse(response.output_text) as ScoreExplainOutput;
-}
+};

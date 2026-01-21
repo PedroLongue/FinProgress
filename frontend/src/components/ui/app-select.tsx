@@ -30,7 +30,7 @@ const toSelectValue = (v: string | number): string => {
   return String(v);
 };
 
-export function AppSelect({
+export const AppSelect = ({
   value,
   onChange,
   placeholder,
@@ -38,7 +38,7 @@ export function AppSelect({
   className,
   disabled,
   ariaLabel,
-}: AppSelectProps) {
+}: AppSelectProps) => {
   return (
     <div className={cn(className)}>
       <Select
@@ -55,7 +55,7 @@ export function AppSelect({
             "bg-secondary/30",
             "text-sm text-foreground",
             "focus:ring-2 focus:ring-primary focus:ring-offset-0",
-            "data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:ring-offset-0"
+            "data-[state=open]:ring-2 data-[state=open]:ring-primary data-[state=open]:ring-offset-0",
           )}
         >
           <SelectValue placeholder={placeholder} />
@@ -67,7 +67,7 @@ export function AppSelect({
             "border border-border",
             "bg-card/95 backdrop-blur",
             "text-foreground shadow-xl",
-            "rounded-md"
+            "rounded-md",
           )}
         >
           <SelectItem value="__all__" className="text-sm">
@@ -88,4 +88,4 @@ export function AppSelect({
       </Select>
     </div>
   );
-}
+};

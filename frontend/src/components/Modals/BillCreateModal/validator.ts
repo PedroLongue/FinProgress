@@ -5,7 +5,7 @@ export const billSchema = z.object({
     .string()
     .trim()
     .min(2, "Informe um título de no mínimo 2 caracteres")
-    .max(20, "Limite de 20 caracteres"),
+    .max(50, "Limite de 50 caracteres"),
   amount: z
     .number({ message: "Informe o valor" })
     .refine((v) => Number.isFinite(v), "Informe o valor")
