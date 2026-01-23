@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type Severity = "success" | "error" | "warning" | "info";
+export type Severity = "success" | "error" | "warning" | "info";
 
 type SnackBarState = {
   open: boolean;
