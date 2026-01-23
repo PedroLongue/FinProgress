@@ -9,7 +9,7 @@ import { dateFilterSchema, type DateFilterForm } from "./validator";
 import { useForm } from "react-hook-form";
 import { cn } from "../../../lib/utils";
 
-interface IModalDateFilter {
+interface IFilterModal {
   OnAplly: (data: DateFilterForm) => void;
   onClose: () => void;
   isLoading: boolean;
@@ -17,13 +17,13 @@ interface IModalDateFilter {
   endDate?: string;
 }
 
-export const ModalDateFilter = ({
+export const FilterModal = ({
   OnAplly,
   onClose,
   isLoading,
   startDate,
   endDate,
-}: IModalDateFilter) => {
+}: IFilterModal) => {
   const editModalRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(editModalRef, () => onClose());
 

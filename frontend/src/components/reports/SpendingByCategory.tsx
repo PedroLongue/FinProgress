@@ -25,7 +25,7 @@ import {
 import { Filter, PieChart } from "lucide-react";
 import { Button } from "../ui/button";
 import { EmptyState } from "../layout/EmptyState";
-import { ModalDateFilter } from "../Modals/FilterModal";
+import { FilterModal } from "../Modals/FilterModal";
 import type { DateFilterForm } from "../Modals/FilterModal/validator";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -186,7 +186,7 @@ export const SpendingByCategory = ({
       </Card>
 
       {openFilterModal && (
-        <ModalDateFilter
+        <FilterModal
           onClose={() => setOpenFilterModal(false)}
           isLoading={isLoading}
           OnAplly={(data: DateFilterForm) => handleApply(data)}

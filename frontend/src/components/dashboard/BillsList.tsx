@@ -3,6 +3,7 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
+  Filter,
   Trash2,
 } from "lucide-react";
 import type {
@@ -37,6 +38,8 @@ import { Link } from "@tanstack/react-router";
 import { useSnackbarStore } from "../../stores/snackbar.store";
 import { AppSelect } from "../ui/app-select";
 import { EmptyState } from "../layout/EmptyState";
+import { FilterModal } from "../Modals/FilterModal";
+import type { DateFilterForm } from "../Modals/FilterModal/validator";
 interface IBillsList {
   bills: BillsResponse;
   isEmpty: boolean;
@@ -48,6 +51,10 @@ interface IBillsList {
 
   statusFilter?: BillStatusKey | "" | "__all__";
   setStatusFilter?: Dispatch<SetStateAction<BillStatusKey | "" | "__all__">>;
+
+  onChangeRange: (start?: string, end?: string) => void;
+
+  isLoading?: boolean;
 }
 
 export const BillsList = ({
@@ -59,6 +66,8 @@ export const BillsList = ({
   setCategoryFilter,
   statusFilter,
   setStatusFilter,
+  onChangeRange,
+  isLoading = false,
 }: IBillsList) => {
   const { updateBill, deleteBill } = useBillsActions();
 
@@ -69,6 +78,7 @@ export const BillsList = ({
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   const [selectedBill, setSelectedBill] = useState<IBill | null>(null);
 
@@ -155,6 +165,13 @@ export const BillsList = ({
     showSnackbar,
   ]);
 
+  const handleApply = (data: DateFilterForm) => {
+    const start = data.startDate ? data.startDate : undefined;
+    const end = data.endDate ? data.endDate : undefined;
+
+    onChangeRange(start, end);
+  };
+
   return (
     <Card variant="default">
       <CardHeader className="pb-4">
@@ -193,6 +210,10 @@ export const BillsList = ({
                 ariaLabel="Filtrar por status"
                 options={statusOptions}
               />
+
+              <Button onClick={() => setIsFilterModalOpen(true)}>
+                <Filter className="w-5 h-5" />
+              </Button>
             </div>
           )}
         </div>
@@ -325,6 +346,13 @@ export const BillsList = ({
           onClose={handleCloseModal}
           isLoading={deleteBill.isPending}
           onDelete={() => handleDeleteBill(selectedBill)}
+        />
+      )}
+      {isFilterModalOpen && (
+        <FilterModal
+          onClose={() => setIsFilterModalOpen(false)}
+          OnAplly={(data: DateFilterForm) => handleApply(data)}
+          isLoading={isLoading}
         />
       )}
     </Card>

@@ -7,10 +7,13 @@ import type { BillStatusKey } from "../../types/bills.type";
 
 export const Bills = () => {
   const [currentPage, setCurrentPage] = useState(1);
+
   const [categoryFilter, setCategoryFilter] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<
     BillStatusKey | "" | "__all__"
   >("");
+  const [startDateFilter, setStartDateFilter] = useState<string | undefined>();
+  const [endDateFilter, setEndDateFilter] = useState<string | undefined>();
 
   const statusParam =
     statusFilter === "" || statusFilter === "__all__"
@@ -21,7 +24,13 @@ export const Bills = () => {
       ? undefined
       : categoryFilter;
 
-  const { bills, isLoading } = useBill(currentPage, statusParam, categoryParam);
+  const { bills, isLoading } = useBill(
+    currentPage,
+    statusParam,
+    categoryParam,
+    startDateFilter,
+    endDateFilter,
+  );
 
   if (isLoading) {
     return <Loading />;
@@ -30,6 +39,7 @@ export const Bills = () => {
   return (
     <div className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6">
       <BillsList
+        isLoading={isLoading}
         bills={bills as BillsResponse}
         isEmpty={bills?.bills.length === 0}
         onPageChange={setCurrentPage}
@@ -37,6 +47,10 @@ export const Bills = () => {
         setCategoryFilter={setCategoryFilter}
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
+        onChangeRange={(s, e) => {
+          setStartDateFilter(s);
+          setEndDateFilter(e);
+        }}
       />
     </div>
   );
