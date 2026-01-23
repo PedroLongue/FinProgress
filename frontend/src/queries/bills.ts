@@ -41,17 +41,31 @@ export type BillScoreExplanation = {
 };
 
 export const billsQueries = {
-  getAll: (page: number, status?: BillFilterStatus, category?: string) =>
+  getAll: (
+    page: number,
+    status?: BillFilterStatus,
+    category?: string,
+    startDate?: string,
+    endDate?: string,
+  ) =>
     queryOptions({
       queryKey: [
         "bills",
-        { page, status: status ?? null, category: category ?? null },
+        {
+          page,
+          status: status ?? null,
+          category: category ?? null,
+          startDate: startDate ?? null,
+          endDate: endDate ?? null,
+        },
       ],
       queryFn: () => {
         const qs = new URLSearchParams();
         qs.set("page", String(page));
         if (status) qs.set("status", status);
         if (category) qs.set("category", category);
+        if (startDate) qs.set("start", startDate);
+        if (endDate) qs.set("end", endDate);
 
         return getData<BillsResponse>(`/bills?${qs.toString()}`);
       },

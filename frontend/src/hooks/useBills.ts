@@ -5,13 +5,15 @@ import type { BillFilterStatus } from "../types/bills.type";
 export const useBill = (
   page = 1,
   status?: BillFilterStatus,
-  category?: string
+  category?: string,
+  startDate?: string,
+  endDate?: string,
 ) => {
   const {
     data: bills,
     isLoading,
     isError,
-  } = useQuery(billsQueries.getAll(page, status, category));
+  } = useQuery(billsQueries.getAll(page, status, category, startDate, endDate));
 
   return {
     bills,
