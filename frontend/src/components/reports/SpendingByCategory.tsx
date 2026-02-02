@@ -167,11 +167,9 @@ export const SpendingByCategory = ({
             </div>
           </div>
 
-          {!isEmpty && (
-            <Button onClick={() => setOpenFilterModal(true)}>
-              <Filter className="w-5 h-5" />
-            </Button>
-          )}
+          <Button onClick={() => setOpenFilterModal(true)}>
+            <Filter className="w-5 h-5" />
+          </Button>
         </CardHeader>
 
         {isEmpty ? (

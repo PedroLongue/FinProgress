@@ -253,7 +253,7 @@ export const BillsList = ({
                   className="gap-2"
                 >
                   Próxima
-                  <ChevronRight className="h-4 h-4" />
+                  <ChevronRight className="h-4" />
                 </Button>
               </div>
             )}

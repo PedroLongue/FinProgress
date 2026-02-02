@@ -6,10 +6,19 @@ export const formatCurrency = (value: number) =>
     value,
   );
 
+const startOfDay = (d: Date) =>
+  new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+const parseDateOnly = (iso: string) => {
+  const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
+  return new Date(y, (m ?? 1) - 1, d ?? 1);
+};
+
 export const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  const today = new Date();
-  const diffDays = Math.ceil(
+  const date = startOfDay(parseDateOnly(dateString));
+  const today = startOfDay(new Date());
+
+  const diffDays = Math.round(
     (date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
   );
 
