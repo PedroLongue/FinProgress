@@ -17,7 +17,7 @@ interface AuthRequest extends Request {
 
 export const getMonthlyGoalSummary = async (
   req: AuthRequest,
-  res: Response
+  res: Response,
 ) => {
   const userId = req.userId;
   if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
@@ -43,8 +43,8 @@ export const getMonthlyGoalSummary = async (
           1,
           0,
           0,
-          0
-        )
+          0,
+        ),
       )
     : nextMonth(new Date());
 
@@ -123,4 +123,58 @@ export const upsertMonthlyGoal = async (req: AuthRequest, res: Response) => {
     goalAmount: saved.amount,
     goalUpdatedAt: saved.updatedAt,
   });
+};
+
+export const getMonthlyGoalHistory = async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  const userId = req.userId;
+  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
+
+  const range = parseReportRange(req.query.range);
+
+  const endMonth = startOfMonth(new Date());
+  const startMonth = addMonths(endMonth, -range + 1);
+  const monthBuckets = buildMonthBuckets(endMonth, range);
+
+  const goals = await prisma.monthlySpendingGoal.findMany({
+    where: {
+      userId,
+      month: { gte: startMonth, lt: nextMonth(endMonth) },
+    },
+    select: { month: true, amount: true },
+  });
+
+  const paidWhere: Prisma.BillWhereInput = {
+    userId,
+    status: { in: ["PAID", "PAID_LATE"] },
+    paidAt: { not: null, gte: startMonth, lt: nextMonth(endMonth) },
+  };
+
+  const bills = await prisma.bill.findMany({
+    where: paidWhere,
+    select: { amount: true, paidAt: true },
+  });
+
+  const goalsMap: Record<string, number> = {};
+  for (const g of goals) {
+    const key = formatMonthKey(g.month);
+    goalsMap[key] = g.amount;
+  }
+
+  const spentMap: Record<string, number> = {};
+  for (const b of bills) {
+    if (!b.paidAt) continue;
+    const key = formatMonthKey(b.paidAt);
+    spentMap[key] = (spentMap[key] ?? 0) + Number(b.amount);
+  }
+
+  const history = monthBuckets.map((monthKey) => ({
+    month: monthKey,
+    goalAmount: goalsMap[monthKey] ?? null,
+    spent: Number((spentMap[monthKey] ?? 0).toFixed(2)),
+  }));
+
+  return res.json({ history });
 };
