@@ -8,7 +8,6 @@ import {
   Legend,
   type ChartData,
   type ChartOptions,
-  type TooltipItem,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import {
@@ -20,53 +19,58 @@ import {
 } from "../ui/card";
 import { BarChart3 } from "lucide-react";
 import { AppSelect } from "../ui/app-select";
-import type { ISpendingReportData } from "../../types/reports.type";
-import { formatCurrency } from "../../utils/bills.utils";
 import { EmptyState } from "../layout/EmptyState";
+import type { IMonthlyGoalHistory } from "../../types/goal.type";
+import { formatCurrency } from "../../utils/bills.utils";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-interface ISpendingReports {
-  spendingReportData: ISpendingReportData;
+interface IGoalReports {
+  rows: IMonthlyGoalHistory[];
   monthFilter: 3 | 6 | 12;
   setMonthFilter: Dispatch<SetStateAction<3 | 6 | 12>>;
   isEmpty: boolean;
 }
 
-export const SpendingReports = ({
-  spendingReportData,
+export const GoalSpending = ({
+  rows,
   monthFilter,
   setMonthFilter,
   isEmpty,
-}: ISpendingReports) => {
-  const labels = useMemo(
-    () => spendingReportData.byMonth.map((m) => m.month),
-    [spendingReportData.byMonth],
-  );
+}: IGoalReports) => {
+  const labels = useMemo(() => rows.map((m) => m.month), [rows]);
 
-  const values = useMemo(
-    () => spendingReportData.byMonth.map((m) => m.total),
-    [spendingReportData.byMonth],
-  );
+  const spentValues = useMemo(() => rows.map((m) => m.spent), [rows]);
 
-  const barThickness = spendingReportData.byMonth.length > 6 ? 28 : 44;
+  const goalValues = useMemo(() => rows.map((m) => m.goalAmount ?? 0), [rows]);
+
+  const barThickness = rows.length > 10 ? 14 : 18;
 
   const chartHeight = useMemo(() => {
-    const base = 260;
-    const extra = Math.max(0, spendingReportData.byMonth.length - 3) * 18;
-    return Math.min(420, base + extra);
-  }, [spendingReportData.byMonth.length]);
+    const rowH = 44;
+    const base = 140;
+    return Math.min(720, base + rows.length * rowH);
+  }, [rows.length]);
 
   const data: ChartData<"bar", number[], string> = {
     labels,
     datasets: [
       {
         label: "Gasto (R$)",
-        data: values,
-        backgroundColor: "hsl(217, 91%, 60%) / 0.75)",
-        borderColor: "hsl(217, 91%, 60%)",
-        borderWidth: 1,
-        borderRadius: 5,
+        data: spentValues,
+        backgroundColor: "#3b82f6",
+        borderColor: "#1d4ed8",
+        borderWidth: 2,
+        borderRadius: 8,
+        barThickness,
+      },
+      {
+        label: "Meta (R$)",
+        data: goalValues,
+        backgroundColor: "#22c55e",
+        borderColor: "#166534",
+        borderWidth: 2,
+        borderRadius: 8,
         barThickness,
       },
     ],
@@ -75,10 +79,9 @@ export const SpendingReports = ({
   const options: ChartOptions<"bar"> = {
     responsive: true,
     maintainAspectRatio: false,
+    indexAxis: "y",
+
     plugins: {
-      legend: {
-        display: false,
-      },
       tooltip: {
         padding: 12,
         displayColors: false,
@@ -89,51 +92,81 @@ export const SpendingReports = ({
         borderWidth: 1,
         cornerRadius: 6,
         callbacks: {
-          title: (items: TooltipItem<"bar">[]) => {
-            const i = items[0];
-            return i.label ?? "Mês";
-          },
-          label: (ctx: TooltipItem<"bar">) => {
+          title: (items) => items[0]?.label ?? "Mês",
+          label: (ctx) => {
             const i = ctx.dataIndex;
-            const row = spendingReportData.byMonth[i];
-            const total = row ? row.total : Number(ctx.parsed.y ?? 0);
-            return `Gasto: ${formatCurrency(total)}`;
+            const row = rows[i];
+            const value = Number(ctx.parsed.x ?? 0);
+
+            if (
+              ctx.dataset.label === "Meta (R$)" &&
+              (!row?.goalAmount || row.goalAmount <= 0)
+            ) {
+              return "Meta: Sem meta";
+            }
+
+            const prefix = ctx.dataset.label?.startsWith("Gasto")
+              ? "Gasto"
+              : "Meta";
+            return `${prefix}: ${formatCurrency(value)}`;
           },
-          afterLabel: (ctx: TooltipItem<"bar">) => {
+          afterLabel: (ctx) => {
             const i = ctx.dataIndex;
-            const row = spendingReportData.byMonth[i];
-            const count = row ? row.count : 0;
-            const plural = count === 1 ? "conta" : "contas";
-            return `Qtd: ${count} ${plural}`;
+            const row = rows[i];
+            if (!row?.goalAmount || row.goalAmount <= 0) return "";
+
+            const pct = (row.spent / row.goalAmount) * 100;
+            const status =
+              pct >= 100
+                ? "Limite atingido"
+                : pct >= 80
+                  ? "Próximo do limite"
+                  : "Ok";
+            return `${status} • ${Math.min(999, Math.max(0, pct)).toFixed(0)}% usado`;
           },
+        },
+      },
+      legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+          color: "hsl(215, 20%, 70%)",
+          usePointStyle: true,
+          pointStyle: "rectRounded",
+          padding: 12,
+          boxWidth: 10,
+          boxHeight: 10,
+          font: { size: 12 },
         },
       },
     },
+
     scales: {
       x: {
-        grid: { display: false },
-        ticks: {
-          color: "hsl(215, 20%, 55%)",
-          maxRotation: 0,
-          autoSkip: true,
-          maxTicksLimit: 6,
-        },
-      },
-      y: {
         beginAtZero: true,
         grid: { color: "hsl(var(--border))" },
         ticks: {
           color: "hsl(215, 20%, 55%)",
-          callback: (value) => `R$ ${Number(value).toFixed(0)}`,
-          maxTicksLimit: 5,
+          callback: (v) => `R$ ${Number(v).toFixed(0)}`,
+          maxTicksLimit: 6,
+        },
+      },
+      y: {
+        grid: { display: false },
+        ticks: {
+          color: "hsl(215, 20%, 55%)",
+          autoSkip: true,
+          maxTicksLimit: 12,
         },
       },
     },
+
+    devicePixelRatio: 2,
   };
 
   const monthOptions = [
     { value: 3, label: "Últimos 3 meses" },
-    { value: 6, label: "ùltimos 6 meses" },
+    { value: 6, label: "Últimos 6 meses" },
     { value: 12, label: "Últimos 12 meses" },
   ] as const;
 
@@ -144,15 +177,15 @@ export const SpendingReports = ({
           <div className="flex items-center gap-3">
             <BarChart3 className="w-5 h-5 text-primary" />
             <div>
-              <CardTitle>Gastos Mensais</CardTitle>
+              <CardTitle>Meta x Gasto</CardTitle>
               {!isEmpty && (
                 <CardDescription className="mt-1">
-                  Últimos {spendingReportData.rangeMonths} meses (pagos). Passe
-                  o mouse para ver valor e quantidade de contas.
+                  Comparativo por mês. Passe o mouse para ver valores e status.
                 </CardDescription>
               )}
             </div>
           </div>
+
           {!isEmpty && (
             <AppSelect
               value={monthFilter}

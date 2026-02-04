@@ -27,6 +27,8 @@ import { EmptyInsightsCardsState } from "../../components/layout/EmptyInsightsCa
 import { CreateOrupdateGoalModal } from "../../components/Modals/CreateOrUpdateGoalModal";
 import { useSpendingByCategoryReport } from "../../hooks/useSpendingByCategoryReport ";
 import { SpendingByCategory } from "../../components/reports/SpendingByCategory";
+import { GoalSpending } from "../../components/reports/GoalSpending";
+import type { IMonthlyGoalHistory } from "../../types/goal.type";
 
 export const Insights = () => {
   const [spendMonthFilter, setSpendMonthFilter] = useState<3 | 6 | 12>(3);
@@ -44,8 +46,6 @@ export const Insights = () => {
   const { createOrUpdateGoal } = useMonthlyGoalActions();
   const { spendingByCategoryReport, isLoading: spendingByCategoryLoading } =
     useSpendingByCategoryReport(start, end);
-
-  console.log({ goalHistory });
 
   const isLoading =
     reportLoading ||
@@ -274,6 +274,13 @@ export const Insights = () => {
           (spendingByCategoryReport?.totals?.totalInRange ?? 0) === 0 ||
           (spendingByCategoryReport?.byCategory?.length ?? 0) === 0
         }
+      />
+
+      <GoalSpending
+        rows={goalHistory as IMonthlyGoalHistory[]}
+        monthFilter={historyGoalRange}
+        setMonthFilter={setHistoryGoalRange}
+        isEmpty={false}
       />
 
       {openGoalModal && (

@@ -103,16 +103,27 @@ export const SpendingByCategory = ({
     maintainAspectRatio: false,
     plugins: {
       legend: {
+        display: true,
         position: "bottom",
+        align: "center",
         labels: {
-          color: "hsl(215, 20%, 55%)",
+          color: "hsl(215, 20%, 70%)",
+          usePointStyle: true,
+          pointStyle: "rectRounded",
+          padding: 16,
           boxWidth: 10,
           boxHeight: 10,
         },
       },
       tooltip: {
         padding: 12,
-        displayColors: true,
+        displayColors: false,
+        backgroundColor: "hsl(222, 47%, 11%)",
+        titleColor: "hsl(210, 40%, 96%)",
+        bodyColor: "hsl(210, 40%, 96%)",
+        borderColor: "hsl(215, 25%, 27%)",
+        borderWidth: 1,
+        cornerRadius: 6,
         callbacks: {
           title: (items: TooltipItem<"pie">[]) =>
             items[0]?.label ?? "Categoria",
