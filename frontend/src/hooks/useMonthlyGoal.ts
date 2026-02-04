@@ -11,6 +11,16 @@ export const useMonthlyGoal = () => {
   return { monthlyGoal, isLoading, isError };
 };
 
+export const useMonthlyGoalHistory = (range?: number) => {
+  const {
+    data: goalHistory,
+    isLoading,
+    isError,
+  } = useQuery(goalQueries.getGoalHistory(range));
+
+  return { goalHistory, isLoading, isError };
+};
+
 export const useMonthlyGoalActions = () => {
   const queryClient = useQueryClient();
 

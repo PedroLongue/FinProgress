@@ -20,6 +20,7 @@ import { Progress } from "../../components/ui/progress";
 import {
   useMonthlyGoal,
   useMonthlyGoalActions,
+  useMonthlyGoalHistory,
 } from "../../hooks/useMonthlyGoal";
 import { Button } from "../../components/ui/button";
 import { EmptyInsightsCardsState } from "../../components/layout/EmptyInsightsCardsState";
@@ -28,20 +29,29 @@ import { useSpendingByCategoryReport } from "../../hooks/useSpendingByCategoryRe
 import { SpendingByCategory } from "../../components/reports/SpendingByCategory";
 
 export const Insights = () => {
-  const [monthFilter, setMonthFilter] = useState<3 | 6 | 12>(3);
+  const [spendMonthFilter, setSpendMonthFilter] = useState<3 | 6 | 12>(3);
+  const [historyGoalRange, setHistoryGoalRange] = useState<3 | 6 | 12>(3);
   const [openGoalModal, setOpenGoalModal] = useState<boolean>(false);
   const [goalMode, setGoalMode] = useState<"create" | "update">("create");
   const [start, setStart] = useState<string | undefined>();
   const [end, setEnd] = useState<string | undefined>();
 
   const { spendingReport, isLoading: reportLoading } =
-    useSpendingReports(monthFilter);
+    useSpendingReports(spendMonthFilter);
   const { monthlyGoal, isLoading: goalLoading } = useMonthlyGoal();
+  const { goalHistory, isLoading: goalHistoryLoading } =
+    useMonthlyGoalHistory(historyGoalRange);
   const { createOrUpdateGoal } = useMonthlyGoalActions();
   const { spendingByCategoryReport, isLoading: spendingByCategoryLoading } =
     useSpendingByCategoryReport(start, end);
 
-  const isLoading = reportLoading || goalLoading || spendingByCategoryLoading;
+  console.log({ goalHistory });
+
+  const isLoading =
+    reportLoading ||
+    goalLoading ||
+    spendingByCategoryLoading ||
+    goalHistoryLoading;
 
   const byMonth = useMemo(
     () => spendingReport?.byMonth ?? [],
@@ -246,8 +256,8 @@ export const Insights = () => {
       </div>
       <SpendingReports
         spendingReportData={spendingReport as ISpendingReportData}
-        monthFilter={monthFilter}
-        setMonthFilter={setMonthFilter}
+        monthFilter={spendMonthFilter}
+        setMonthFilter={setSpendMonthFilter}
         isEmpty={(spendingReport?.totals.totalInRange ?? 0) === 0}
       />
 

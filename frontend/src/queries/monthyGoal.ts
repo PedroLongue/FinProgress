@@ -5,6 +5,7 @@ import type {
   ICreateOrUpdateGoalBody,
   ICreateOrUpdateGoalResponse,
   IMonthlyGoalData,
+  IMonthlyGoalHistory,
 } from "../types/goal.type";
 
 export const goalQueries = {
@@ -12,6 +13,15 @@ export const goalQueries = {
     queryKey: ["monthly-goal"],
     queryFn: () => {
       return getData<IMonthlyGoalData>("/monthly-goal");
+    },
+  }),
+
+  getGoalHistory: (range?: number) => ({
+    queryKey: ["monthly-goal-history", { range: range ?? null }],
+    queryFn: () => {
+      return getData<IMonthlyGoalHistory[]>(
+        `/monthly-goal/history?range=${range}`,
+      );
     },
   }),
 };

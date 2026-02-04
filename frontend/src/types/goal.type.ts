@@ -14,3 +14,9 @@ export interface IMonthlyGoalData extends ICreateOrUpdateGoalResponse {
   remainning: number;
   percentUsed: number;
 }
+
+export interface IMonthlyGoalHistory {
+  month: string;
+  goalAmount: number | null;
+  spent: number;
+}

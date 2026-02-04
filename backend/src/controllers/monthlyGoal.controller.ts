@@ -170,11 +170,11 @@ export const getMonthlyGoalHistory = async (
     spentMap[key] = (spentMap[key] ?? 0) + Number(b.amount);
   }
 
-  const history = monthBuckets.map((monthKey) => ({
-    month: monthKey,
-    goalAmount: goalsMap[monthKey] ?? null,
-    spent: Number((spentMap[monthKey] ?? 0).toFixed(2)),
-  }));
-
-  return res.json({ history });
+  return res.json(
+    monthBuckets.map((monthKey) => ({
+      month: monthKey,
+      goalAmount: goalsMap[monthKey] ?? null,
+      spent: Number((spentMap[monthKey] ?? 0).toFixed(2)),
+    })),
+  );
 };
