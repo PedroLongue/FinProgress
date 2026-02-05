@@ -25,7 +25,7 @@ import { BillEditModal } from "../Modals/BillEditModal";
 import { useBillsActions } from "../../hooks/useBills";
 import { BillDeleteModal } from "../Modals/BillDeleteModal";
 import { Link } from "@tanstack/react-router";
-import { useSnackbarStore, type Severity } from "../../stores/snackbar.store";
+import { useSnackbarStore } from "../../stores/snackbar.store";
 import { AppSelect } from "../ui/app-select";
 import { EmptyState } from "../layout/EmptyState";
 import { FilterModal } from "../Modals/FilterModal";
@@ -141,26 +141,27 @@ export const BillsList = ({
     [onChangeRange],
   );
 
-  const notify = useCallback(
-    (severity: Severity, message: string) => {
-      showSnackbar({ severity, message });
-    },
-    [showSnackbar],
-  );
-
   useEffect(() => {
     if (isEditModalOpen) return;
-    if (updateBill.isSuccess) notify("success", "Boleto editado com sucesso.");
-    if (updateBill.isError)
-      notify("error", "Erro ao editar boleto, tente novamente.");
-  }, [isEditModalOpen, notify, updateBill.isError, updateBill.isSuccess]);
-
-  useEffect(() => {
     if (isDeleteModalOpen) return;
-    if (deleteBill.isSuccess) notify("warning", "Boleto excluído com sucesso.");
-    if (deleteBill.isError)
-      notify("error", "Erro ao excluir boleto, tente novamente.");
-  }, [isDeleteModalOpen, deleteBill.isError, deleteBill.isSuccess, notify]);
+    if (deleteBill.isSuccess)
+      showSnackbar({
+        severity: "warning",
+        message: "Boleto excluído com sucesso.",
+      });
+    if (updateBill.isSuccess)
+      showSnackbar({
+        severity: "success",
+        message: "Boleto editado com sucesso.",
+      });
+  }, [
+    deleteBill.isSuccess,
+    isDeleteModalOpen,
+    isEditModalOpen,
+    showSnackbar,
+    updateBill.isError,
+    updateBill.isSuccess,
+  ]);
 
   return (
     <Card variant="default">

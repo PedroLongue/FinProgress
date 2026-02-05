@@ -27,7 +27,7 @@ export const register = async (req: Request, res: Response) => {
   const exists = await prisma.user.findUnique({
     where: { email: normalizedEmail },
   });
-  if (exists) return res.status(409).json({ erros: ["Email já cadastrado"] });
+  if (exists) return res.status(409).json({ errors: ["Email já cadastrado"] });
 
   const hashed = await bcrypt.hash(password, 10);
 
@@ -61,10 +61,10 @@ export const login = async (req: Request, res: Response) => {
   const user = await prisma.user.findUnique({
     where: { email: normalizedEmail },
   });
-  if (!user) return res.status(401).json({ erros: ["Credenciais inválidas"] });
+  if (!user) return res.status(401).json({ errors: ["Credenciais inválidas"] });
 
   const ok = await bcrypt.compare(password, user.password);
-  if (!ok) return res.status(401).json({ erros: ["Senha inválida"] });
+  if (!ok) return res.status(401).json({ errors: ["Senha inválida"] });
 
   const token = signToken(user.id);
 

@@ -1,6 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { usersMutations, usersQueries } from "../queries/users";
 import { useNavigate } from "@tanstack/react-router";
+import { useSnackbarStore } from "../stores/snackbar.store";
+import type { AxiosError } from "axios";
+
+type AuthErrorResponse = {
+  errors: string[];
+};
 
 export const useAuth = () => {
   const { data: user, isLoading, isError } = useQuery(usersQueries.me());
@@ -15,7 +21,7 @@ export const useAuth = () => {
 export const useAuthActions = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-
+  const showSnackbar = useSnackbarStore((s) => s.show);
   const baseLogin = usersMutations.login(queryClient);
   const loginMutation = useMutation({
     ...baseLogin,
@@ -23,8 +29,12 @@ export const useAuthActions = () => {
       baseLogin.onSuccess?.(data, variables, onMutateResult, context);
       navigate({ to: "/", replace: true });
     },
-    onError: (error) => {
-      console.error("Login error:", error);
+    onError: (error: AxiosError<AuthErrorResponse>) => {
+      showSnackbar({
+        severity: "error",
+        message: error.response?.data.errors[0] ?? "Erro ao fazer login.",
+      });
+      console.error("Login error:", error.response?.data.errors[0]);
     },
   });
 
@@ -35,8 +45,12 @@ export const useAuthActions = () => {
       baseRegister.onSuccess?.(data, variables, onMutateResult, context);
       navigate({ to: "/", replace: true });
     },
-    onError: (error) => {
-      console.error("Register error:", error);
+    onError: (error: AxiosError<AuthErrorResponse>) => {
+      showSnackbar({
+        severity: "error",
+        message: error.response?.data.errors[0] ?? "Erro ao fazer registro.",
+      });
+      console.error("Register error:", error.response?.data.errors[0]);
     },
   });
 

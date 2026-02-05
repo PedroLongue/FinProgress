@@ -10,7 +10,6 @@ import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BillCreateModal } from "../components/Modals/BillCreateModal";
 import { useBillsActions } from "../hooks/useBills";
-import { SnackbarHost } from "../components/ui/snackbar-host";
 import { useSnackbarStore } from "../stores/snackbar.store";
 
 const RootLayout = () => {
@@ -23,36 +22,15 @@ const RootLayout = () => {
     if (!isAddModalOpen) return;
     if (createBill.isSuccess)
       showSnackbar({ severity: "success", message: "Boleto cadastrado." });
-    if (createBill.isError)
-      showSnackbar({
-        severity: "error",
-        message: "Ocorreu um erro ao cadastrar, tente novamente.",
-      });
-  }, [
-    isAddModalOpen,
-    createBill.isSuccess,
-    createBill.isError,
-    createBill.error,
-    showSnackbar,
-  ]);
-
-  useEffect(() => {
-    if (!isAddModalOpen) return;
     if (createBillByPdf.isSuccess)
       showSnackbar({
         severity: "success",
         message: "Boleto via PDF cadastrado.",
       });
-    if (createBillByPdf.isError)
-      showSnackbar({
-        severity: "error",
-        message: "Ocorreu um erro ao extrair os dados, tente novamente.",
-      });
   }, [
     isAddModalOpen,
+    createBill.isSuccess,
     createBillByPdf.isSuccess,
-    createBillByPdf.isError,
-    createBillByPdf.error,
     showSnackbar,
   ]);
 
@@ -95,7 +73,6 @@ const RootLayout = () => {
         isManualSaving={createBill.isPending}
         manualSaveComplete={createBill.isSuccess}
       />
-      <SnackbarHost />
     </div>
   );
 };
