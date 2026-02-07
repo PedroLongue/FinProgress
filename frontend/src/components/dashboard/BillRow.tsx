@@ -5,12 +5,11 @@ import { cn } from "../../lib/utils";
 import { Badge } from "../ui/badge";
 import {
   formatCurrency,
-  formatDate,
   getStatusIcon,
   getStatusStyles,
-  isOverdue,
-  isPaid,
 } from "../../utils/bills.utils";
+import { formatDate } from "../../utils/date.utils";
+import { isOverdue, isPaid } from "../../functions";
 
 export const BillRow = ({
   bill,

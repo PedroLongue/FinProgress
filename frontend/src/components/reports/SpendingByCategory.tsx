@@ -10,11 +10,7 @@ import {
 } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import type { ISpendingByCategoryReportData } from "../../types/reports.type";
-import {
-  dateInputToISO,
-  formatCurrency,
-  isoToDateInput,
-} from "../../utils/bills.utils";
+import { formatCurrency } from "../../utils/bills.utils";
 import {
   Card,
   CardContent,
@@ -27,6 +23,7 @@ import { Button } from "../ui/button";
 import { EmptyState } from "../layout/EmptyState";
 import { FilterModal } from "../Modals/FilterModal";
 import type { DateFilterForm } from "../Modals/FilterModal/validator";
+import { dateInputToISO, isoToDateInput } from "../../utils/date.utils";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 

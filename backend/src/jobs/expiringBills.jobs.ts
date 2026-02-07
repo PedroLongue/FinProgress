@@ -5,7 +5,7 @@ import { expiringBills } from "../templates/expiringBills.templates";
 import { addDays, formatYMDToBR, startOfDay } from "../utils/date.utils";
 
 export const registerExpiringBillsJob = () => {
-  cron.schedule("0 13 * * *", async () => {
+  cron.schedule("0 9 * * *", async () => {
     const today = startOfDay(new Date());
 
     const users = await prisma.user.findMany({

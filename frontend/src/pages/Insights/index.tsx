@@ -15,7 +15,7 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
-import { dateToText, formatCurrency } from "../../utils/bills.utils";
+import { formatCurrency } from "../../utils/bills.utils";
 import { Progress } from "../../components/ui/progress";
 import {
   useMonthlyGoal,
@@ -29,6 +29,7 @@ import { useSpendingByCategoryReport } from "../../hooks/useSpendingByCategoryRe
 import { SpendingByCategory } from "../../components/reports/SpendingByCategory";
 import { GoalSpending } from "../../components/reports/GoalSpending";
 import type { IMonthlyGoalHistory } from "../../types/goal.type";
+import { dateToText } from "../../utils/date.utils";
 
 export const Insights = () => {
   const [spendMonthFilter, setSpendMonthFilter] = useState<3 | 6 | 12>(3);
