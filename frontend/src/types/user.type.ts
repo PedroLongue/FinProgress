@@ -25,7 +25,7 @@ export type RegisterBody = {
 export type UpdatePhoneBody = { phone: string | null };
 
 export type ChangePasswordBody = {
-  password: string;
+  currentPassword: string;
   newPassword: string;
   confirmNewPassword: string;
 };

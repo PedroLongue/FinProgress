@@ -4,13 +4,13 @@ import { validationResult } from "express-validator";
 export const handleValidation = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const result = validationResult(req);
 
   if (!result.isEmpty()) {
     return res.status(422).json({
-      erros: result.array().map((e) => e.msg),
+      errors: result.array().map((e) => e.msg),
     });
   }
 

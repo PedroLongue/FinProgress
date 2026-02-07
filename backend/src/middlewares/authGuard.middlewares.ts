@@ -16,15 +16,16 @@ export const authGuard = (
 
   const token = req.cookies?.[COOKIE_NAME];
 
-  if (!token) return res.status(401).json({ erros: ["Token ausente"] });
+  if (!token) return res.status(401).json({ errors: ["Token ausente"] });
 
   try {
     const payload = jwt.verify(token, JWT_SECRET) as { id?: string };
-    if (!payload.id) return res.status(401).json({ erros: ["Token inválido"] });
+    if (!payload.id)
+      return res.status(401).json({ errors: ["Token inválido"] });
 
     req.userId = payload.id;
     return next();
   } catch {
-    return res.status(401).json({ erros: ["Token inválido"] });
+    return res.status(401).json({ errors: ["Token inválido"] });
   }
 };

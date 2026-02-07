@@ -41,7 +41,7 @@ interface IBillsList {
   statusFilter?: BillStatusKey | "" | "__all__";
   setStatusFilter?: Dispatch<SetStateAction<BillStatusKey | "" | "__all__">>;
 
-  onChangeRange: (start?: string, end?: string) => void;
+  onChangeRange?: (start?: string, end?: string) => void;
 
   isLoading?: boolean;
 }
@@ -132,7 +132,7 @@ export const BillsList = ({
 
   const handleApply = useCallback(
     (data: DateFilterForm) => {
-      onChangeRange(data.startDate || undefined, data.endDate || undefined);
+      onChangeRange?.(data.startDate || undefined, data.endDate || undefined);
       setIsFilterModalOpen(false);
     },
     [onChangeRange],
