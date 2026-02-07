@@ -125,5 +125,5 @@ export const updateNotificationsSettings = async (
     },
   });
 
-  return res.status(200).json({ settings: user });
+  return res.status(200).json({ user });
 };

@@ -1,22 +1,22 @@
-export interface ICreateOrUpdateGoalBody {
+export type CreateOrUpdateGoalBody = {
   amount: number;
-}
+};
 
-export interface ICreateOrUpdateGoalResponse {
+export type CreateOrUpdateGoalResponse = {
   month: string;
   goalAmount: number;
   goalUpdateAt: Date;
-}
+};
 
-export interface IMonthlyGoalData extends ICreateOrUpdateGoalResponse {
+export type MonthlyGoalData = CreateOrUpdateGoalResponse & {
   totalDue: number;
   billsCount: number;
   remainning: number;
   percentUsed: number;
-}
+};
 
-export interface IMonthlyGoalHistory {
+export type MonthlyGoalHistory = {
   month: string;
   goalAmount: number | null;
   spent: number;
-}
+};

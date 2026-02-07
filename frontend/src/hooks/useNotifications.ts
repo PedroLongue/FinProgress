@@ -12,16 +12,12 @@ export const useNotificationsActions = () => {
   const queryClient = useQueryClient();
 
   const baseUpdateNotificationsSettings =
-    notificationsMutation.updateSettings(queryClient);
+    notificationsMutation.updateSettings();
+
   const updateNotificationsSettings = useMutation({
     ...baseUpdateNotificationsSettings,
-    onSuccess: (data, variables, onMutateResult, context) => {
-      baseUpdateNotificationsSettings.onSuccess?.(
-        data,
-        variables,
-        onMutateResult,
-        context,
-      );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["me"] });
       showSnackbar({
         message: "Configurações de notificações atualizadas com sucesso!",
         severity: "success",

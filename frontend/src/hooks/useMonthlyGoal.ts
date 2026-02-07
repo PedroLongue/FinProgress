@@ -24,16 +24,11 @@ export const useMonthlyGoalHistory = (range?: number) => {
 export const useMonthlyGoalActions = () => {
   const queryClient = useQueryClient();
 
-  const baseCreateOrUpdateGoal = goalMutation.createOrUpdateGoal(queryClient);
+  const baseCreateOrUpdateGoal = goalMutation.createOrUpdateGoal();
   const createOrUpdateGoal = useMutation({
     ...baseCreateOrUpdateGoal,
-    onSuccess: (data, variables, onMutateResult, context) => {
-      baseCreateOrUpdateGoal.onSuccess?.(
-        data,
-        variables,
-        onMutateResult,
-        context,
-      );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["monthly-goal"] });
     },
     onError: (error) => {
       console.error("Create bill error:", error);

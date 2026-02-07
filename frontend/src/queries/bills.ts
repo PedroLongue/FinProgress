@@ -1,4 +1,3 @@
-import type { QueryClient } from "@tanstack/react-query";
 import { queryOptions, mutationOptions } from "@tanstack/react-query";
 import {
   deleteData,
@@ -100,7 +99,7 @@ export const billsQueries = {
 };
 
 export const billsMutations = {
-  create: (qc: QueryClient) =>
+  create: () =>
     mutationOptions({
       mutationKey: ["createBill"],
       mutationFn: async (body: CreateBillBody) => {
@@ -110,14 +109,9 @@ export const billsMutations = {
         );
         return res.bill;
       },
-      onSuccess: () => {
-        qc.invalidateQueries({ queryKey: ["bills"] });
-        qc.invalidateQueries({ queryKey: ["spending-report"] });
-        qc.invalidateQueries({ queryKey: ["spending-report-by-category"] });
-      },
     }),
 
-  createByPdf: (qc: QueryClient) =>
+  createByPdf: () =>
     mutationOptions({
       mutationKey: ["createBillByPdf"],
       mutationFn: async (file: File) => {
@@ -131,14 +125,9 @@ export const billsMutations = {
 
         return res.bill;
       },
-      onSuccess: () => {
-        qc.invalidateQueries({ queryKey: ["bills"] });
-        qc.invalidateQueries({ queryKey: ["spending-report"] });
-        qc.invalidateQueries({ queryKey: ["spending-report-by-category"] });
-      },
     }),
 
-  update: (qc: QueryClient) =>
+  update: () =>
     mutationOptions({
       mutationKey: ["updateBill"],
       mutationFn: async ({
@@ -154,23 +143,13 @@ export const billsMutations = {
         );
         return res.bill;
       },
-      onSuccess: () => {
-        qc.invalidateQueries({ queryKey: ["bills"] });
-        qc.invalidateQueries({ queryKey: ["spending-report"] });
-        qc.invalidateQueries({ queryKey: ["spending-report-by-category"] });
-      },
     }),
 
-  delete: (qc: QueryClient) =>
+  delete: () =>
     mutationOptions({
       mutationKey: ["deleteBill"],
       mutationFn: async (id: string) => {
         await deleteData<void>(`/bills/${id}`);
-      },
-      onSuccess: () => {
-        qc.invalidateQueries({ queryKey: ["bills"] });
-        qc.invalidateQueries({ queryKey: ["spending-report"] });
-        qc.invalidateQueries({ queryKey: ["spending-report-by-category"] });
       },
     }),
 };

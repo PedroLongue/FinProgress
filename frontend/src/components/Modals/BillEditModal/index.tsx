@@ -5,8 +5,9 @@ import { Button } from "../../ui/button";
 import type { Bill } from "../../../types/bills.type";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
-import { getStatusBadge, isPaid } from "../../../utils/bills.utils";
+import { getStatusBadge } from "../../../utils/bills.utils";
 import { cn } from "../../../lib/utils";
+import { isPaid } from "../../../functions";
 
 interface IEditBillModal {
   bill: Bill;

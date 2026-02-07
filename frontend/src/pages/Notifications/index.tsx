@@ -10,11 +10,23 @@ import { useState } from "react";
 import { Switch } from "../../components/ui/switch";
 import { Button } from "../../components/ui/button";
 import { Slider } from "../../components/ui/slider";
+import { useAuth } from "../../hooks/useAuth";
+import { Loading } from "../../components/ui/loading";
+import { useNotificationsActions } from "../../hooks/useNotifications";
 
 export const Notifications = () => {
-  const [emailEnabled, setEmailEnabled] = useState(false);
-  const [pushEnabled, setPushEnabled] = useState(false);
-  const [daysAdvance, setDaysAdvance] = useState(2);
+  const { user, isLoading } = useAuth();
+  const { updateNotificationsSettings } = useNotificationsActions();
+
+  const [emailEnabled, setEmailEnabled] = useState(
+    user?.emailNotificationsEnabled,
+  );
+  const [pushEnabled, setPushEnabled] = useState(
+    user?.pushNotificationsEnabled,
+  );
+  const [daysAdvance, setDaysAdvance] = useState(user?.billReminderDays || 2);
+
+  if (isLoading) return <Loading />;
 
   const notificationTypes = [
     {
@@ -38,6 +50,14 @@ export const Notifications = () => {
       bgColor: "bg-warning/20",
     },
   ];
+
+  const handleNotifications = () => {
+    updateNotificationsSettings.mutate({
+      emailNotificationsEnabled: emailEnabled,
+      pushNotificationsEnabled: pushEnabled,
+      billReminderDays: daysAdvance,
+    });
+  };
 
   return (
     <div className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6">
@@ -112,7 +132,11 @@ export const Notifications = () => {
             </div>
           </div>
 
-          <Button variant="success" className="w-full">
+          <Button
+            onClick={handleNotifications}
+            variant="success"
+            className="w-full"
+          >
             <Check className="w-4 h-4 mr-2" />
             Salvar Configurações
           </Button>

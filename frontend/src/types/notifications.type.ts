@@ -5,9 +5,7 @@ export type UpdateNotificationsSettingsBody = {
 };
 
 export type UpdateNotificationsSettingsResponse = {
-  settings: {
-    emailNotificationsEnabled: boolean;
-    pushNotificationsEnabled: boolean;
-    billReminderDays: number;
-  };
+  emailNotificationsEnabled: boolean;
+  pushNotificationsEnabled: boolean;
+  billReminderDays: number;
 };

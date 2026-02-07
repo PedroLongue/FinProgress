@@ -1,4 +1,6 @@
-export type LoginUser = {
+import type { UpdateNotificationsSettingsResponse } from "./notifications.type";
+
+export type LoginUser = UpdateNotificationsSettingsResponse & {
   id: string;
   name: string;
   email: string;

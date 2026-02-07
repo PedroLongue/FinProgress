@@ -1,4 +1,3 @@
-import type { QueryClient } from "@tanstack/react-query";
 import { queryOptions, mutationOptions } from "@tanstack/react-query";
 import { getData, patchData, postData } from "../services/api";
 import type {
@@ -27,7 +26,7 @@ export const usersQueries = {
 };
 
 export const usersMutations = {
-  login: (qc: QueryClient) =>
+  login: () =>
     mutationOptions({
       mutationKey: ["login"],
       mutationFn: async (body: LoginBody) => {
@@ -37,12 +36,9 @@ export const usersMutations = {
         );
         return res.user;
       },
-      onSuccess: (user) => {
-        qc.setQueryData(["me"], user);
-      },
     }),
 
-  register: (qc: QueryClient) =>
+  register: () =>
     mutationOptions({
       mutationKey: ["register"],
       mutationFn: async (body: RegisterBody) => {
@@ -52,12 +48,9 @@ export const usersMutations = {
         );
         return res.user;
       },
-      onSuccess: (user) => {
-        qc.setQueryData(["me"], user);
-      },
     }),
 
-  changePassword: (qc: QueryClient) =>
+  changePassword: () =>
     mutationOptions({
       mutationKey: ["change-password"],
       mutationFn: async (body: ChangePasswordBody) => {
@@ -66,26 +59,13 @@ export const usersMutations = {
           body,
         );
       },
-      onSuccess: () => {
-        qc.invalidateQueries({ queryKey: ["me"] });
-      },
     }),
 
-  logout: (qc: QueryClient) =>
+  logout: () =>
     mutationOptions({
       mutationKey: ["logout"],
       mutationFn: async () => {
         await postData<void, void>("/users/logout");
-      },
-      onSuccess: () => {
-        qc.setQueryData(["me"], null);
-        qc.removeQueries({ queryKey: ["me"] });
-        qc.invalidateQueries({ queryKey: ["bills"] });
-        qc.invalidateQueries({ queryKey: ["bill-details"] });
-        qc.invalidateQueries({ queryKey: ["bill-score-explanation"] });
-        qc.invalidateQueries({ queryKey: ["spending-report"] });
-        qc.invalidateQueries({ queryKey: ["monthly-goal"] });
-        qc.invalidateQueries({ queryKey: ["spending-report-by-category"] });
       },
     }),
 };

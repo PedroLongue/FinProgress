@@ -71,7 +71,13 @@ export const login = async (req: Request, res: Response) => {
   setAuthCookie(res, token);
 
   return res.json({
-    user: { id: user.id, name: user.name, email: user.email },
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      emailNotificationsEnabled: user.emailNotificationsEnabled,
+      billReminderDays: user.billReminderDays,
+    },
   });
 };
 

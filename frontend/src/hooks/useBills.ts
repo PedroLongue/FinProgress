@@ -52,11 +52,15 @@ export const useBillsActions = () => {
   const showSnackbar = useSnackbarStore((s) => s.show);
   const queryClient = useQueryClient();
 
-  const baseCreateBill = billsMutations.create(queryClient);
+  const baseCreateBill = billsMutations.create();
   const createNewBillMutation = useMutation({
     ...baseCreateBill,
-    onSuccess: (data, variables, onMutateResult, context) => {
-      baseCreateBill.onSuccess?.(data, variables, onMutateResult, context);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bills"] });
+      queryClient.invalidateQueries({ queryKey: ["spending-report"] });
+      queryClient.invalidateQueries({
+        queryKey: ["spending-report-by-category"],
+      });
       showSnackbar({
         severity: "success",
         message: "Boleto cadastrado com sucesso.",
@@ -70,11 +74,15 @@ export const useBillsActions = () => {
     },
   });
 
-  const baseCreateBillByPdf = billsMutations.createByPdf(queryClient);
+  const baseCreateBillByPdf = billsMutations.createByPdf();
   const createNewBillByPdfMutation = useMutation({
     ...baseCreateBillByPdf,
-    onSuccess: (data, variables, onMutateResult, context) => {
-      baseCreateBillByPdf.onSuccess?.(data, variables, onMutateResult, context);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bills"] });
+      queryClient.invalidateQueries({ queryKey: ["spending-report"] });
+      queryClient.invalidateQueries({
+        queryKey: ["spending-report-by-category"],
+      });
       showSnackbar({
         severity: "success",
         message: "Boleto via PDF cadastrado com sucesso.",
@@ -88,11 +96,16 @@ export const useBillsActions = () => {
     },
   });
 
-  const baseUpdateBill = billsMutations.update(queryClient);
+  const baseUpdateBill = billsMutations.update();
   const updateBillMutation = useMutation({
     ...baseUpdateBill,
-    onSuccess: (data, variables, onMutateResult, context) => {
-      baseUpdateBill.onSuccess?.(data, variables, onMutateResult, context);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bills"] });
+      queryClient.invalidateQueries({ queryKey: ["spending-report"] });
+      queryClient.invalidateQueries({
+        queryKey: ["spending-report-by-category"],
+      });
+
       showSnackbar({
         severity: "success",
         message: "Boleto atualizado com sucesso.",
@@ -106,11 +119,16 @@ export const useBillsActions = () => {
     },
   });
 
-  const baseDeleteBill = billsMutations.delete(queryClient);
+  const baseDeleteBill = billsMutations.delete();
   const deleteBillMutation = useMutation({
     ...baseDeleteBill,
-    onSuccess: (data, variables, onMutateResult, context) => {
-      baseDeleteBill.onSuccess?.(data, variables, onMutateResult, context);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["bills"] });
+      queryClient.invalidateQueries({ queryKey: ["spending-report"] });
+      queryClient.invalidateQueries({
+        queryKey: ["spending-report-by-category"],
+      });
+
       showSnackbar({
         severity: "warning",
         message: "Boleto excluído com sucesso.",

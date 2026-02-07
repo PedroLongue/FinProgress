@@ -22,11 +22,11 @@ export const useAuthActions = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const showSnackbar = useSnackbarStore((s) => s.show);
-  const baseLogin = usersMutations.login(queryClient);
+  const baseLogin = usersMutations.login();
   const loginMutation = useMutation({
     ...baseLogin,
-    onSuccess: (data, variables, onMutateResult, context) => {
-      baseLogin.onSuccess?.(data, variables, onMutateResult, context);
+    onSuccess: (user) => {
+      queryClient.setQueryData(["me"], user);
       navigate({ to: "/", replace: true });
     },
     onError: (error: AxiosError<AuthErrorResponse>) => {
@@ -37,11 +37,11 @@ export const useAuthActions = () => {
     },
   });
 
-  const baseRegister = usersMutations.register(queryClient);
+  const baseRegister = usersMutations.register();
   const registerMutation = useMutation({
     ...baseRegister,
-    onSuccess: (data, variables, onMutateResult, context) => {
-      baseRegister.onSuccess?.(data, variables, onMutateResult, context);
+    onSuccess: (user) => {
+      queryClient.setQueryData(["me"], user);
       navigate({ to: "/", replace: true });
     },
     onError: (error: AxiosError<AuthErrorResponse>) => {
@@ -52,11 +52,11 @@ export const useAuthActions = () => {
     },
   });
 
-  const baseChangePassword = usersMutations.changePassword(queryClient);
+  const baseChangePassword = usersMutations.changePassword();
   const changePasswordMutation = useMutation({
     ...baseChangePassword,
-    onSuccess: (data, variables, onMutateResult, context) => {
-      baseChangePassword.onSuccess?.(data, variables, onMutateResult, context);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["me"] });
       showSnackbar({
         severity: "success",
         message: "Senha alterada com sucesso.",
@@ -70,11 +70,26 @@ export const useAuthActions = () => {
     },
   });
 
-  const baseLogout = usersMutations.logout(queryClient);
+  const baseLogout = usersMutations.logout();
   const logoutMutation = useMutation({
     ...baseLogout,
-    onSuccess: (data, variables, onMutateResult, context) => {
-      baseLogout.onSuccess?.(data, variables, onMutateResult, context);
+    onSuccess: () => {
+      queryClient.setQueryData(["me"], null);
+      queryClient.removeQueries({ queryKey: ["me"] });
+      queryClient.invalidateQueries({ queryKey: ["bills"] });
+      queryClient.invalidateQueries({ queryKey: ["bill-details"] });
+      queryClient.invalidateQueries({ queryKey: ["bill-score-explanation"] });
+      queryClient.invalidateQueries({ queryKey: ["spending-report"] });
+      queryClient.invalidateQueries({ queryKey: ["monthly-goal"] });
+      queryClient.invalidateQueries({
+        queryKey: ["spending-report-by-category"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["spending-report-by-category"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["update-notifications-settings"],
+      });
       navigate({ to: "/login", replace: true });
     },
   });

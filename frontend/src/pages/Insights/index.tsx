@@ -28,7 +28,7 @@ import { CreateOrupdateGoalModal } from "../../components/Modals/CreateOrUpdateG
 import { useSpendingByCategoryReport } from "../../hooks/useSpendingByCategoryReport ";
 import { SpendingByCategory } from "../../components/reports/SpendingByCategory";
 import { GoalSpending } from "../../components/reports/GoalSpending";
-import type { IMonthlyGoalHistory } from "../../types/goal.type";
+import type { MonthlyGoalHistory } from "../../types/goal.type";
 import { dateToText } from "../../utils/date.utils";
 
 export const Insights = () => {
@@ -278,7 +278,7 @@ export const Insights = () => {
       />
 
       <GoalSpending
-        rows={goalHistory as IMonthlyGoalHistory[]}
+        rows={goalHistory as MonthlyGoalHistory[]}
         monthFilter={historyGoalRange}
         setMonthFilter={setHistoryGoalRange}
         isEmpty={false}
