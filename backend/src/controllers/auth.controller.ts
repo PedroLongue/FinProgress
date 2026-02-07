@@ -147,3 +147,36 @@ export const updateUserPhone = async (req: IAuthRequest, res: Response) => {
 
   return res.json({ user: updatedUser });
 };
+
+export const updateUserPassword = async (req: IAuthRequest, res: Response) => {
+  const userId = req.userId;
+
+  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
+  const { currentPassword, newPassword, confirmNewPassword } = req.body;
+
+  if (newPassword === currentPassword) {
+    return res
+      .status(422)
+      .json({ errors: ["A nova senha deve ser diferente da atual."] });
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, password: true },
+  });
+
+  if (!user)
+    return res.status(404).json({ errors: ["Usuário não encontrado."] });
+
+  const ok = await bcrypt.compare(currentPassword, user.password);
+  if (!ok) return res.status(401).json({ errors: ["Senha atual inválida."] });
+
+  const passwordHash = await bcrypt.hash(newPassword, 10);
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { password: passwordHash },
+  });
+
+  return res.status(200).json({ message: "Senha atualizada com sucesso." });
+};

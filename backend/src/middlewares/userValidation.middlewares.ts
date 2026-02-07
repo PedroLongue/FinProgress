@@ -61,8 +61,30 @@ export const phoneValidation = () => {
 
         if (!(digits.length === 10 || digits.length === 11)) {
           throw new Error(
-            "Telefone inválido. Use DDD + número (10 ou 11 dígitos)."
+            "Telefone inválido. Use DDD + número (10 ou 11 dígitos).",
           );
+        }
+        return true;
+      }),
+  ];
+};
+
+export const passwordChangeValidation = () => {
+  return [
+    body("currentPassword")
+      .isString()
+      .withMessage("A senha atual é obrigatória."),
+    body("newPassword")
+      .isString()
+      .withMessage("A nova senha é obrigatória.")
+      .isLength({ min: 5 })
+      .withMessage("A nova senha deve ter no mínimo 5 caracteres."),
+    body("confirmNewPassword")
+      .isString()
+      .withMessage("A confirmação da nova senha é obrigatória.")
+      .custom((value: string, { req }: IValidatorOptions) => {
+        if (value !== req?.body?.newPassword) {
+          throw new Error("As novas senhas não coincidem.");
         }
         return true;
       }),

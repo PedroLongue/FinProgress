@@ -5,10 +5,12 @@ import {
   login,
   logout,
   register,
+  updateUserPassword,
   updateUserPhone,
 } from "../controllers/auth.controller";
 import {
   loginValidation,
+  passwordChangeValidation,
   phoneValidation,
   userCreateValidation,
 } from "../middlewares/userValidation.middlewares";
@@ -21,7 +23,7 @@ userRoutes.post(
   "/register",
   userCreateValidation(),
   handleValidation,
-  register
+  register,
 );
 
 userRoutes.post("/login", loginValidation(), handleValidation, login);
@@ -35,7 +37,15 @@ userRoutes.patch(
   authGuard,
   phoneValidation(),
   handleValidation,
-  updateUserPhone
+  updateUserPhone,
+);
+
+userRoutes.patch(
+  "/change-password",
+  authGuard,
+  passwordChangeValidation(),
+  handleValidation,
+  updateUserPassword,
 );
 
 userRoutes.get("/:id", getUserById);
