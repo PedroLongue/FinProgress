@@ -2,6 +2,26 @@ export const startOfMonth = (date: Date): Date => {
   return new Date(date.getFullYear(), date.getMonth(), 1, 0, 0, 0, 0);
 };
 
+export const startOfDay = (date: Date): Date => {
+  return new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      0,
+      0,
+      0,
+      0,
+    ),
+  );
+};
+
+export const addDays = (date: Date, days: number): Date => {
+  const d = new Date(date);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d;
+};
+
 export const nextMonth = (date: Date) => {
   return new Date(date.getFullYear(), date.getMonth() + 1, 1, 0, 0, 0, 0);
 };
@@ -43,4 +63,12 @@ export const parseISODate = (value: unknown): Date | null => {
   if (typeof value !== "string" || !value.trim()) return null;
   const d = new Date(value);
   return Number.isNaN(d.getTime()) ? null : d;
+};
+
+export const formatYMDToBR = (ymd: string): string => {
+  if (typeof ymd !== "string") return "";
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(ymd.trim());
+  if (!m) return "";
+  const [, y, mm, dd] = m;
+  return `${dd}/${mm}/${y}`;
 };

@@ -7,9 +7,15 @@ export const billSchema = z.object({
     .min(2, "Informe um título de no mínimo 2 caracteres")
     .max(50, "Limite de 50 caracteres"),
   amount: z
-    .number({ message: "Informe o valor" })
-    .refine((v) => Number.isFinite(v), "Informe o valor")
-    .refine((v) => v > 0, "Informe um valor maior que zero"),
+    .string()
+    .min(1, "Informe o valor")
+    .transform((val) => {
+      const normalized = val.replace(",", ".");
+      const num = parseFloat(normalized);
+      return isNaN(num) ? 0 : num;
+    })
+    .refine((val) => val > 0, "Informe um valor maior que zero")
+    .refine((val) => !isNaN(val), "Valor inválido"),
   dueDate: z
     .string()
     .min(1, "Informe o vencimento")

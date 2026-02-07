@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { COOKIE_NAME } from "../utils/authCookie.js";
+import { COOKIE_NAME } from "../utils/authCookie.utils";
 
 interface AuthRequest extends Request {
   userId?: string;

@@ -9,7 +9,7 @@ import {
   updateBill,
   usersBillsDetails,
   usersBillsScoreExplanation,
-} from "../controllers/bill.controller.js";
+} from "../controllers/bill.controller";
 import {
   createBillValidation,
   updateBillValidation,

@@ -7,8 +7,8 @@ import {
   nextMonth,
   parseMonthYYYYMM,
   startOfMonth,
-} from "../utils/date";
-import { parseReportRange } from "../utils/report";
+} from "../utils/date.utils";
+import { parseReportRange } from "../utils/report.utils";
 import type { Prisma } from "../../generated/prisma/client";
 
 interface AuthRequest extends Request {

@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import http from "http";
 import cookieParser from "cookie-parser";
 import router from "./routes/Router";
+import { registerExpiringBillsJob } from "./jobs/expiringBills.jobs";
 
 dotenv.config();
 
@@ -15,12 +16,14 @@ app.use(
   cors({
     origin: "http://localhost:5173",
     credentials: true,
-  })
+  }),
 );
 app.use(cookieParser());
 app.use(express.json());
 
 app.use(router);
+
+registerExpiringBillsJob();
 
 server.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);

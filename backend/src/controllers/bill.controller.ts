@@ -1,11 +1,14 @@
 import type { Request, Response } from "express";
 import { prisma } from "../db/prisma";
-import { categorizeBillAI } from "../services/billCategorizer";
-import { calculateBillStatus } from "../utils/billStatusCalculator";
-import { extractBillFromPdfAI } from "../services/billPdfExtractor";
-import { explainScoreWithAI } from "../services/billScoreExplanation";
-import { billScoreCalculator, IBillScore } from "../utils/billScoreCalculator";
-import { parseISODate } from "../utils/date";
+import { categorizeBillAI } from "../services/billCategorizer.services";
+import { calculateBillStatus } from "../utils/billStatusCalculator.utils";
+import { extractBillFromPdfAI } from "../services/billPdfExtractor.services";
+import { explainScoreWithAI } from "../services/billScoreExplanation.services";
+import {
+  billScoreCalculator,
+  IBillScore,
+} from "../utils/billScoreCalculator.utils";
+import { parseISODate } from "../utils/date.utils";
 import type { Prisma } from "../../generated/prisma/client";
 
 interface AuthRequest extends Request {

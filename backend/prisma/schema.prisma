@@ -16,6 +16,8 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   phone     String?
 
+  billReminderDays Int @default(2) @map("bill_reminder_days")
+
   bills                Bill[]
   monthlySpendingGoals MonthlySpendingGoal[]
 

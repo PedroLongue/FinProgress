@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { clearAuthCookie, setAuthCookie } from "../utils/authCookie.js";
-import { prisma } from "../db/prisma.js";
+import { clearAuthCookie, setAuthCookie } from "../utils/authCookie.utils";
+import { prisma } from "../db/prisma";
 
 interface IAuthRequest extends Request {
   userId?: string;

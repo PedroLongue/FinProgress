@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import type { ICreateBillBody } from "../../../types/bills.type";
+import type { CreateBillBody } from "../../../types/bills.type";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { Button } from "../../ui/button";
 import {
@@ -25,7 +25,7 @@ interface ICreateBill {
   isOpen: boolean;
   onClose: () => void;
 
-  onAdd: (bill: ICreateBillBody) => void;
+  onAdd: (bill: CreateBillBody) => void;
   onScan: (file: File) => void;
 
   isScanning: boolean;
@@ -130,9 +130,9 @@ export const BillCreateModal = ({
   );
 
   const onSubmitManual = (values: BillFormValues) => {
-    const body: ICreateBillBody = {
+    const body: CreateBillBody = {
       title: values.title,
-      amount: values.amount,
+      amount: Number(values.amount),
       dueDate: values.dueDate,
       barcode: values.barcode,
       description: values.description,
