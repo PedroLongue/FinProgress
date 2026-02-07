@@ -4,6 +4,10 @@ import { sendEmail } from "../services/email.services";
 import { expiringBills } from "../templates/expiringBills.templates";
 import { addDays, formatYMDToBR, startOfDay } from "../utils/date.utils";
 
+interface AuthRequest extends Request {
+  userId?: string;
+}
+
 export const sendExpiringBillsEmails = async (_req: Request, res: Response) => {
   try {
     const today = startOfDay(new Date());
@@ -75,4 +79,51 @@ export const sendExpiringBillsEmails = async (_req: Request, res: Response) => {
       err instanceof Error ? err.message : "Erro ao disparar emails";
     return res.status(500).json({ ok: false, error: message });
   }
+};
+
+export const updateNotificationsSettings = async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  const userId = req.userId;
+  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
+
+  const {
+    billReminderDays,
+    emailNotificationsEnabled,
+    pushNotificationsEnabled,
+  } = req.body;
+
+  if (
+    billReminderDays !== undefined &&
+    (typeof billReminderDays !== "number" ||
+      billReminderDays < 1 ||
+      billReminderDays > 7)
+  ) {
+    return res
+      .status(400)
+      .json({ errors: ["billReminderDays deve ser um número entre 1 e 7"] });
+  }
+
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      ...(billReminderDays !== undefined && {
+        billReminderDays,
+      }),
+      ...(emailNotificationsEnabled !== undefined && {
+        emailNotificationsEnabled,
+      }),
+      ...(pushNotificationsEnabled !== undefined && {
+        pushNotificationsEnabled,
+      }),
+    },
+    select: {
+      billReminderDays: true,
+      emailNotificationsEnabled: true,
+      pushNotificationsEnabled: true,
+    },
+  });
+
+  return res.status(200).json({ settings: user });
 };

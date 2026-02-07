@@ -11,6 +11,9 @@ export type RegisterUser = LoginUser & {
 
 export type ProfileUser = RegisterUser & {
   phone: string | null;
+  billReminderDays: number;
+  emailNotificationsEnabled: boolean;
+  pushNotificationsEnabled: boolean;
 };
 
 export type LoginBody = { email: string; password: string };

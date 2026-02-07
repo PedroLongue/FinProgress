@@ -94,6 +94,9 @@ export const getCurrentUser = async (req: IAuthRequest, res: Response) => {
       phone: true,
       createdAt: true,
       isActive: true,
+      billReminderDays: true,
+      emailNotificationsEnabled: true,
+      pushNotificationsEnabled: true,
     },
   });
 

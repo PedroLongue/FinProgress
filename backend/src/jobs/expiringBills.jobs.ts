@@ -9,7 +9,7 @@ export const registerExpiringBillsJob = () => {
     const today = startOfDay(new Date());
 
     const users = await prisma.user.findMany({
-      where: { isActive: true },
+      where: { isActive: true, emailNotificationsEnabled: true },
       select: { id: true, name: true, email: true, billReminderDays: true },
     });
 
