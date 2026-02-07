@@ -16,7 +16,9 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   phone     String?
 
-  billReminderDays Int @default(2) @map("bill_reminder_days")
+  emailNotificationsEnabled Boolean @default(false) @map("email_notifications_enabled")
+  pushNotificationsEnabled  Boolean @default(false) @map("push_notifications_enabled")
+  billReminderDays          Int     @default(2) @map("bill_reminder_days")
 
   bills                Bill[]
   monthlySpendingGoals MonthlySpendingGoal[]
