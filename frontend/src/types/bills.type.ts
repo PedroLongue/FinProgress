@@ -1,7 +1,7 @@
 export type BillStatusKey = "PENDING" | "PAID" | "PAID_LATE" | "OVERDUE" | "";
 export type BillFilterStatus = BillStatusKey | "UNPAID";
 
-export interface IBill {
+export type Bill = {
   id: string;
   title: string;
   amount: number;
@@ -13,9 +13,9 @@ export interface IBill {
   description?: string | null;
   paidAt?: string | null;
   userId: string;
-}
+};
 
-export interface ICreateBillBody {
+export type CreateBillBody = {
   title: string;
   amount: number;
   dueDate: string;
@@ -24,12 +24,12 @@ export interface ICreateBillBody {
   description?: string;
   status?: BillStatusKey;
   paidAt?: string | null;
-}
+};
 
-export interface IScoreExplanation {
+export type ScoreExplanation = {
   title: string;
   summary: string;
   bills: string[];
   nextSteps: string[];
   confidence: number;
-}
+};

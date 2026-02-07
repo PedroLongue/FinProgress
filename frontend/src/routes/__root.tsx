@@ -7,32 +7,14 @@ import Header from "../components/layout/Header";
 import { Loading } from "../components/ui/loading";
 import { Button } from "../components/ui/button";
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BillCreateModal } from "../components/Modals/BillCreateModal";
 import { useBillsActions } from "../hooks/useBills";
-import { useSnackbarStore } from "../stores/snackbar.store";
 
 const RootLayout = () => {
   const { isLoading, isAuthenticated } = useAuth();
   const { createBill, createBillByPdf } = useBillsActions();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const showSnackbar = useSnackbarStore((s) => s.show);
-
-  useEffect(() => {
-    if (!isAddModalOpen) return;
-    if (createBill.isSuccess)
-      showSnackbar({ severity: "success", message: "Boleto cadastrado." });
-    if (createBillByPdf.isSuccess)
-      showSnackbar({
-        severity: "success",
-        message: "Boleto via PDF cadastrado.",
-      });
-  }, [
-    isAddModalOpen,
-    createBill.isSuccess,
-    createBillByPdf.isSuccess,
-    showSnackbar,
-  ]);
 
   const handleCloseModal = () => {
     createBillByPdf.reset();

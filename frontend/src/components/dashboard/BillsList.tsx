@@ -7,15 +7,14 @@ import {
 } from "lucide-react";
 import type {
   BillStatusKey,
-  IBill,
-  ICreateBillBody,
+  Bill,
+  CreateBillBody,
 } from "../../types/bills.type";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import type { BillsResponse } from "../../queries/bills";
 import {
   useCallback,
-  useEffect,
   useMemo,
   useState,
   type Dispatch,
@@ -25,7 +24,6 @@ import { BillEditModal } from "../Modals/BillEditModal";
 import { useBillsActions } from "../../hooks/useBills";
 import { BillDeleteModal } from "../Modals/BillDeleteModal";
 import { Link } from "@tanstack/react-router";
-import { useSnackbarStore } from "../../stores/snackbar.store";
 import { AppSelect } from "../ui/app-select";
 import { EmptyState } from "../layout/EmptyState";
 import { FilterModal } from "../Modals/FilterModal";
@@ -60,7 +58,7 @@ export const BillsList = ({
   onChangeRange,
   isLoading = false,
 }: IBillsList) => {
-  const [selectedBill, setSelectedBill] = useState<IBill | null>(null);
+  const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
 
   const [currentPage, setCurrentPage] = useState(() => bills?.page ?? 1);
   const totalPages = bills?.totalPages ?? 1;
@@ -69,7 +67,6 @@ export const BillsList = ({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
-  const showSnackbar = useSnackbarStore((s) => s.show);
   const { updateBill, deleteBill } = useBillsActions();
 
   const userCategories = useMemo(() => {
@@ -99,12 +96,12 @@ export const BillsList = ({
     setSelectedBill(null);
   }, []);
 
-  const openEdit = useCallback((bill: IBill) => {
+  const openEdit = useCallback((bill: Bill) => {
     setSelectedBill(bill);
     setIsEditModalOpen(true);
   }, []);
 
-  const openDelete = useCallback((bill: IBill) => {
+  const openDelete = useCallback((bill: Bill) => {
     setSelectedBill(bill);
     setIsDeleteModalOpen(true);
   }, []);
@@ -119,7 +116,7 @@ export const BillsList = ({
   );
 
   const handleBillSave = useCallback(
-    async (updatedBill: Partial<ICreateBillBody>) => {
+    async (updatedBill: Partial<CreateBillBody>) => {
       if (!selectedBill?.id) return;
       await updateBill.mutateAsync({ id: selectedBill.id, body: updatedBill });
       closeAllModals();
@@ -140,28 +137,6 @@ export const BillsList = ({
     },
     [onChangeRange],
   );
-
-  useEffect(() => {
-    if (isEditModalOpen) return;
-    if (isDeleteModalOpen) return;
-    if (deleteBill.isSuccess)
-      showSnackbar({
-        severity: "warning",
-        message: "Boleto excluído com sucesso.",
-      });
-    if (updateBill.isSuccess)
-      showSnackbar({
-        severity: "success",
-        message: "Boleto editado com sucesso.",
-      });
-  }, [
-    deleteBill.isSuccess,
-    isDeleteModalOpen,
-    isEditModalOpen,
-    showSnackbar,
-    updateBill.isError,
-    updateBill.isSuccess,
-  ]);
 
   return (
     <Card variant="default">
@@ -266,7 +241,7 @@ export const BillsList = ({
         <BillEditModal
           bill={selectedBill}
           onClose={closeAllModals}
-          onSave={(updated) => handleBillSave(updated as ICreateBillBody)}
+          onSave={(updated) => handleBillSave(updated as CreateBillBody)}
           isLoading={updateBill.isPending}
           isEditing={true}
         />

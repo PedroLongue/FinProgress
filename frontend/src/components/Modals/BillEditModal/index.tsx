@@ -2,16 +2,16 @@ import { Card, CardContent } from "../../ui/card";
 import { Barcode, Calendar, DollarSign, Tag, Check } from "lucide-react";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
-import type { IBill } from "../../../types/bills.type";
+import type { Bill } from "../../../types/bills.type";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
 import { getStatusBadge, isPaid } from "../../../utils/bills.utils";
 import { cn } from "../../../lib/utils";
 
 interface IEditBillModal {
-  bill: IBill;
+  bill: Bill;
   onClose: () => void;
-  onSave?: (updatedBill: Partial<IBill>) => Promise<void> | void;
+  onSave?: (updatedBill: Partial<Bill>) => Promise<void> | void;
   isLoading?: boolean;
   isEditing?: boolean;
 }
@@ -40,7 +40,7 @@ export const BillEditModal = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const updatedBill: Partial<IBill> = {
+    const updatedBill: Partial<Bill> = {
       title,
       amount: parseFloat(amount) || 0,
       dueDate: dueDate ? new Date(dueDate).toISOString() : bill.dueDate,

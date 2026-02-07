@@ -1,17 +1,17 @@
-export interface ILoginUser {
+export type LoginUser = {
   id: string;
   name: string;
   email: string;
-}
+};
 
-export interface IRegisterUser extends ILoginUser {
+export type RegisterUser = LoginUser & {
   createdAt: string;
   isActive: boolean;
-}
+};
 
-export interface IProfileUser extends IRegisterUser {
+export type ProfileUser = RegisterUser & {
   phone: string | null;
-}
+};
 
 export type LoginBody = { email: string; password: string };
 
@@ -20,4 +20,12 @@ export type RegisterBody = {
   email: string;
   password: string;
   confirmPassword: string;
+};
+
+export type UpdatePhoneBody = { phone: string | null };
+
+export type ChangePasswordBody = {
+  password: string;
+  newPassword: string;
+  confirmNewPassword: string;
 };

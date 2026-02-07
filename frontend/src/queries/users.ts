@@ -1,17 +1,18 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { queryOptions, mutationOptions } from "@tanstack/react-query";
-import { getData, postData } from "../services/api";
+import { getData, patchData, postData } from "../services/api";
 import type {
-  ILoginUser,
-  IProfileUser,
-  IRegisterUser,
+  ChangePasswordBody,
   LoginBody,
+  LoginUser,
+  ProfileUser,
   RegisterBody,
+  RegisterUser,
 } from "../types/user.type";
 
-type LoginResponse = { user: ILoginUser };
-type RegisterResponse = { user: IRegisterUser };
-type MeResponse = { user: IProfileUser };
+type LoginResponse = { user: LoginUser };
+type RegisterResponse = { user: RegisterUser };
+type MeResponse = { user: ProfileUser };
 
 export const usersQueries = {
   me: () =>
@@ -53,6 +54,20 @@ export const usersMutations = {
       },
       onSuccess: (user) => {
         qc.setQueryData(["me"], user);
+      },
+    }),
+
+  changePassword: (qc: QueryClient) =>
+    mutationOptions({
+      mutationKey: ["change-password"],
+      mutationFn: async (body: ChangePasswordBody) => {
+        await patchData<void, ChangePasswordBody>(
+          "/users/change-password",
+          body,
+        );
+      },
+      onSuccess: () => {
+        qc.invalidateQueries({ queryKey: ["me"] });
       },
     }),
 

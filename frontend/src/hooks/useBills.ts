@@ -57,13 +57,16 @@ export const useBillsActions = () => {
     ...baseCreateBill,
     onSuccess: (data, variables, onMutateResult, context) => {
       baseCreateBill.onSuccess?.(data, variables, onMutateResult, context);
+      showSnackbar({
+        severity: "success",
+        message: "Boleto cadastrado com sucesso.",
+      });
     },
     onError: (error: AxiosError<BillErrorResponse>) => {
       showSnackbar({
         severity: "error",
         message: error.response?.data.errors[0] ?? "Erro ao criar boleto.",
       });
-      console.error("Create bill error:", error.response?.data.errors[0]);
     },
   });
 
@@ -72,13 +75,16 @@ export const useBillsActions = () => {
     ...baseCreateBillByPdf,
     onSuccess: (data, variables, onMutateResult, context) => {
       baseCreateBillByPdf.onSuccess?.(data, variables, onMutateResult, context);
+      showSnackbar({
+        severity: "success",
+        message: "Boleto via PDF cadastrado com sucesso.",
+      });
     },
     onError: (error: AxiosError<BillErrorResponse>) => {
       showSnackbar({
         severity: "error",
         message: error.response?.data.errors[0] ?? "Erro ao criar boleto.",
       });
-      console.error("Create bill error:", error.response?.data.errors[0]);
     },
   });
 
@@ -87,13 +93,16 @@ export const useBillsActions = () => {
     ...baseUpdateBill,
     onSuccess: (data, variables, onMutateResult, context) => {
       baseUpdateBill.onSuccess?.(data, variables, onMutateResult, context);
+      showSnackbar({
+        severity: "success",
+        message: "Boleto atualizado com sucesso.",
+      });
     },
     onError: (error: AxiosError<BillErrorResponse>) => {
       showSnackbar({
         severity: "error",
         message: error.response?.data.errors[0] ?? "Erro ao atualizar boleto.",
       });
-      console.error("Update bill error:", error.response?.data.errors[0]);
     },
   });
 
@@ -102,13 +111,16 @@ export const useBillsActions = () => {
     ...baseDeleteBill,
     onSuccess: (data, variables, onMutateResult, context) => {
       baseDeleteBill.onSuccess?.(data, variables, onMutateResult, context);
+      showSnackbar({
+        severity: "warning",
+        message: "Boleto excluído com sucesso.",
+      });
     },
     onError: (error: AxiosError<BillErrorResponse>) => {
       showSnackbar({
         severity: "error",
         message: error.response?.data.errors[0] ?? "Erro ao deletar boleto.",
       });
-      console.error("Delete bill error:", error);
     },
   });
 

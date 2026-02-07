@@ -9,13 +9,13 @@ import {
 } from "../services/api";
 import type {
   BillFilterStatus,
-  IBill,
-  ICreateBillBody,
-  IScoreExplanation,
+  Bill,
+  CreateBillBody,
+  ScoreExplanation,
 } from "../types/bills.type";
 
 export type BillsResponse = {
-  bills: IBill[];
+  bills: Bill[];
   page: number;
   pageSize: number;
   total: number;
@@ -24,7 +24,7 @@ export type BillsResponse = {
 };
 
 export type CreateBillResponse = {
-  bill: IBill;
+  bill: Bill;
 };
 
 export type BillDetailsResponse = {
@@ -37,7 +37,7 @@ export type BillDetailsResponse = {
 };
 
 export type BillScoreExplanation = {
-  scoreExplanation: IScoreExplanation;
+  scoreExplanation: ScoreExplanation;
 };
 
 export const billsQueries = {
@@ -103,8 +103,8 @@ export const billsMutations = {
   create: (qc: QueryClient) =>
     mutationOptions({
       mutationKey: ["createBill"],
-      mutationFn: async (body: ICreateBillBody) => {
-        const res = await postData<CreateBillResponse, ICreateBillBody>(
+      mutationFn: async (body: CreateBillBody) => {
+        const res = await postData<CreateBillResponse, CreateBillBody>(
           "/bills",
           body,
         );
@@ -146,9 +146,9 @@ export const billsMutations = {
         body,
       }: {
         id: string;
-        body: Partial<ICreateBillBody>;
+        body: Partial<CreateBillBody>;
       }) => {
-        const res = await patchData<{ bill: IBill }, Partial<ICreateBillBody>>(
+        const res = await patchData<{ bill: Bill }, Partial<CreateBillBody>>(
           `/bills/${id}`,
           body,
         );

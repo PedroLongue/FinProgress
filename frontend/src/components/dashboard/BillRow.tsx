@@ -1,5 +1,5 @@
 import { Trash2 } from "lucide-react";
-import type { IBill } from "../../types/bills.type";
+import type { Bill } from "../../types/bills.type";
 import { Button } from "../ui/button";
 import { cn } from "../../lib/utils";
 import { Badge } from "../ui/badge";
@@ -18,10 +18,10 @@ export const BillRow = ({
   onEdit,
   onDelete,
 }: {
-  bill: IBill;
+  bill: Bill;
   index: number;
-  onEdit: (bill: IBill) => void;
-  onDelete: (bill: IBill) => void;
+  onEdit: (bill: Bill) => void;
+  onDelete: (bill: Bill) => void;
 }) => {
   return (
     <div

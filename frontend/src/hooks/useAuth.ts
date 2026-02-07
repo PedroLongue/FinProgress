@@ -34,7 +34,6 @@ export const useAuthActions = () => {
         severity: "error",
         message: error.response?.data.errors[0] ?? "Erro ao fazer login.",
       });
-      console.error("Login error:", error.response?.data.errors[0]);
     },
   });
 
@@ -50,7 +49,24 @@ export const useAuthActions = () => {
         severity: "error",
         message: error.response?.data.errors[0] ?? "Erro ao fazer registro.",
       });
-      console.error("Register error:", error.response?.data.errors[0]);
+    },
+  });
+
+  const baseChangePassword = usersMutations.changePassword(queryClient);
+  const changePasswordMutation = useMutation({
+    ...baseChangePassword,
+    onSuccess: (data, variables, onMutateResult, context) => {
+      baseChangePassword.onSuccess?.(data, variables, onMutateResult, context);
+      showSnackbar({
+        severity: "success",
+        message: "Senha alterada com sucesso.",
+      });
+    },
+    onError: (error: AxiosError<AuthErrorResponse>) => {
+      showSnackbar({
+        severity: "error",
+        message: error.response?.data.errors[0] ?? "Erro ao alterar a senha.",
+      });
     },
   });
 
@@ -66,6 +82,7 @@ export const useAuthActions = () => {
   return {
     login: loginMutation,
     register: registerMutation,
+    changePassword: changePasswordMutation,
     logout: logoutMutation,
   };
 };
