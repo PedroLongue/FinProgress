@@ -63,3 +63,9 @@ export const dateInputToISO = (date: string) => {
 
   return date;
 };
+
+export const formatMonthLabel = (ym: string) => {
+  const [y, m] = ym.split("-");
+  if (!y || !m) return ym;
+  return `${m.padStart(2, "0")}/${y}`;
+};

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { SpendingReports } from "../../components/reports/Spending";
+import { MonthlySpending } from "../../components/reports/MonthlySpending";
 import { useSpendingReports } from "../../hooks/useSpendingReports";
 import { Loading } from "../../components/ui/loading";
 import type {
@@ -30,6 +30,8 @@ import { SpendingByCategory } from "../../components/reports/SpendingByCategory"
 import { GoalSpending } from "../../components/reports/GoalSpending";
 import type { MonthlyGoalHistory } from "../../types/goal.type";
 import { dateToText } from "../../utils/date.utils";
+import { useIsMobile } from "../../hooks/useMobile";
+import { cn } from "../../lib/utils";
 
 export const Insights = () => {
   const [spendMonthFilter, setSpendMonthFilter] = useState<3 | 6 | 12>(3);
@@ -47,6 +49,7 @@ export const Insights = () => {
   const { createOrUpdateGoal } = useMonthlyGoalActions();
   const { spendingByCategoryReport, isLoading: spendingByCategoryLoading } =
     useSpendingByCategoryReport(start, end);
+  const isMobile = useIsMobile();
 
   const isLoading =
     reportLoading ||
@@ -137,7 +140,12 @@ export const Insights = () => {
                     <p className="text-sm text-muted-foreground">
                       Total gasto no mês
                     </p>
-                    <p className="text-2xl font-bold text-foreground">
+                    <p
+                      className={cn(
+                        isMobile ? "text-xl" : "text-2xl",
+                        "font-bold text-foreground",
+                      )}
+                    >
                       {formatCurrency(currMonth.total)}
                     </p>
                   </div>
@@ -177,7 +185,12 @@ export const Insights = () => {
                       <p className="text-sm text-muted-foreground">
                         Meta de orçamento
                       </p>
-                      <p className="text-2xl font-bold text-foreground">
+                      <p
+                        className={cn(
+                          isMobile ? "text-xl" : "text-2xl",
+                          "font-bold text-foreground",
+                        )}
+                      >
                         {formatCurrency(goalAmount)}
                       </p>
                     </div>
@@ -188,6 +201,7 @@ export const Insights = () => {
                       setOpenGoalModal(true);
                       setGoalMode("update");
                     }}
+                    size={isMobile ? "sm" : undefined}
                   >
                     <PencilIcon />
                   </Button>
@@ -223,7 +237,12 @@ export const Insights = () => {
                     <p className="text-sm text-muted-foreground">
                       Volume e pico
                     </p>
-                    <p className="text-2xl font-bold text-foreground">
+                    <p
+                      className={cn(
+                        isMobile ? "text-xl" : "text-2xl",
+                        "font-bold text-foreground",
+                      )}
+                    >
                       Maior gasto
                     </p>
                   </div>
@@ -255,7 +274,7 @@ export const Insights = () => {
           </CardContent>
         </Card>
       </div>
-      <SpendingReports
+      <MonthlySpending
         spendingReportData={spendingReport as ISpendingReportData}
         monthFilter={spendMonthFilter}
         setMonthFilter={setSpendMonthFilter}

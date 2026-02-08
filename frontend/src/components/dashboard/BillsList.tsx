@@ -1,10 +1,4 @@
-import {
-  ArrowRight,
-  Calendar,
-  ChevronLeft,
-  ChevronRight,
-  Filter,
-} from "lucide-react";
+import { ArrowRight, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import type {
   BillStatusKey,
   Bill,
@@ -29,6 +23,8 @@ import { EmptyState } from "../layout/EmptyState";
 import { FilterModal } from "../Modals/FilterModal";
 import type { DateFilterForm } from "../Modals/FilterModal/validator";
 import { BillRow } from "./BillRow";
+import { useIsMobile } from "../../hooks/useMobile";
+import { cn } from "../../lib/utils";
 interface IBillsList {
   bills: BillsResponse;
   isEmpty: boolean;
@@ -68,6 +64,7 @@ export const BillsList = ({
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   const { updateBill, deleteBill } = useBillsActions();
+  const isMobile = useIsMobile();
 
   const userCategories = useMemo(() => {
     const fromApi = bills?.userCategories;
@@ -142,7 +139,12 @@ export const BillsList = ({
     <Card variant="default">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle
+            className={cn(
+              "flex items-center gap-2",
+              isMobile ? "text-base" : "text-lg",
+            )}
+          >
             <Calendar className="w-5 h-5 text-primary" />
             {dashpage ? "Próximos Boletos não pagos" : "Boletos"}
           </CardTitle>
@@ -150,13 +152,19 @@ export const BillsList = ({
           {!isEmpty && dashpage && (
             <Button variant="ghost" size="sm" className="text-primary" asChild>
               <Link to="/bills">
-                Ver todos <ArrowRight />
+                {!isMobile && "Ver todos"} <ArrowRight />
               </Link>
             </Button>
           )}
 
           {!dashpage && !isEmpty && (
-            <div className="hidden md:flex items-center gap-2">
+            <div
+              className={cn(
+                isMobile
+                  ? "flex flex-col gap-2 items-start"
+                  : "md:flex items-center gap-2",
+              )}
+            >
               <AppSelect
                 value={categoryFilter ?? ""}
                 onChange={(v) => {
@@ -180,7 +188,7 @@ export const BillsList = ({
               />
 
               <Button onClick={() => setIsFilterModalOpen(true)}>
-                <Filter className="w-5 h-5" />
+                <Calendar className="w-5 h-5" />
               </Button>
             </div>
           )}

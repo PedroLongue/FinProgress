@@ -18,12 +18,14 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Filter, PieChart } from "lucide-react";
+import { Calendar, PieChart } from "lucide-react";
 import { Button } from "../ui/button";
 import { EmptyState } from "../layout/EmptyState";
 import { FilterModal } from "../Modals/FilterModal";
 import type { DateFilterForm } from "../Modals/FilterModal/validator";
 import { dateInputToISO, isoToDateInput } from "../../utils/date.utils";
+import { cn } from "../../lib/utils";
+import { useIsMobile } from "../../hooks/useMobile";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -40,6 +42,8 @@ export const SpendingByCategory = ({
   onChangeRange,
   isEmpty,
 }: ISpendingByCategory) => {
+  const isMobile = useIsMobile();
+
   const [openFilterModal, setOpenFilterModal] = useState(false);
 
   const initialStart = isoToDateInput(
@@ -165,8 +169,10 @@ export const SpendingByCategory = ({
         <CardHeader className="flex gap-3 flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-3">
             <PieChart className="w-5 h-5 text-primary" />
-            <div>
-              <CardTitle>Gastos por categoria</CardTitle>
+            <div className="w-full">
+              <CardTitle className={cn(isMobile ? "text-base" : "text-lg")}>
+                Gastos por categoria
+              </CardTitle>
               {!isEmpty && (
                 <CardDescription className="mt-1">
                   {rangeText}. Passe o mouse para ver valor, % e quantidade.
@@ -176,7 +182,7 @@ export const SpendingByCategory = ({
           </div>
 
           <Button onClick={() => setOpenFilterModal(true)}>
-            <Filter className="w-5 h-5" />
+            <Calendar className="w-5 h-5" />
           </Button>
         </CardHeader>
 

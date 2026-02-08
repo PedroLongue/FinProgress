@@ -20,13 +20,16 @@ import {
 import { BarChart3 } from "lucide-react";
 import { AppSelect } from "../ui/app-select";
 import { EmptyState } from "../layout/EmptyState";
-import type { IMonthlyGoalHistory } from "../../types/goal.type";
+import type { MonthlyGoalHistory } from "../../types/goal.type";
 import { formatCurrency } from "../../utils/bills.utils";
+import { useIsMobile } from "../../hooks/useMobile";
+import { formatMonthLabel } from "../../utils/date.utils";
+import { cn } from "../../lib/utils";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 interface IGoalReports {
-  rows: IMonthlyGoalHistory[];
+  rows: MonthlyGoalHistory[];
   monthFilter: 3 | 6 | 12;
   setMonthFilter: Dispatch<SetStateAction<3 | 6 | 12>>;
   isEmpty: boolean;
@@ -38,7 +41,12 @@ export const GoalSpending = ({
   setMonthFilter,
   isEmpty,
 }: IGoalReports) => {
-  const labels = useMemo(() => rows.map((m) => m.month), [rows]);
+  const isMobile = useIsMobile();
+
+  const labels = useMemo(
+    () => rows.map((m) => formatMonthLabel(m.month)),
+    [rows],
+  );
 
   const spentValues = useMemo(() => rows.map((m) => m.spent), [rows]);
 
@@ -173,11 +181,18 @@ export const GoalSpending = ({
   return (
     <div className="space-y-4">
       <Card variant="gradient" className="overflow-hidden">
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader
+          className={cn(
+            "flex flex-row items-center justify-between",
+            isMobile ? "flex-col items-stretch gap-2" : "",
+          )}
+        >
           <div className="flex items-center gap-3">
             <BarChart3 className="w-5 h-5 text-primary" />
-            <div>
-              <CardTitle>Meta x Gasto</CardTitle>
+            <div className="w-full">
+              <CardTitle className={cn(isMobile ? "text-base" : "text-lg")}>
+                Meta x Gasto
+              </CardTitle>
               {!isEmpty && (
                 <CardDescription className="mt-1">
                   Comparativo por mês. Passe o mouse para ver valores e status.

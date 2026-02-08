@@ -23,24 +23,29 @@ import { AppSelect } from "../ui/app-select";
 import type { ISpendingReportData } from "../../types/reports.type";
 import { formatCurrency } from "../../utils/bills.utils";
 import { EmptyState } from "../layout/EmptyState";
+import { useIsMobile } from "../../hooks/useMobile";
+import { formatMonthLabel } from "../../utils/date.utils";
+import { cn } from "../../lib/utils";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-interface ISpendingReports {
+interface IMonthlySpending {
   spendingReportData: ISpendingReportData;
   monthFilter: 3 | 6 | 12;
   setMonthFilter: Dispatch<SetStateAction<3 | 6 | 12>>;
   isEmpty: boolean;
 }
 
-export const SpendingReports = ({
+export const MonthlySpending = ({
   spendingReportData,
   monthFilter,
   setMonthFilter,
   isEmpty,
-}: ISpendingReports) => {
+}: IMonthlySpending) => {
+  const isMobile = useIsMobile();
+
   const labels = useMemo(
-    () => spendingReportData.byMonth.map((m) => m.month),
+    () => spendingReportData.byMonth.map((m) => formatMonthLabel(m.month)),
     [spendingReportData.byMonth],
   );
 
@@ -49,7 +54,16 @@ export const SpendingReports = ({
     [spendingReportData.byMonth],
   );
 
-  const barThickness = spendingReportData.byMonth.length > 6 ? 28 : 44;
+  const pxPerBar = isMobile ? 52 : 0;
+  const chartMinWidth = isMobile ? Math.max(360, labels.length * pxPerBar) : 0;
+
+  const barThickness = isMobile
+    ? labels.length > 6
+      ? 18
+      : 26
+    : labels.length > 6
+      ? 28
+      : 44;
 
   const chartHeight = useMemo(() => {
     const base = 260;
@@ -114,9 +128,10 @@ export const SpendingReports = ({
         grid: { display: false },
         ticks: {
           color: "hsl(215, 20%, 55%)",
-          maxRotation: 0,
-          autoSkip: true,
-          maxTicksLimit: 6,
+          autoSkip: false,
+          maxTicksLimit: isMobile ? 4 : 6,
+          maxRotation: isMobile ? 35 : 0,
+          minRotation: isMobile ? 35 : 0,
         },
       },
       y: {
@@ -140,11 +155,18 @@ export const SpendingReports = ({
   return (
     <div className="space-y-4">
       <Card variant="gradient" className="overflow-hidden">
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader
+          className={cn(
+            "flex flex-row items-center justify-between",
+            isMobile ? "flex-col items-stretch gap-2" : "",
+          )}
+        >
           <div className="flex items-center gap-3">
             <BarChart3 className="w-5 h-5 text-primary" />
-            <div>
-              <CardTitle>Gastos Mensais</CardTitle>
+            <div className="w-full">
+              <CardTitle className={cn(isMobile ? "text-base" : "text-lg")}>
+                Gastos Mensais
+              </CardTitle>
               {!isEmpty && (
                 <CardDescription className="mt-1">
                   Últimos {spendingReportData.rangeMonths} meses (pagos). Passe
@@ -172,8 +194,11 @@ export const SpendingReports = ({
           <CardContent className="p-6">
             <div className="w-full overflow-x-auto md:overflow-visible">
               <div
-                className="min-w-90 md:min-w-0"
-                style={{ height: chartHeight }}
+                style={{
+                  height: chartHeight,
+                  width: "100%",
+                  minWidth: isMobile ? chartMinWidth : undefined,
+                }}
               >
                 <Bar options={options} data={data} />
               </div>
