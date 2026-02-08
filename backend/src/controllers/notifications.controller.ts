@@ -88,11 +88,8 @@ export const updateNotificationsSettings = async (
   const userId = req.userId;
   if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
 
-  const {
-    billReminderDays,
-    emailNotificationsEnabled,
-    pushNotificationsEnabled,
-  } = req.body;
+  const { billReminderDays, emailNotificationsEnabled, notificationsEnabled } =
+    req.body;
 
   if (
     billReminderDays !== undefined &&
@@ -114,14 +111,14 @@ export const updateNotificationsSettings = async (
       ...(emailNotificationsEnabled !== undefined && {
         emailNotificationsEnabled,
       }),
-      ...(pushNotificationsEnabled !== undefined && {
-        pushNotificationsEnabled,
+      ...(notificationsEnabled !== undefined && {
+        notificationsEnabled,
       }),
     },
     select: {
       billReminderDays: true,
       emailNotificationsEnabled: true,
-      pushNotificationsEnabled: true,
+      notificationsEnabled: true,
     },
   });
 
@@ -129,52 +126,6 @@ export const updateNotificationsSettings = async (
 };
 
 // push notifications
-export const subscribePush = async (req: AuthRequest, res: Response) => {
-  const userId = req.userId;
-  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
-
-  const { endpoint, keys } = req.body as {
-    endpoint: string;
-    keys: { p256dh: string; auth: string };
-  };
-
-  if (!endpoint || !keys?.p256dh || !keys?.auth) {
-    return res.status(422).json({ errors: ["Subscription inválida"] });
-  }
-
-  await prisma.pushSubscription.upsert({
-    where: { endpoint },
-    update: {
-      userId,
-      p256dh: keys.p256dh,
-      auth: keys.auth,
-    },
-    create: {
-      userId,
-      endpoint,
-      p256dh: keys.p256dh,
-      auth: keys.auth,
-    },
-  });
-
-  return res.status(200).json({ ok: true });
-};
-
-export const unsubscribePush = async (req: AuthRequest, res: Response) => {
-  const userId = req.userId;
-  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
-
-  const { endpoint } = req.body as { endpoint: string };
-  if (!endpoint)
-    return res.status(422).json({ errors: ["endpoint obrigatório"] });
-
-  await prisma.pushSubscription.deleteMany({
-    where: { userId, endpoint },
-  });
-
-  return res.status(200).json({ ok: true });
-};
-
 export const getNotificationsCount = async (
   req: AuthRequest,
   res: Response,

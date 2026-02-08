@@ -21,14 +21,25 @@ export const Notifications = () => {
   const [emailEnabled, setEmailEnabled] = useState(
     user?.emailNotificationsEnabled,
   );
-  const [pushEnabled, setPushEnabled] = useState(
-    user?.pushNotificationsEnabled,
+  const [notificationsEnabled, setNotificationsEnabled] = useState(
+    user?.notificationsEnabled,
   );
   const [daysAdvance, setDaysAdvance] = useState(user?.billReminderDays || 2);
 
   if (isLoading) return <Loading />;
 
   const notificationTypes = [
+    {
+      id: "push",
+      icon: Smartphone,
+      title: "Notificações",
+      description:
+        "Alertas exibidos diretamente no sistema, acessíveis pelo ícone na barra superior.",
+      enabled: notificationsEnabled,
+      onToggle: setNotificationsEnabled,
+      color: "text-warning",
+      bgColor: "bg-warning/20",
+    },
     {
       id: "email",
       icon: Bell,
@@ -39,22 +50,12 @@ export const Notifications = () => {
       color: "text-primary",
       bgColor: "bg-primary/20",
     },
-    {
-      id: "push",
-      icon: Smartphone,
-      title: "Notificações Push",
-      description: "Alertas instantâneos no navegador",
-      enabled: pushEnabled,
-      onToggle: setPushEnabled,
-      color: "text-warning",
-      bgColor: "bg-warning/20",
-    },
   ];
 
   const handleNotifications = () => {
     updateNotificationsSettings.mutate({
       emailNotificationsEnabled: emailEnabled,
-      pushNotificationsEnabled: pushEnabled,
+      notificationsEnabled: notificationsEnabled,
       billReminderDays: daysAdvance,
     });
   };
@@ -103,7 +104,7 @@ export const Notifications = () => {
             </div>
           ))}
 
-          {(emailEnabled || pushEnabled) && (
+          {(emailEnabled || notificationsEnabled) && (
             <div className="w-full flex flex-col items-center justify-between p-4 rounded-xl bg-secondary/30">
               <div className="w-full flex items-center gap-3">
                 <Clock className="w-5 h-5 text-muted-foreground" />

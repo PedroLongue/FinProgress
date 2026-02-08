@@ -9,9 +9,19 @@ import {
   useNotificationsList,
   useNotificationsActions,
 } from "../../hooks/useNotifications";
+import { useAuth } from "../../hooks/useAuth";
 import { formatDateOnlyBR } from "../../utils/date.utils";
 
 const Header = () => {
+  const {
+    pushNotifications,
+    isLoading: isFetchingList,
+    refetchNotifications,
+  } = useNotificationsList();
+  const { notificationsCount } = useNotificationsCount();
+  const { markNotificationRead } = useNotificationsActions();
+  const { user } = useAuth();
+
   const [openUserMenu, setOpenUserMenu] = useState(false);
   const [openNotifications, setOpenNotifications] = useState(false);
   const [clickedNotificationId, setClickedNotificationId] = useState<
@@ -23,14 +33,6 @@ const Header = () => {
 
   useOnClickOutside(menuRef, () => setOpenUserMenu(false));
   useOnClickOutside(notifRef, () => setOpenNotifications(false));
-
-  const {
-    pushNotifications,
-    isLoading: isFetchingList,
-    refetchNotifications,
-  } = useNotificationsList();
-  const { notificationsCount } = useNotificationsCount();
-  const { markNotificationRead } = useNotificationsActions();
 
   const unreadNotifications = pushNotifications?.filter((n) => !n.isRead) || [];
 
@@ -46,8 +48,9 @@ const Header = () => {
   useEffect(() => {
     refetchNotifications();
   }, [notificationsCount, refetchNotifications]);
+
   return (
-    <header className="relative h-16 px-4 lg:px-6 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-end gap-4">
+    <header className="relative px-4 lg:px-6 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-end gap-4 h-[89px]">
       <div className="md:hidden w-8" />
       <div className="flex items-center gap-2">
         <div ref={notifRef} className="relative">
@@ -90,6 +93,16 @@ const Header = () => {
               <p className="text-xs text-muted-foreground mt-1">
                 Clique para marcar como lida
               </p>
+              {user && user.notificationsEnabled === false && (
+                <Button
+                  asChild
+                  variant="default"
+                  className="mt-2 w-full"
+                  onClick={() => setOpenNotifications(false)}
+                >
+                  <Link to="/notifications">Configurar notificações</Link>
+                </Button>
+              )}
             </div>
             <div className="max-h-96 overflow-auto">
               {isFetchingList &&

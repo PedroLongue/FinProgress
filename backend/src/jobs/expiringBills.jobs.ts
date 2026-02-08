@@ -3,7 +3,6 @@ import { prisma } from "../db/prisma";
 import { sendEmail } from "../services/email.services";
 import { expiringBills } from "../templates/expiringBills.templates";
 import { addDays, formatYMDToBR, startOfDay } from "../utils/date.utils";
-import { sendWebPush } from "../services/push.services";
 
 export const registerExpiringBillsJob = () => {
   cron.schedule("0 9 * * *", async () => {
@@ -17,8 +16,8 @@ export const registerExpiringBillsJob = () => {
           name: true,
           email: true,
           billReminderDays: true,
+          notificationsEnabled: true,
           emailNotificationsEnabled: true,
-          pushNotificationsEnabled: true,
         },
       });
 
@@ -38,37 +37,32 @@ export const registerExpiringBillsJob = () => {
 
         if (bills.length === 0) continue;
 
-        const subs = user.pushNotificationsEnabled
-          ? await prisma.pushSubscription.findMany({
-              where: { userId: user.id },
-              select: { endpoint: true, p256dh: true, auth: true },
-            })
-          : [];
-
         for (const bill of bills) {
           const dueYMD = bill.dueDate.toISOString().slice(0, 10);
           const dueBR = formatYMDToBR(dueYMD);
 
-          const notif = await prisma.notification.upsert({
-            where: {
-              userId_type_billId_dueDate: {
+          if (user.notificationsEnabled) {
+            await prisma.notification.upsert({
+              where: {
+                userId_type_billId_dueDate: {
+                  userId: user.id,
+                  type: "BILL_EXPIRING",
+                  billId: bill.id,
+                  dueDate: dueYMD,
+                },
+              },
+              update: {},
+              create: {
                 userId: user.id,
                 type: "BILL_EXPIRING",
+                title: "Boleto perto do vencimento",
+                body: `${bill.title} vence em ${dueBR}.`,
                 billId: bill.id,
                 dueDate: dueYMD,
               },
-            },
-            update: {},
-            create: {
-              userId: user.id,
-              type: "BILL_EXPIRING",
-              title: "Boleto perto do vencimento",
-              body: `${bill.title} vence em ${dueBR}.`,
-              billId: bill.id,
-              dueDate: dueYMD,
-            },
-            select: { id: true, title: true, body: true },
-          });
+              select: { id: true, title: true, body: true },
+            });
+          }
 
           if (user.emailNotificationsEnabled) {
             const tpl = expiringBills({
@@ -85,28 +79,6 @@ export const registerExpiringBillsJob = () => {
               html: tpl.html,
               text: tpl.text,
             });
-          }
-
-          if (user.pushNotificationsEnabled && subs.length > 0) {
-            for (const s of subs) {
-              try {
-                await sendWebPush(
-                  {
-                    endpoint: s.endpoint,
-                    keys: { p256dh: s.p256dh, auth: s.auth },
-                  },
-                  {
-                    title: notif.title,
-                    body: notif.body,
-                    notificationId: notif.id,
-                  },
-                );
-              } catch {
-                await prisma.pushSubscription.deleteMany({
-                  where: { endpoint: s.endpoint },
-                });
-              }
-            }
           }
         }
       }

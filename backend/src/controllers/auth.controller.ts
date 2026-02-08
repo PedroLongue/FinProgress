@@ -76,7 +76,7 @@ export const login = async (req: Request, res: Response) => {
       name: user.name,
       email: user.email,
       emailNotificationsEnabled: user.emailNotificationsEnabled,
-      pushNotificationsEnabled: user.pushNotificationsEnabled,
+      notificationsEnabled: user.notificationsEnabled,
       billReminderDays: user.billReminderDays,
     },
   });
@@ -103,7 +103,7 @@ export const getCurrentUser = async (req: IAuthRequest, res: Response) => {
       isActive: true,
       billReminderDays: true,
       emailNotificationsEnabled: true,
-      pushNotificationsEnabled: true,
+      notificationsEnabled: true,
     },
   });
 

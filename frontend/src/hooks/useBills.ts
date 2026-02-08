@@ -61,6 +61,8 @@ export const useBillsActions = () => {
       queryClient.invalidateQueries({
         queryKey: ["spending-report-by-category"],
       });
+      queryClient.invalidateQueries({ queryKey: ["monthly-goal"] });
+      queryClient.invalidateQueries({ queryKey: ["monthly-goal-history"] });
       showSnackbar({
         severity: "success",
         message: "Boleto cadastrado com sucesso.",
@@ -80,6 +82,8 @@ export const useBillsActions = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bills"] });
       queryClient.invalidateQueries({ queryKey: ["spending-report"] });
+      queryClient.invalidateQueries({ queryKey: ["monthly-goal"] });
+      queryClient.invalidateQueries({ queryKey: ["monthly-goal-history"] });
       queryClient.invalidateQueries({
         queryKey: ["spending-report-by-category"],
       });
@@ -102,6 +106,8 @@ export const useBillsActions = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bills"] });
       queryClient.invalidateQueries({ queryKey: ["spending-report"] });
+      queryClient.invalidateQueries({ queryKey: ["monthly-goal-history"] });
+      queryClient.invalidateQueries({ queryKey: ["monthly-goal"] });
       queryClient.invalidateQueries({
         queryKey: ["spending-report-by-category"],
       });
@@ -128,6 +134,8 @@ export const useBillsActions = () => {
       queryClient.invalidateQueries({
         queryKey: ["spending-report-by-category"],
       });
+      queryClient.invalidateQueries({ queryKey: ["monthly-goal"] });
+      queryClient.invalidateQueries({ queryKey: ["monthly-goal-history"] });
 
       showSnackbar({
         severity: "warning",

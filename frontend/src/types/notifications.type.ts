@@ -1,12 +1,12 @@
 export type UpdateNotificationsSettingsBody = {
   emailNotificationsEnabled?: boolean;
-  pushNotificationsEnabled?: boolean;
+  notificationsEnabled?: boolean;
   billReminderDays?: number;
 };
 
 export type UpdateNotificationsSettingsResponse = {
   emailNotificationsEnabled: boolean;
-  pushNotificationsEnabled: boolean;
+  notificationsEnabled: boolean;
   billReminderDays: number;
 };
 

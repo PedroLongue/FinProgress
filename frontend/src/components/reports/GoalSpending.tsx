@@ -60,6 +60,14 @@ export const GoalSpending = ({
     return Math.min(720, base + rows.length * rowH);
   }, [rows.length]);
 
+  const goalBarColors = rows.map((row) =>
+    row.spent > (row.goalAmount ?? 0) ? "#ef4444" : "#22c55e",
+  );
+
+  const goalBorderColors = rows.map((row) =>
+    row.spent > (row.goalAmount ?? 0) ? "#b91c1c" : "#166534",
+  );
+
   const data: ChartData<"bar", number[], string> = {
     labels,
     datasets: [
@@ -75,8 +83,8 @@ export const GoalSpending = ({
       {
         label: "Meta (R$)",
         data: goalValues,
-        backgroundColor: "#22c55e",
-        borderColor: "#166534",
+        backgroundColor: goalBarColors,
+        borderColor: goalBorderColors,
         borderWidth: 2,
         borderRadius: 8,
         barThickness,

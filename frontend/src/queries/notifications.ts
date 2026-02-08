@@ -11,7 +11,7 @@ export const notificationsQuery = {
     queryOptions({
       queryKey: ["notifications-count"],
       queryFn: async () => {
-        return await getData<{ unread: number }>("/notifications/push/count");
+        return await getData<{ unread: number }>("/notifications/count");
       },
 
       // pooling a cada 60 segundos para manter o número de notificações atualizado
@@ -26,9 +26,7 @@ export const notificationsQuery = {
     queryOptions({
       queryKey: ["notifications"],
       queryFn: async () => {
-        return await getData<NotificationsResponse[]>(
-          "/notifications/push?take=20",
-        );
+        return await getData<NotificationsResponse[]>("/notifications?take=20");
       },
     }),
 };
@@ -49,7 +47,7 @@ export const notificationsMutation = {
     mutationOptions({
       mutationKey: ["mark-notification-read"],
       mutationFn: async (id: string) => {
-        return await patchData(`/notifications/push/${id}/read`);
+        return await patchData(`/notifications/${id}/read`);
       },
     }),
 };

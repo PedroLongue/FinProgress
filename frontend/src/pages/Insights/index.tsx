@@ -15,7 +15,6 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
-import { formatCurrency } from "../../utils/bills.utils";
 import { Progress } from "../../components/ui/progress";
 import {
   useMonthlyGoal,
@@ -30,6 +29,7 @@ import { SpendingByCategory } from "../../components/reports/SpendingByCategory"
 import { GoalSpending } from "../../components/reports/GoalSpending";
 import type { MonthlyGoalHistory } from "../../types/goal.type";
 import { dateToText } from "../../utils/date.utils";
+import { formatCurrency } from "../../utils/bills.utils";
 import { useIsMobile } from "../../hooks/useMobile";
 import { cn } from "../../lib/utils";
 
@@ -157,7 +157,7 @@ export const Insights = () => {
                   <div className="flex items-center gap-1 mt-3 text-sm">
                     <trend.Icon className={`h-4 w-4 ${trend.tone}`} />
                     <span className={trend.tone}>
-                      {trend.label} -{" "}
+                      {trend.label}{" "}
                       {trendValueAbs?.toString().replace(".", ",")}%
                     </span>
                     <span className="text-muted-foreground">
