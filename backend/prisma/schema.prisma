@@ -8,20 +8,21 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-  phone     String?
-
-  emailNotificationsEnabled Boolean @default(false) @map("email_notifications_enabled")
-  pushNotificationsEnabled  Boolean @default(false) @map("push_notifications_enabled")
-  billReminderDays          Int     @default(2) @map("bill_reminder_days")
+  id                        String   @id @default(uuid())
+  name                      String
+  email                     String   @unique
+  password                  String
+  isActive                  Boolean  @default(true) @map("is_active")
+  createdAt                 DateTime @default(now()) @map("created_at")
+  phone                     String?
+  emailNotificationsEnabled Boolean  @default(false) @map("email_notifications_enabled")
+  pushNotificationsEnabled  Boolean  @default(false) @map("push_notifications_enabled")
+  billReminderDays          Int      @default(2) @map("bill_reminder_days")
 
   bills                Bill[]
   monthlySpendingGoals MonthlySpendingGoal[]
+  notifications        PushNotification[]
+  pushSubscriptions    PushSubscription[]
 
   @@map("users")
 }
@@ -37,9 +38,9 @@ model Bill {
   barcode     String?    @unique @map("barcode")
   description String?    @map("description")
   paidAt      DateTime?  @map("paid_at")
+  userId      String     @map("user_id")
 
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([dueDate])
@@ -56,11 +57,10 @@ enum BillStatus {
 }
 
 model MonthlySpendingGoal {
-  id     String   @id @default(uuid())
-  userId String
-  month  DateTime
-  amount Int
-
+  id        String   @id @default(uuid())
+  userId    String
+  month     DateTime
+  amount    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -69,4 +69,34 @@ model MonthlySpendingGoal {
   @@unique([userId, month])
   @@index([userId, month])
   @@map("monthlyspendinggoal")
+}
+
+model PushNotification {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  type      String
+  title     String
+  body      String
+  url       String?
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead, createdAt])
+  @@map("notifications")
+}
+
+model PushSubscription {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_subscriptions")
 }

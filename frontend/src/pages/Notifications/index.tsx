@@ -103,34 +103,36 @@ export const Notifications = () => {
             </div>
           ))}
 
-          <div className="w-full flex flex-col items-center justify-between p-4 rounded-xl bg-secondary/30">
-            <div className="w-full flex items-center gap-3">
-              <Clock className="w-5 h-5 text-muted-foreground" />
-              <div>
-                <p className="font-medium text-foreground">
-                  Dias de antecedência
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Me avise {daysAdvance} {daysAdvance === 1 ? "dia" : "dias"}{" "}
-                  antes do vencimento
-                </p>
+          {(emailEnabled || pushEnabled) && (
+            <div className="w-full flex flex-col items-center justify-between p-4 rounded-xl bg-secondary/30">
+              <div className="w-full flex items-center gap-3">
+                <Clock className="w-5 h-5 text-muted-foreground" />
+                <div>
+                  <p className="font-medium text-foreground">
+                    Dias de antecedência
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Me avise {daysAdvance} {daysAdvance === 1 ? "dia" : "dias"}{" "}
+                    antes do vencimento
+                  </p>
+                </div>
+              </div>
+              <div className="w-full pt-2 mt-5">
+                <Slider
+                  value={[daysAdvance]}
+                  onValueChange={([val]) => setDaysAdvance(val)}
+                  min={1}
+                  max={7}
+                  step={1}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                  <span>1 dia</span>
+                  <span>7 dias</span>
+                </div>
               </div>
             </div>
-            <div className="w-full pt-2 mt-5">
-              <Slider
-                value={[daysAdvance]}
-                onValueChange={([val]) => setDaysAdvance(val)}
-                min={1}
-                max={7}
-                step={1}
-                className="w-full"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                <span>1 dia</span>
-                <span>7 dias</span>
-              </div>
-            </div>
-          </div>
+          )}
 
           <Button
             onClick={handleNotifications}
