@@ -1,7 +1,7 @@
 const startOfDay = (d: Date) =>
   new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
-const parseDateOnly = (iso: string) => {
+export const parseDateOnly = (iso: string) => {
   const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
   return new Date(y, (m ?? 1) - 1, d ?? 1);
 };
@@ -68,4 +68,14 @@ export const formatMonthLabel = (ym: string) => {
   const [y, m] = ym.split("-");
   if (!y || !m) return ym;
   return `${m.padStart(2, "0")}/${y}`;
+};
+
+export const formatDateOnlyBR = (value: string | Date): string => {
+  const d = value instanceof Date ? value : parseDateOnly(value);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 };

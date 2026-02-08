@@ -182,7 +182,7 @@ export const getNotificationsCount = async (
   const userId = req.userId;
   if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
 
-  const unread = await prisma.pushNotification.count({
+  const unread = await prisma.notification.count({
     where: { userId, isRead: false },
   });
 
@@ -195,21 +195,21 @@ export const listNotifications = async (req: AuthRequest, res: Response) => {
 
   const take = Math.min(Number(req.query.take ?? 20), 50);
 
-  const items = await prisma.pushNotification.findMany({
-    where: { userId },
-    orderBy: { createdAt: "desc" },
-    take,
-    select: {
-      id: true,
-      type: true,
-      title: true,
-      body: true,
-      isRead: true,
-      createdAt: true,
-    },
-  });
-
-  return res.status(200).json({ items });
+  return res.status(200).json(
+    await prisma.notification.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take,
+      select: {
+        id: true,
+        type: true,
+        title: true,
+        body: true,
+        isRead: true,
+        createdAt: true,
+      },
+    }),
+  );
 };
 
 export const markNotificationRead = async (req: AuthRequest, res: Response) => {
@@ -218,7 +218,7 @@ export const markNotificationRead = async (req: AuthRequest, res: Response) => {
 
   const { id } = req.params;
 
-  await prisma.pushNotification.updateMany({
+  await prisma.notification.updateMany({
     where: { id, userId },
     data: { isRead: true },
   });

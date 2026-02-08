@@ -21,7 +21,7 @@ model User {
 
   bills                Bill[]
   monthlySpendingGoals MonthlySpendingGoal[]
-  notifications        PushNotification[]
+  notifications        Notification[]
   pushSubscriptions    PushSubscription[]
 
   @@map("users")
@@ -71,7 +71,7 @@ model MonthlySpendingGoal {
   @@map("monthly_spending_goals")
 }
 
-model PushNotification {
+model Notification {
   id        String   @id @default(uuid())
   userId    String   @map("user_id")
   type      String
@@ -86,7 +86,7 @@ model PushNotification {
 
   @@unique([userId, type, billId, dueDate])
   @@index([userId, isRead, createdAt])
-  @@map("push_notifications")
+  @@map("notifications")
 }
 
 model PushSubscription {

@@ -6,7 +6,7 @@ import { addDays, formatYMDToBR, startOfDay } from "../utils/date.utils";
 import { sendWebPush } from "../services/push.services";
 
 export const registerExpiringBillsJob = () => {
-  cron.schedule("50 11 * * *", async () => {
+  cron.schedule("0 9 * * *", async () => {
     try {
       const today = startOfDay(new Date());
 
@@ -49,7 +49,7 @@ export const registerExpiringBillsJob = () => {
           const dueYMD = bill.dueDate.toISOString().slice(0, 10);
           const dueBR = formatYMDToBR(dueYMD);
 
-          const notif = await prisma.pushNotification.upsert({
+          const notif = await prisma.notification.upsert({
             where: {
               userId_type_billId_dueDate: {
                 userId: user.id,

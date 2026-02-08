@@ -1,10 +1,43 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { notificationsMutation } from "../queries/notifications";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  notificationsMutation,
+  notificationsQuery,
+} from "../queries/notifications";
 import { useSnackbarStore } from "../stores/snackbar.store";
 import type { AxiosError } from "axios";
 
 type NotificationsErrorResponse = {
   errors: string[];
+};
+
+export const useNotificationsList = () => {
+  const {
+    data: pushNotifications,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery(notificationsQuery.listNotifications());
+
+  return {
+    pushNotifications,
+    isLoading,
+    isError,
+    refetchNotifications: refetch,
+  };
+};
+
+export const useNotificationsCount = () => {
+  const {
+    data: notificationsCount,
+    isLoading,
+    isError,
+  } = useQuery(notificationsQuery.getNotificationsCount());
+
+  return {
+    notificationsCount,
+    isLoading,
+    isError,
+  };
 };
 
 export const useNotificationsActions = () => {
@@ -33,5 +66,22 @@ export const useNotificationsActions = () => {
     },
   });
 
-  return { updateNotificationsSettings };
+  const markNotificationReadBase = notificationsMutation.markNotificationRead();
+  const markNotificationRead = useMutation({
+    ...markNotificationReadBase,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      queryClient.invalidateQueries({ queryKey: ["notifications-count"] });
+    },
+    onError: (error: AxiosError<NotificationsErrorResponse>) => {
+      showSnackbar({
+        message:
+          error.response?.data?.errors?.[0] ??
+          "Erro ao marcar notificação como lida.",
+        severity: "error",
+      });
+    },
+  });
+
+  return { updateNotificationsSettings, markNotificationRead };
 };

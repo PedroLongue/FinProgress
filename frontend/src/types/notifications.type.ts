@@ -9,3 +9,12 @@ export type UpdateNotificationsSettingsResponse = {
   pushNotificationsEnabled: boolean;
   billReminderDays: number;
 };
+
+export type NotificationsResponse = {
+  id: string;
+  type: string;
+  title: string;
+  body: string;
+  isRead: boolean;
+  createdAt: string;
+};
