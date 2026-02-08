@@ -68,7 +68,7 @@ model MonthlySpendingGoal {
 
   @@unique([userId, month])
   @@index([userId, month])
-  @@map("monthlyspendinggoal")
+  @@map("monthly_spending_goals")
 }
 
 model PushNotification {
@@ -77,14 +77,16 @@ model PushNotification {
   type      String
   title     String
   body      String
-  url       String?
   isRead    Boolean  @default(false) @map("is_read")
   createdAt DateTime @default(now()) @map("created_at")
+  billId    String?  @map("bill_id")
+  dueDate   String?  @map("due_date")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, type, billId, dueDate])
   @@index([userId, isRead, createdAt])
-  @@map("notifications")
+  @@map("push_notifications")
 }
 
 model PushSubscription {

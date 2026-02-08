@@ -76,6 +76,7 @@ export const login = async (req: Request, res: Response) => {
       name: user.name,
       email: user.email,
       emailNotificationsEnabled: user.emailNotificationsEnabled,
+      pushNotificationsEnabled: user.pushNotificationsEnabled,
       billReminderDays: user.billReminderDays,
     },
   });

@@ -127,3 +127,101 @@ export const updateNotificationsSettings = async (
 
   return res.status(200).json({ user });
 };
+
+// push notifications
+export const subscribePush = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId;
+  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
+
+  const { endpoint, keys } = req.body as {
+    endpoint: string;
+    keys: { p256dh: string; auth: string };
+  };
+
+  if (!endpoint || !keys?.p256dh || !keys?.auth) {
+    return res.status(422).json({ errors: ["Subscription inválida"] });
+  }
+
+  await prisma.pushSubscription.upsert({
+    where: { endpoint },
+    update: {
+      userId,
+      p256dh: keys.p256dh,
+      auth: keys.auth,
+    },
+    create: {
+      userId,
+      endpoint,
+      p256dh: keys.p256dh,
+      auth: keys.auth,
+    },
+  });
+
+  return res.status(200).json({ ok: true });
+};
+
+export const unsubscribePush = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId;
+  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
+
+  const { endpoint } = req.body as { endpoint: string };
+  if (!endpoint)
+    return res.status(422).json({ errors: ["endpoint obrigatório"] });
+
+  await prisma.pushSubscription.deleteMany({
+    where: { userId, endpoint },
+  });
+
+  return res.status(200).json({ ok: true });
+};
+
+export const getNotificationsCount = async (
+  req: AuthRequest,
+  res: Response,
+) => {
+  const userId = req.userId;
+  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
+
+  const unread = await prisma.pushNotification.count({
+    where: { userId, isRead: false },
+  });
+
+  return res.status(200).json({ unread });
+};
+
+export const listNotifications = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId;
+  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
+
+  const take = Math.min(Number(req.query.take ?? 20), 50);
+
+  const items = await prisma.pushNotification.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    take,
+    select: {
+      id: true,
+      type: true,
+      title: true,
+      body: true,
+      isRead: true,
+      createdAt: true,
+    },
+  });
+
+  return res.status(200).json({ items });
+};
+
+export const markNotificationRead = async (req: AuthRequest, res: Response) => {
+  const userId = req.userId;
+  if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
+
+  const { id } = req.params;
+
+  await prisma.pushNotification.updateMany({
+    where: { id, userId },
+    data: { isRead: true },
+  });
+
+  return res.status(200).json({ ok: true });
+};
