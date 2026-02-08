@@ -1,10 +1,18 @@
-import type { BillStatusKey } from "../types/bills.type";
 import { STATUS_CONFIG } from "../constants";
+import type { BillStatusKey } from "../types/bills.type";
 
-export const formatCurrency = (value: number) =>
-  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
-    value,
-  );
+export const getStatusLabel = (status: BillStatusKey) =>
+  STATUS_CONFIG[status].label;
+
+export const getStatusColor = (status: BillStatusKey) =>
+  STATUS_CONFIG[status].color;
+
+export const isPaid = (status: BillStatusKey) =>
+  status === "PAID" || status === "PAID_LATE";
+
+export const isOverdue = (status: BillStatusKey) => status === "OVERDUE";
+
+export const isPending = (status: BillStatusKey) => status === "PENDING";
 
 export const getStatusIcon = (status: BillStatusKey) => {
   const Icon = STATUS_CONFIG[status].icon;

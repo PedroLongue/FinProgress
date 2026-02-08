@@ -3,11 +3,8 @@ import type { Bill } from "../../types/bills.type";
 import { Button } from "../ui/button";
 import { cn } from "../../lib/utils";
 import { Badge } from "../ui/badge";
-import {
-  formatCurrency,
-  getStatusIcon,
-  getStatusStyles,
-} from "../../utils/bills.utils";
+import { formatCurrency } from "../../utils/bills.utils";
+import { getStatusIcon, getStatusStyles } from "../../functions";
 import { formatDate } from "../../utils/date.utils";
 import { isOverdue, isPaid } from "../../functions";
 import { useIsMobile } from "../../hooks/useMobile";
