@@ -7,24 +7,31 @@ export const extractBillFromPdfAI = async (params: { pdfBase64: string }) => {
 Extraia APENAS os campos abaixo de um PDF de boleto/conta brasileiro.
 
 CAMPOS OBRIGATÓRIOS NA RESPOSTA (sempre retornar, mesmo que null):
-- title (string|null): nome curto da conta (ex: "Conta de luz", "Fatura cartão", "Boleto condomínio")
+- title (string|null): nome curto baseado no SERVIÇO/EMPRESA (ex: "Internet", "Energia", "Água - CEDAE", "Condomínio", "Aluguel")
 - description (string|null): detalhes úteis (ex: mês/competência, favorecido/empresa, etc.)
 - amount (number|null): valor total a pagar (ex: 129.9)
 - dueDate (string|null): data de vencimento no formato "YYYY-MM-DD"
 - barcode (string|null): código de barras / linha digitável SOMENTE dígitos (remover espaços/pontos)
+- confidence (number 0..1): confiança geral na extração
+- notes (string): explique rapidamente o que encontrou e o que ficou incerto
 
 CAMPOS PROIBIDOS (NÃO retornar):
 - category
 - status
 - qualquer outro campo não listado acima
 
-REGRAS:
-- Se não der para extrair um campo com segurança, retorne null.
-- amount: número (use ponto como separador decimal).
-- dueDate: se houver horário, ignore e mantenha só a data.
-- barcode: somente dígitos.
-- No campo notes, explique rapidamente o que encontrou e o que ficou incerto.
-- confidence (0 a 1) deve refletir o quão confiáveis estão os campos extraídos.
+REGRAS IMPORTANTES:
+1) NÃO confundir FORMA DE PAGAMENTO com NATUREZA do documento.
+   - Ignore menções a "cartão", "cadastre seu cartão", "recorrência", "pague com PIX", "QR code", "débito/crédito" como indicativo do tipo da conta.
+2) title deve ser derivado do que está SENDO COBRADO e/ou do BENEFICIÁRIO:
+   - Priorize seções como "O QUE ESTÁ SENDO COBRADO", "Descrição", "Serviço/Plano", "Beneficiário", "CNPJ".
+   - Se houver item/serviço claro: use "Tipo - Empresa" (ex: "Internet - Frionline", "Telefone - Vivo").
+   - Se não houver empresa, use um título genérico (ex: "Conta de internet", "Conta de energia").
+3) Só use "Cartão" no title se o PDF for claramente uma FATURA DE CARTÃO (banco/cartão) com lista de lançamentos/compras e total da fatura.
+4) amount: número (use ponto como separador decimal).
+5) dueDate: se houver horário, ignore e mantenha só a data.
+6) barcode: somente dígitos. Se houver mais de um, escolha a LINHA DIGITÁVEL principal do boleto.
+7) Se não der para extrair um campo com segurança, retorne null.
 `;
 
   const response = await client.responses.create({

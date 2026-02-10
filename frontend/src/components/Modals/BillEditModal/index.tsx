@@ -43,8 +43,6 @@ export const BillEditModal = ({
 
     const updatedBill: Partial<Bill> = {
       title,
-      amount: parseFloat(amount) || 0,
-      dueDate: dueDate ? new Date(dueDate).toISOString() : bill.dueDate,
       barcode,
       description,
     };
