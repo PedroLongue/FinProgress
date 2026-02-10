@@ -41,8 +41,14 @@ export const registerExpiringBillsJob = () => {
           const dueYMD = bill.dueDate.toISOString().slice(0, 10);
           const dueBR = formatYMDToBR(dueYMD);
 
+          let notif: {
+            id: string;
+            title: string;
+            body: string;
+            emailSent: boolean;
+          } | null = null;
           if (user.notificationsEnabled) {
-            await prisma.notification.upsert({
+            notif = await prisma.notification.upsert({
               where: {
                 userId_type_billId_dueDate: {
                   userId: user.id,
@@ -59,12 +65,13 @@ export const registerExpiringBillsJob = () => {
                 body: `${bill.title} vence em ${dueBR}.`,
                 billId: bill.id,
                 dueDate: dueYMD,
+                emailSent: false,
               },
-              select: { id: true, title: true, body: true },
+              select: { id: true, title: true, body: true, emailSent: true },
             });
           }
 
-          if (user.emailNotificationsEnabled) {
+          if (user.emailNotificationsEnabled && notif && !notif.emailSent) {
             const tpl = expiringBills({
               name: user.name,
               description: bill.title,
@@ -78,6 +85,11 @@ export const registerExpiringBillsJob = () => {
               subject: tpl.subject,
               html: tpl.html,
               text: tpl.text,
+            });
+
+            await prisma.notification.update({
+              where: { id: notif.id },
+              data: { emailSent: true },
             });
           }
         }
