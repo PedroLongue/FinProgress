@@ -1,13 +1,13 @@
 import { Trash2 } from "lucide-react";
-import type { Bill } from "../../types/bills.type";
-import { Button } from "../ui/button";
-import { cn } from "../../lib/utils";
-import { Badge } from "../ui/badge";
-import { formatCurrency } from "../../utils/bills.utils";
-import { getStatusIcon, getStatusStyles } from "../../functions";
-import { formatDate } from "../../utils/date.utils";
-import { isOverdue, isPaid } from "../../functions";
-import { useIsMobile } from "../../hooks/useMobile";
+import type { Bill } from "../../../types/bills.type";
+import { Button } from "../../ui/button";
+import { cn } from "../../../lib/utils";
+import { Badge } from "../../ui/badge";
+import { formatCurrency } from "../../../utils/bills.utils";
+import { getStatusIcon, getStatusStyles } from "../../../functions";
+import { formatDate } from "../../../utils/date.utils";
+import { isOverdue, isPaid } from "../../../functions";
+import { useIsMobile } from "../../../hooks/useMobile";
 
 export const BillRow = ({
   bill,
@@ -30,6 +30,7 @@ export const BillRow = ({
         isMobile ? "p-4 flex flex-col gap-3" : "p-4 flex items-center gap-4",
       )}
       style={{ animationDelay: `${index * 0.05}s` }}
+      data-testid="bill-row"
     >
       <div
         className={cn(
@@ -138,6 +139,7 @@ export const BillRow = ({
               e.stopPropagation();
               onDelete(bill);
             }}
+            data-testid={`delete-bill-button-${bill.id}`}
           >
             <Trash2 className="w-4 h-4" />
           </Button>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BillsList } from "../../components/dashboard/BillsList";
+import { BillsList } from "../../components/dashboard/BillList";
 import { HealthScoreCard } from "../../components/dashboard/HealthScoreCard";
 import { Loading } from "../../components/ui/loading";
 import { useAuth } from "../../hooks/useAuth";

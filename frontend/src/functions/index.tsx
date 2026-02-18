@@ -16,7 +16,7 @@ export const isPending = (status: BillStatusKey) => status === "PENDING";
 
 export const getStatusIcon = (status: BillStatusKey) => {
   const Icon = STATUS_CONFIG[status].icon;
-  return <Icon className="w-4 h-4" />;
+  return <Icon data-testid={`status-icon-${status}`} className="w-4 h-4" />;
 };
 
 export const getStatusStyles = (status: BillStatusKey) => {

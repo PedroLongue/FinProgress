@@ -83,10 +83,16 @@ export const EmptyState = ({ type, emptyBillListFilter }: IEmptyState) => {
         )}
       </div>
 
-      <h3 className="text-lg font-semibold text-foreground mb-2">
+      <h3
+        className="text-lg font-semibold text-foreground mb-2"
+        data-testid="empty-state-title"
+      >
         {config.title}
       </h3>
-      <p className="text-sm text-muted-foreground max-w-xs mb-6 leading-relaxed">
+      <p
+        className="text-sm text-muted-foreground max-w-xs mb-6 leading-relaxed"
+        data-testid="empty-state-description"
+      >
         {config.description}
       </p>
 
