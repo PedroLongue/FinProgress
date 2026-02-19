@@ -1,10 +1,10 @@
 import { PlusCircle, Sparkles } from "lucide-react";
-import { Card, CardContent } from "../ui/card";
-import { Button } from "../ui/button";
-import { HealthScoreChart } from "../../assets/HealthScoreChart";
+import { Card, CardContent } from "../../ui/card";
+import { Button } from "../../ui/button";
+import { HealthScoreChart } from "../../../assets/HealthScoreChart";
 import { useState } from "react";
-import { Loading } from "../ui/loading";
-import { ScoreDetailsModal } from "../Modals/HealthScoreExplanationModal";
+import { Loading } from "../../ui/loading";
+import { ScoreDetailsModal } from "../../Modals/HealthScoreExplanationModal";
 
 interface IHealthScoreCard {
   score: number;
@@ -68,7 +68,10 @@ export const HealthScoreCard = ({
               </div>
 
               {isEmpty ? (
-                <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                <p
+                  data-testid="empty-state-description"
+                  className="text-sm text-muted-foreground mb-4 leading-relaxed"
+                >
                   Cadastre seus boletos para calcularmos seu score de saúde
                   financeira baseado no seu histórico.
                 </p>
@@ -84,6 +87,7 @@ export const HealthScoreCard = ({
                     size="sm"
                     variant="outline"
                     className="gap-2"
+                    data-testid="details-button"
                   >
                     <PlusCircle className="w-4 h-4" />
                     Ver detalhes
