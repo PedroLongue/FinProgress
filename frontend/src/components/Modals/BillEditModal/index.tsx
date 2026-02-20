@@ -106,6 +106,7 @@ export const BillEditModal = ({
                     setTitle(v);
                     if (titleError) setTitleError(validateTitle(v));
                   }}
+                  data-testid="title-edit-input"
                   onBlur={() => setTitleError(validateTitle(title))}
                   placeholder="Ex: Conta de Luz"
                   className={cn(
@@ -232,6 +233,7 @@ export const BillEditModal = ({
                 className="flex-1"
                 onClick={onClose}
                 disabled={isLoading}
+                data-testid="cancel-button"
               >
                 Cancelar
               </Button>
@@ -240,6 +242,7 @@ export const BillEditModal = ({
                 variant="premium"
                 className="flex-1"
                 disabled={isLoading}
+                data-testid="save-button"
               >
                 {isLoading ? "Salvando..." : "Salvar Alterações"}
               </Button>

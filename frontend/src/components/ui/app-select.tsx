@@ -24,6 +24,8 @@ type AppSelectProps = {
 
   disabled?: boolean;
   ariaLabel?: string;
+
+  dataTestId?: string;
 };
 
 const toSelectValue = (v: string | number): string => {
@@ -38,6 +40,7 @@ export const AppSelect = ({
   className,
   disabled,
   ariaLabel,
+  dataTestId,
 }: AppSelectProps) => {
   return (
     <div className={cn(className)}>
@@ -48,6 +51,7 @@ export const AppSelect = ({
       >
         <SelectTrigger
           aria-label={ariaLabel}
+          data-testid={dataTestId}
           className={cn(
             "h-9",
             "rounded-md",

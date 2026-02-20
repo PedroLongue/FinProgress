@@ -30,7 +30,7 @@ export const BillRow = ({
         isMobile ? "p-4 flex flex-col gap-3" : "p-4 flex items-center gap-4",
       )}
       style={{ animationDelay: `${index * 0.05}s` }}
-      data-testid="bill-row"
+      data-testid={`bill-row-${bill.id}`}
     >
       <div
         className={cn(
@@ -100,6 +100,7 @@ export const BillRow = ({
               e.stopPropagation();
               onDelete(bill);
             }}
+            data-testid={`delete-bill-button-${bill.id}`}
           >
             <Trash2 className="w-4 h-4" />
           </Button>

@@ -1,14 +1,17 @@
 import { BillsList } from ".";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { billsMock } from "../../../mocks/bills.mock";
+
+const updateMutateAsyncMock = vi.fn().mockResolvedValue(undefined);
+const deleteMutateAsyncMock = vi.fn().mockResolvedValue(undefined);
 
 vi.mock("@/hooks/useBills", () => ({
   useBill: vi.fn(),
   useBillDetails: vi.fn(),
   useBillsActions: () => ({
-    updateBill: { mutateAsync: vi.fn(), isPending: false },
-    deleteBill: { mutateAsync: vi.fn(), isPending: false },
+    updateBill: { mutateAsync: updateMutateAsyncMock, isPending: false },
+    deleteBill: { mutateAsync: deleteMutateAsyncMock, isPending: false },
   }),
 }));
 
@@ -48,7 +51,7 @@ describe("BillList component", () => {
     );
 
     expect(screen.getByText("Boletos")).toBeInTheDocument();
-    expect(screen.getAllByTestId("bill-row")).toHaveLength(billsMock.length);
+    expect(screen.getAllByTestId(/bill-row-/)).toHaveLength(billsMock.length);
     expect(screen.getByText(billsMock[0].title)).toBeInTheDocument();
   });
 
@@ -98,5 +101,167 @@ describe("BillList component", () => {
     expect(
       screen.getByTestId(`bill-deleteModal-${billsMock[0].id}`),
     ).toBeInTheDocument();
+  });
+
+  it("should handle pagination correctly", async () => {
+    const user = userEvent.setup();
+    const onPageChange = vi.fn();
+
+    render(
+      <BillsList
+        bills={{
+          bills: billsMock,
+          page: 1,
+          pageSize: 10,
+          total: 20,
+          totalPages: 2,
+          userCategories: [],
+        }}
+        isEmpty={false}
+        onPageChange={onPageChange}
+      />,
+    );
+
+    expect(screen.getByText("Página 1 de 2")).toBeInTheDocument();
+
+    await user.click(screen.getByTestId("next-page-button"));
+    expect(onPageChange).toHaveBeenCalledWith(2);
+    expect(screen.getByText("Página 2 de 2")).toBeInTheDocument();
+
+    await user.click(screen.getByTestId("previous-page-button"));
+    expect(onPageChange).toHaveBeenCalledWith(1);
+    expect(screen.getByText("Página 1 de 2")).toBeInTheDocument();
+  });
+
+  it("should handle bill edit correctly", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <BillsList
+        bills={{
+          bills: billsMock,
+          page: 1,
+          pageSize: 10,
+          total: billsMock.length,
+          totalPages: 1,
+          userCategories: [],
+        }}
+        isEmpty={false}
+      />,
+    );
+
+    await user.click(screen.getByTestId(`bill-row-${billsMock[0].id}`));
+
+    expect(
+      screen.getByTestId(`bill-editModal-${billsMock[0].id}`),
+    ).toBeInTheDocument();
+
+    const titleInput = screen.getByTestId("title-edit-input");
+    await user.clear(titleInput);
+    await user.type(titleInput, "Novo título");
+
+    await user.click(screen.getByTestId("save-button"));
+
+    await waitFor(() => {
+      expect(updateMutateAsyncMock).toHaveBeenCalledTimes(1);
+      expect(updateMutateAsyncMock).toHaveBeenCalledWith({
+        id: billsMock[0].id,
+        body: expect.objectContaining({
+          title: "Novo título",
+        }),
+      });
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId(`bill-editModal-${billsMock[0].id}`),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it("should cancel edit modal without calling update", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <BillsList
+        bills={{
+          bills: billsMock,
+          page: 1,
+          pageSize: 10,
+          total: billsMock.length,
+          totalPages: 1,
+          userCategories: [],
+        }}
+        isEmpty={false}
+      />,
+    );
+
+    await user.click(screen.getByTestId(`bill-row-${billsMock[0].id}`));
+    await user.click(screen.getByTestId("cancel-button"));
+
+    expect(updateMutateAsyncMock).not.toHaveBeenCalled();
+    expect(
+      screen.queryByTestId(`bill-editModal-${billsMock[0].id}`),
+    ).not.toBeInTheDocument();
+  });
+
+  it("should handle bill delete correctly", async () => {
+    const user = userEvent.setup();
+    render(
+      <BillsList
+        bills={{
+          bills: billsMock,
+          page: 1,
+          pageSize: 10,
+          total: billsMock.length,
+          totalPages: 1,
+          userCategories: [],
+        }}
+        isEmpty={false}
+      />,
+    );
+
+    await user.click(
+      screen.getByTestId(`delete-bill-button-${billsMock[0].id}`),
+    );
+    await user.click(screen.getByTestId("confirm-delete-button"));
+
+    await waitFor(() => {
+      expect(deleteMutateAsyncMock).toHaveBeenCalledTimes(1);
+      expect(deleteMutateAsyncMock).toHaveBeenCalledWith(billsMock[0].id);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId(`bill-deleteModal-${billsMock[0].id}`),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it("should cancel delete modal without calling delete", async () => {
+    const user = userEvent.setup();
+    render(
+      <BillsList
+        bills={{
+          bills: billsMock,
+          page: 1,
+          pageSize: 10,
+          total: billsMock.length,
+          totalPages: 1,
+          userCategories: [],
+        }}
+        isEmpty={false}
+      />,
+    );
+
+    await user.click(
+      screen.getByTestId(`delete-bill-button-${billsMock[0].id}`),
+    );
+    await user.click(screen.getByTestId("cancel-delete-button"));
+
+    expect(deleteMutateAsyncMock).not.toHaveBeenCalled();
+    expect(
+      screen.queryByTestId(`bill-deleteModal-${billsMock[0].id}`),
+    ).not.toBeInTheDocument();
   });
 });

@@ -23,10 +23,27 @@ describe("HealthScoreCard Component", () => {
     expect(screen.getByTestId("empty-state-description")).toBeInTheDocument();
   });
 
-  it("should render score without crashing", () => {
+  it("should render score without crashing - 85%", () => {
     render(<HealthScoreCard score={85} isLoading={false} isEmpty={false} />);
 
     expect(screen.getByText("Excelente")).toBeInTheDocument();
+  });
+  it("should render score without crashing - 65%", () => {
+    render(<HealthScoreCard score={65} isLoading={false} isEmpty={false} />);
+
+    expect(screen.getByText("Bom")).toBeInTheDocument();
+  });
+
+  it("should render score without crashing - 50%", () => {
+    render(<HealthScoreCard score={50} isLoading={false} isEmpty={false} />);
+
+    expect(screen.getByText("Regular")).toBeInTheDocument();
+  });
+
+  it("should render score without crashing - 20%", () => {
+    render(<HealthScoreCard score={20} isLoading={false} isEmpty={false} />);
+
+    expect(screen.getByText("Atenção")).toBeInTheDocument();
   });
 
   it("should open datils modal when is clicked", async () => {

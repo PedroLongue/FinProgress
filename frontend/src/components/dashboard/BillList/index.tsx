@@ -25,7 +25,7 @@ import type { DateFilterForm } from "../../Modals/FilterModal/validator";
 import { BillRow } from "../BillRow";
 import { useIsMobile } from "../../../hooks/useMobile";
 import { cn } from "../../../lib/utils";
-interface IBillsList {
+export interface IBillsList {
   bills: BillsResponse;
   isEmpty: boolean;
   dashpage?: boolean;
@@ -173,6 +173,7 @@ export const BillsList = ({
                 }}
                 placeholder="Todas as categorias"
                 ariaLabel="Filtrar por categoria"
+                dataTestId="category-filter-select"
                 options={categoryOptions}
               />
 
@@ -184,10 +185,14 @@ export const BillsList = ({
                 }}
                 placeholder="Todos os status"
                 ariaLabel="Filtrar por status"
+                dataTestId="status-filter-select"
                 options={statusOptions}
               />
 
-              <Button onClick={() => setIsFilterModalOpen(true)}>
+              <Button
+                onClick={() => setIsFilterModalOpen(true)}
+                data-testid="open-date-filter-button"
+              >
                 <Calendar className="w-5 h-5" />
               </Button>
             </div>
@@ -220,6 +225,7 @@ export const BillsList = ({
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                   className="gap-2"
+                  data-testid="previous-page-button"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Anterior
@@ -235,6 +241,7 @@ export const BillsList = ({
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                   className="gap-2"
+                  data-testid="next-page-button"
                 >
                   Próxima
                   <ChevronRight className="h-4" />

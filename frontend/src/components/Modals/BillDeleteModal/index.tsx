@@ -61,6 +61,7 @@ export const BillDeleteModal = ({
               className="flex-1"
               onClick={onClose}
               disabled={isLoading}
+              data-testid="cancel-delete-button"
             >
               Cancelar
             </Button>
@@ -70,6 +71,7 @@ export const BillDeleteModal = ({
               className="flex-1"
               onClick={handleDelete}
               disabled={isLoading}
+              data-testid="confirm-delete-button"
             >
               {isLoading ? "Excluindo..." : "Excluir"}
             </Button>
