@@ -1,16 +1,16 @@
 import { Bell, Pencil, User, Check } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { useEffect, useRef, useState } from "react";
-import { cn } from "../../lib/utils";
-import { useOnClickOutside } from "../../hooks/useOnClickOutside";
+import { cn } from "../../../lib/utils";
+import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
 import { Link } from "@tanstack/react-router";
 import {
   useNotificationsCount,
   useNotificationsList,
   useNotificationsActions,
-} from "../../hooks/useNotifications";
-import { useAuth } from "../../hooks/useAuth";
-import { formatDateOnlyBR } from "../../utils/date.utils";
+} from "../../../hooks/useNotifications";
+import { useAuth } from "../../../hooks/useAuth";
+import { formatDateOnlyBR } from "../../../utils/date.utils";
 
 const Header = () => {
   const {
@@ -62,6 +62,7 @@ const Header = () => {
             aria-expanded={openNotifications}
             aria-haspopup="menu"
             aria-label="Notificações"
+            data-testid="notifications-button"
           >
             <Bell className="w-5 h-5 text-foreground" />
             {notificationsCount && notificationsCount.unread > 0 && (
@@ -186,6 +187,7 @@ const Header = () => {
             onClick={() => setOpenUserMenu((v) => !v)}
             aria-expanded={openUserMenu}
             aria-haspopup="menu"
+            data-testid="user-menu-button"
           >
             <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center">
               <User className="w-4 h-4 text-primary-foreground" />

@@ -5,7 +5,7 @@ import {
   BarChart3,
   Settings,
 } from "lucide-react";
-import { Button } from "../../components/ui/button";
+import { Button } from "../../ui/button";
 
 interface IEmptyState {
   type: "total" | "goal" | "volume";
@@ -110,7 +110,12 @@ export const EmptyInsightsCardsState = ({
       </div>
 
       {type === "goal" && onConfigureGoal && (
-        <Button onClick={onConfigureGoal} className="gap-2" size="sm">
+        <Button
+          onClick={onConfigureGoal}
+          className="gap-2"
+          size="sm"
+          data-testid="configure-goal-button"
+        >
           <Settings className="w-4 h-4" />
           Configurar orçamento
         </Button>

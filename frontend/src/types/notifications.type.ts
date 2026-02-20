@@ -12,7 +12,7 @@ export type UpdateNotificationsSettingsResponse = {
 
 export type NotificationsResponse = {
   id: string;
-  type: string;
+  type: "BILL_EXPIRING";
   title: string;
   body: string;
   isRead: boolean;
