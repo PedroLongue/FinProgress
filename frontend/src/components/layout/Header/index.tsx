@@ -132,6 +132,7 @@ const Header = () => {
                         )}
                         onClick={() => handleNotificationClick(n.id)}
                         disabled={clickedNotificationId === n.id}
+                        data-testid={`notification-${n.id}`}
                       >
                         {clickedNotificationId === n.id && (
                           <>

@@ -42,7 +42,6 @@ describe("BillRow component", () => {
 
   it("should call onDelete when delete button is clicked", async () => {
     const user = userEvent.setup();
-    screen.logTestingPlaygroundURL();
     await user.click(
       screen.getByTestId(`delete-bill-button-${billsMock[0].id}`),
     );

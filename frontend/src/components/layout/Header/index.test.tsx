@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Header from ".";
 import type { NotificationsResponse } from "../../../types/notifications.type";
 import { notificationsMock } from "../../../mocks/notifications.mock";
@@ -99,5 +99,51 @@ describe("Header Component", () => {
 
     expect(screen.getByText("2 não lidas")).toBeInTheDocument();
     expect(screen.queryByText("Notificação lida")).not.toBeInTheDocument();
+  });
+
+  it("should mark notification as read and close the menu", async () => {
+    pushNotificationsMock = [notificationsMock[0]];
+    notificationsCountMock = { unread: 1 };
+
+    render(<Header />);
+
+    const bell = screen.getByTestId("notifications-button");
+
+    fireEvent.click(bell);
+    expect(bell).toHaveAttribute("aria-expanded", "true");
+
+    fireEvent.click(screen.getByTestId("notification-1"));
+
+    await waitFor(() => {
+      expect(mutateAsyncMock).toHaveBeenCalledWith("1");
+    });
+
+    await waitFor(() => {
+      expect(bell).toHaveAttribute("aria-expanded", "false");
+    });
+  });
+
+  it("should click outside notifications menu to close it", () => {
+    render(<Header />);
+
+    const bell = screen.getByTestId("notifications-button");
+    fireEvent.click(bell);
+    expect(bell).toHaveAttribute("aria-expanded", "true");
+
+    fireEvent.mouseDown(document);
+
+    expect(bell).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("should click outside user menu to close it", () => {
+    render(<Header />);
+
+    const userButton = screen.getByTestId("user-menu-button");
+    fireEvent.click(userButton);
+    expect(userButton).toHaveAttribute("aria-expanded", "true");
+
+    fireEvent.mouseDown(document);
+
+    expect(userButton).toHaveAttribute("aria-expanded", "false");
   });
 });
