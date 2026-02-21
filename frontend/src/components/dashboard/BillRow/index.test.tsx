@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react";
-import { BillRow } from "./index";
+import userEvent from "@testing-library/user-event";
+import { BillRow } from ".";
 import { billsMock } from "../../../mocks/bills.mock";
 import { formatDate } from "../../../utils/date.utils";
-import { userEvent } from "@testing-library/user-event/dist/cjs/setup/index.js";
+import { useIsMobile } from "../../../hooks/useMobile";
 
 const onEditMock = vi.fn();
 const onDeleteMock = vi.fn();
@@ -47,6 +48,29 @@ describe("BillRow component", () => {
     );
 
     expect(onDeleteMock).toHaveBeenCalledWith(billsMock[0]);
+    expect(onEditMock).not.toHaveBeenCalled();
+  });
+
+  it("should call onDelete when is mobile and delete button is clicked", async () => {
+    vi.clearAllMocks();
+
+    vi.mocked(useIsMobile).mockReturnValue(true);
+
+    render(
+      <BillRow
+        bill={billsMock[1]}
+        index={0}
+        onEdit={onEditMock}
+        onDelete={onDeleteMock}
+      />,
+    );
+
+    const user = userEvent.setup();
+    await user.click(
+      screen.getByTestId(`delete-bill-button-${billsMock[1].id}`),
+    );
+
+    expect(onDeleteMock).toHaveBeenCalledWith(billsMock[1]);
     expect(onEditMock).not.toHaveBeenCalled();
   });
 });

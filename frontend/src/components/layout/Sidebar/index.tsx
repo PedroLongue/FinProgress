@@ -11,11 +11,11 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
-import { cn } from "../../lib/utils";
-import { useIsMobile } from "../../hooks/useMobile";
-import { Button } from "../ui/button";
-import { useAuthActions } from "../../hooks/useAuth";
-import { useOnClickOutside } from "../../hooks/useOnClickOutside";
+import { cn } from "../../../lib/utils";
+import { useIsMobile } from "../../../hooks/useMobile";
+import { Button } from "../../ui/button";
+import { useAuthActions } from "../../../hooks/useAuth";
+import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
 
 const menu = [
   { id: "dashboard", label: "Dashboard", to: "/", icon: Home },
@@ -97,6 +97,7 @@ export const Sidebar = () => {
           open ? "translate-x-0" : "-translate-x-full md:translate-x-0",
         )}
         ref={sidebarRef}
+        data-testid="sidebar"
       >
         <div className="p-6 border-b border-sidebar-border">
           <div className="flex items-center gap-3">
