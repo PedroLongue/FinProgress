@@ -79,10 +79,14 @@ export const FilterModal = ({
                     errors.startDate &&
                       "border-red-500! focus-visible:ring-red-500",
                   )}
+                  data-testid="start-date-input"
                   {...register("startDate")}
                 />
                 {errors.startDate?.message && (
-                  <p className="text-sm text-destructive">
+                  <p
+                    className="text-sm text-destructive"
+                    data-testid="start-date-error"
+                  >
                     {errors.startDate.message}
                   </p>
                 )}
@@ -100,9 +104,13 @@ export const FilterModal = ({
                     errors.endDate &&
                       "border-red-500! focus-visible:ring-red-500",
                   )}
+                  data-testid="end-date-input"
                 />
                 {errors.endDate?.message && (
-                  <p className="text-sm text-destructive">
+                  <p
+                    className="text-sm text-destructive"
+                    data-testid="end-date-error"
+                  >
                     {errors.endDate.message}
                   </p>
                 )}
@@ -126,6 +134,7 @@ export const FilterModal = ({
                   reset({ startDate: "", endDate: "" });
                 }}
                 disabled={isLoading}
+                data-testid="filter-modal-clear-button"
               >
                 Limpar
               </Button>
@@ -134,6 +143,7 @@ export const FilterModal = ({
                 variant="premium"
                 className="flex-1"
                 disabled={isLoading}
+                data-testid="filter-modal-apply-button"
               >
                 {isLoading ? "Aplicando..." : "Aplicar"}
               </Button>

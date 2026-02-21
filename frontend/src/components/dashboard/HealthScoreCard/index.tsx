@@ -69,7 +69,7 @@ export const HealthScoreCard = ({
 
               {isEmpty ? (
                 <p
-                  data-testid="empty-state-description"
+                  data-testid="empty-state-health-description"
                   className="text-sm text-muted-foreground mb-4 leading-relaxed"
                 >
                   Cadastre seus boletos para calcularmos seu score de saúde

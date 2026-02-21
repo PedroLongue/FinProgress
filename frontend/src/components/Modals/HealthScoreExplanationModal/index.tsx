@@ -104,7 +104,11 @@ export const ScoreDetailsModal = ({ onClose }: IScoreDetails) => {
             </div>
 
             <div className="flex justify-end gap-2 pt-1">
-              <Button variant="outline" onClick={handleClose}>
+              <Button
+                variant="outline"
+                onClick={handleClose}
+                data-testid="score-details-close-button"
+              >
                 Fechar
               </Button>
             </div>

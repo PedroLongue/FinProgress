@@ -146,10 +146,14 @@ export const BillCreateModal = ({
   const disableManual = isManualSaving;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p4"
+      data-testid="bill-create-modal"
+    >
       <div
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
         onClick={handleClose}
+        data-testid="bill-create-modal-backdrop"
       />
 
       <Card
@@ -159,7 +163,12 @@ export const BillCreateModal = ({
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="text-xl">Cadastrar Boleto</CardTitle>
-            <Button variant="ghost" size="icon" onClick={handleClose}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleClose}
+              data-testid="bill-create-close-button"
+            >
               <X className="w-5 h-5" />
             </Button>
           </div>
@@ -171,6 +180,7 @@ export const BillCreateModal = ({
               onClick={() => setMode("upload")}
               className="flex-1"
               disabled={isManualSaving || isScanning}
+              data-testid="bill-create-mode-button"
             >
               <Upload className="w-4 h-4 mr-2" />
               Upload IA
@@ -181,6 +191,7 @@ export const BillCreateModal = ({
               onClick={() => setMode("manual")}
               className="flex-1"
               disabled={isManualSaving || isScanning}
+              data-testid="bill-create-mode-manual"
             >
               <FileText className="w-4 h-4 mr-2" />
               Manual
@@ -193,6 +204,7 @@ export const BillCreateModal = ({
             <>
               <input
                 id="bill-pdf-input"
+                data-testid="bill-pdf-input"
                 type="file"
                 accept="application/pdf"
                 className="hidden"
@@ -219,6 +231,7 @@ export const BillCreateModal = ({
                     : "border-border hover:border-primary/50 hover:bg-secondary/30",
                   disableUpload && "pointer-events-none",
                 )}
+                data-testid="bill-upload-dropzone"
               >
                 {isScanning ? (
                   <div className="space-y-4">
@@ -259,7 +272,12 @@ export const BillCreateModal = ({
               </div>
 
               {scanError && (
-                <p className="mt-3 text-sm text-destructive">{scanError}</p>
+                <p
+                  className="mt-3 text-sm text-destructive"
+                  data-testid="bill-scan-error"
+                >
+                  {scanError}
+                </p>
               )}
 
               <div className="flex gap-3 pt-4">
@@ -269,13 +287,18 @@ export const BillCreateModal = ({
                   className="flex-1"
                   onClick={handleClose}
                   disabled={disableUpload}
+                  data-testid="bill-upload-cancel-button"
                 >
                   Cancelar
                 </Button>
               </div>
             </>
           ) : (
-            <form onSubmit={handleSubmit(onSubmitManual)} className="space-y-4">
+            <form
+              onSubmit={handleSubmit(onSubmitManual)}
+              className="space-y-4"
+              data-testid="bill-manual-form"
+            >
               <fieldset disabled={disableManual} className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">
@@ -292,10 +315,14 @@ export const BillCreateModal = ({
                           ? "border-red-500! focus-visible:ring-red-500"
                           : "",
                       )}
+                      data-testid="bill-title-input"
                     />
                   </div>
                   {errors.title?.message && (
-                    <p className="text-sm text-destructive">
+                    <p
+                      className="text-sm text-destructive"
+                      data-testid="bill-title-error"
+                    >
                       {errors.title.message}
                     </p>
                   )}
@@ -319,10 +346,14 @@ export const BillCreateModal = ({
                             : "",
                         )}
                         {...register("amount")}
+                        data-testid="bill-amount-input"
                       />
                     </div>
                     {errors.amount?.message && (
-                      <p className="text-sm text-destructive">
+                      <p
+                        className="text-sm text-destructive"
+                        data-testid="bill-amount-error"
+                      >
                         {errors.amount.message}
                       </p>
                     )}
@@ -343,10 +374,14 @@ export const BillCreateModal = ({
                             ? "border-red-500! focus-visible:ring-red-500"
                             : "",
                         )}
+                        data-testid="bill-dueDate-input"
                       />
                     </div>
                     {errors.dueDate?.message && (
-                      <p className="text-sm text-destructive">
+                      <p
+                        className="text-sm text-destructive"
+                        data-testid="bill-dueDate-error"
+                      >
                         {errors.dueDate.message}
                       </p>
                     )}
@@ -364,10 +399,14 @@ export const BillCreateModal = ({
                       placeholder="Apenas dígitos"
                       className="pl-10 font-mono text-xs"
                       inputMode="numeric"
+                      data-testid="bill-barcode-input"
                     />
                   </div>
                   {errors.barcode?.message && (
-                    <p className="text-sm text-destructive">
+                    <p
+                      className="text-sm text-destructive"
+                      data-testid="bill-barcode-error"
+                    >
                       {errors.barcode.message}
                     </p>
                   )}
@@ -383,10 +422,14 @@ export const BillCreateModal = ({
                       {...register("description")}
                       placeholder="Ex: Referente a Dez/2025"
                       className="pl-10"
+                      data-testid="bill-description-input"
                     />
                   </div>
                   {errors.description?.message && (
-                    <p className="text-sm text-destructive">
+                    <p
+                      className="text-sm text-destructive"
+                      data-testid="bill-description-error"
+                    >
                       {errors.description.message}
                     </p>
                   )}
@@ -400,6 +443,7 @@ export const BillCreateModal = ({
                   className="flex-1"
                   onClick={handleClose}
                   disabled={disableManual}
+                  data-testid="bill-manual-cancel-button"
                 >
                   Cancelar
                 </Button>
@@ -409,6 +453,7 @@ export const BillCreateModal = ({
                   variant="premium"
                   className="flex-1"
                   disabled={disableManual}
+                  data-testid="bill-manual-submit-button"
                 >
                   {isManualSaving ? (
                     <>

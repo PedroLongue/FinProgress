@@ -20,7 +20,9 @@ describe("HealthScoreCard Component", () => {
   it("should render empty state without crashing", () => {
     render(<HealthScoreCard score={0} isLoading={false} isEmpty={true} />);
 
-    expect(screen.getByTestId("empty-state-description")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("empty-state-health-description"),
+    ).toBeInTheDocument();
   });
 
   it("should render score without crashing - 85%", () => {

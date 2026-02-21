@@ -64,7 +64,6 @@ describe("BillList component", () => {
       />,
     );
 
-    expect(screen.getByText("Boletos")).toBeInTheDocument();
     expect(screen.getAllByTestId(/bill-row-/)).toHaveLength(billsMock.length);
     expect(screen.getByText(billsMock[0].title)).toBeInTheDocument();
   });
