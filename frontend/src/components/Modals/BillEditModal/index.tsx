@@ -188,6 +188,7 @@ export const BillEditModal = ({
                   className="w-full border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800"
                   onClick={handleMarkAsPaid}
                   disabled={isLoading}
+                  data-testid="mark-as-paid-button"
                 >
                   <Check className="mr-2 h-4 w-4" />
                   Marcar como Pago

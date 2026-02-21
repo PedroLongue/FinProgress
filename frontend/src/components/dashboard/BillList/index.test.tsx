@@ -15,6 +15,20 @@ vi.mock("@/hooks/useBills", () => ({
   }),
 }));
 
+let receivedOptions: { value: string; label: string }[] = [];
+
+vi.mock("../../ui/app-select", () => ({
+  AppSelect: (props: {
+    ariaLabel: string;
+    options: { value: string; label: string }[];
+  }) => {
+    if (props.ariaLabel === "Filtrar por categoria") {
+      receivedOptions = props.options;
+    }
+    return <div data-testid="mocked-select" />;
+  },
+}));
+
 describe("BillList component", () => {
   it("should render empty state without crashing", () => {
     render(
@@ -263,5 +277,48 @@ describe("BillList component", () => {
     expect(
       screen.queryByTestId(`bill-deleteModal-${billsMock[0].id}`),
     ).not.toBeInTheDocument();
+  });
+
+  it("should open filter modal when filter button is clicked", async () => {
+    const user = userEvent.setup();
+    render(
+      <BillsList
+        bills={{
+          bills: billsMock,
+          page: 1,
+          pageSize: 10,
+          total: billsMock.length,
+          totalPages: 1,
+          userCategories: [],
+        }}
+        isEmpty={false}
+      />,
+    );
+
+    await user.click(screen.getByTestId("open-date-filter-button"));
+
+    expect(screen.getByTestId("date-filter-modal")).toBeInTheDocument();
+  });
+
+  it("should build categoryOptions from userCategories", () => {
+    render(
+      <BillsList
+        bills={{
+          bills: billsMock,
+          page: 1,
+          pageSize: 10,
+          total: billsMock.length,
+          totalPages: 1,
+          userCategories: ["Energia", "Internet"],
+        }}
+        isEmpty={false}
+        dashpage={false}
+      />,
+    );
+
+    expect(receivedOptions).toEqual([
+      { value: "Energia", label: "Energia" },
+      { value: "Internet", label: "Internet" },
+    ]);
   });
 });
