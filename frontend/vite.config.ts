@@ -25,5 +25,11 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: "./tests/setup.ts",
+    coverage: {
+      provider: "v8",
+      all: true,
+      include: ["src/pages/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}"],
+      exclude: ["**/*.d.ts"],
+    },
   },
 } as UserConfig);

@@ -78,7 +78,7 @@ const AuthPage = () => {
   ];
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex" data-testid="auth-page">
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-hero relative overflow-hidden">
         <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
           <div className="animate-fade-in">
@@ -139,10 +139,10 @@ const AuthPage = () => {
                 FinProgress
               </span>
             </div>
-            <CardTitle className="text-2xl">
+            <CardTitle data-testid="auth-title" className="text-2xl">
               {isLogin ? "Bem-vindo de volta" : "Criar conta"}
             </CardTitle>
-            <CardDescription>
+            <CardDescription data-testid="auth-description">
               {isLogin
                 ? "Entre na sua conta para continuar"
                 : "Comece a gerenciar seus boletos hoje"}
@@ -150,12 +150,17 @@ const AuthPage = () => {
           </CardHeader>
 
           <CardContent className="pt-6">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              data-testid="auth-form"
+              onSubmit={handleSubmit(onSubmit)}
+              className="space-y-4"
+            >
               {!isLogin && (
                 <>
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
+                      data-testid="auth-name-input"
                       {...loginRegister("name")}
                       type="text"
                       placeholder="Seu nome"
@@ -167,7 +172,10 @@ const AuthPage = () => {
                     />
                   </div>
                   {errors.name?.message && (
-                    <p className="text-sm text-destructive">
+                    <p
+                      data-testid="auth-name-error"
+                      className="text-sm text-destructive"
+                    >
                       {errors.name.message}
                     </p>
                   )}
@@ -177,6 +185,7 @@ const AuthPage = () => {
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
+                  data-testid="auth-email-input"
                   {...loginRegister("email")}
                   type="email"
                   placeholder="seu@email.com"
@@ -188,7 +197,10 @@ const AuthPage = () => {
                 />
               </div>
               {errors.email?.message && (
-                <p className="text-sm text-destructive">
+                <p
+                  data-testid="auth-email-error"
+                  className="text-sm text-destructive"
+                >
                   {errors.email.message}
                 </p>
               )}
@@ -196,6 +208,7 @@ const AuthPage = () => {
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
+                  data-testid="auth-password-input"
                   {...loginRegister("password")}
                   type="password"
                   placeholder="Senha"
@@ -207,7 +220,10 @@ const AuthPage = () => {
                 />
               </div>
               {errors.password?.message && (
-                <p className="text-sm text-destructive">
+                <p
+                  data-testid="auth-password-error"
+                  className="text-sm text-destructive"
+                >
                   {errors.password.message}
                 </p>
               )}
@@ -217,6 +233,7 @@ const AuthPage = () => {
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
+                      data-testid="auth-confirm-password-input"
                       {...loginRegister("confirmPassword")}
                       type="password"
                       placeholder="Confirmar senha"
@@ -228,7 +245,10 @@ const AuthPage = () => {
                     />
                   </div>
                   {errors.confirmPassword?.message && (
-                    <p className="text-sm text-destructive">
+                    <p
+                      data-testid="auth-confirm-password-error"
+                      className="text-sm text-destructive"
+                    >
                       {errors.confirmPassword.message}
                     </p>
                   )}
@@ -238,6 +258,7 @@ const AuthPage = () => {
               {isLogin && (
                 <div className="text-right">
                   <button
+                    data-testid="auth-forgot-password"
                     type="button"
                     className="text-sm text-primary hover:underline"
                   >
@@ -247,6 +268,7 @@ const AuthPage = () => {
               )}
 
               <Button
+                data-testid="auth-submit"
                 type="submit"
                 variant="premium"
                 size="lg"
@@ -260,6 +282,7 @@ const AuthPage = () => {
             <p className="mt-6 text-center text-sm text-muted-foreground">
               {isLogin ? "Não tem uma conta?" : "Já tem uma conta?"}{" "}
               <button
+                data-testid="auth-toggle-mode"
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
                 className="text-primary font-medium hover:underline"
