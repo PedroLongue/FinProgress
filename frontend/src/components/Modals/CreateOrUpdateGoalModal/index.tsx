@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import type { ICreateOrUpdateGoalBody } from "../../../types/goal.type";
+import type { CreateOrUpdateGoalBody } from "../../../types/goal.type";
 import { Card, CardContent } from "../../ui/card";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
@@ -14,7 +14,7 @@ interface ICreateOrupdateGoalModal {
   mode: "create" | "update";
   goal: number;
   isLoading: boolean;
-  onSave: (body: ICreateOrUpdateGoalBody) => Promise<void> | void;
+  onSave: (body: CreateOrUpdateGoalBody) => Promise<void> | void;
   onClose: () => void;
 }
 
@@ -47,28 +47,44 @@ export const CreateOrupdateGoalModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
+    <div
+      data-testid="goal-modal"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+    >
+      <div
+        data-testid="goal-modal-overlay"
+        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+      />
 
       <Card
+        data-testid="goal-modal-card"
         variant="elevated"
         className="relative w-full max-w-lg animate-scale-in"
         ref={editModalRef}
       >
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-6 pb-4 border-b">
-            <h3 className="flex gap-2 items-center text-lg font-semibold text-foreground">
+            <h3
+              data-testid="goal-modal-title"
+              className="flex gap-2 items-center text-lg font-semibold text-foreground"
+            >
               <Target className="w-5 h-5 text-primary" />
               {mode === "create" ? "Crie " : "Atualize "} sua meta de gasto
               mensal
             </h3>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            data-testid="goal-modal-form"
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4"
+          >
             <label className="text-sm font-medium text-foreground">
               Valor (R$)
             </label>
+
             <Input
+              data-testid="goal-amount-input"
               {...register("amount")}
               placeholder="Ex: 3000"
               className={cn(
@@ -77,14 +93,19 @@ export const CreateOrupdateGoalModal = ({
               )}
               type="number"
             />
+
             {errors.amount?.message && (
-              <p className="text-sm text-destructive">
+              <p
+                data-testid="goal-amount-error"
+                className="text-sm text-destructive"
+              >
                 {errors.amount.message}
               </p>
             )}
 
             <div className="flex gap-3 pt-4">
               <Button
+                data-testid="goal-cancel"
                 type="button"
                 variant="outline"
                 className="flex-1"
@@ -93,7 +114,9 @@ export const CreateOrupdateGoalModal = ({
               >
                 Cancelar
               </Button>
+
               <Button
+                data-testid="goal-submit"
                 type="submit"
                 variant="premium"
                 className="flex-1"
