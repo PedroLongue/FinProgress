@@ -8,7 +8,6 @@ import {
   FileText,
   BarChart3,
   Bell,
-  Settings,
   LogOut,
 } from "lucide-react";
 import { cn } from "../../../lib/utils";
@@ -31,12 +30,6 @@ const menu = [
     label: "Notificações",
     to: "/notifications",
     icon: Bell,
-  },
-  {
-    id: "settings",
-    label: "Configurações",
-    to: "/configurations",
-    icon: Settings,
   },
 ];
 
