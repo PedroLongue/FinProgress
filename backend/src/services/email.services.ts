@@ -14,7 +14,7 @@ export type SendEmailInput = {
 };
 
 export async function sendEmail(input: SendEmailInput) {
-  const from = process.env.RESEND_FROM || "FinFlow <onboarding@resend.dev>";
+  const from = process.env.RESEND_FROM || "FinProgress <onboarding@resend.dev>";
 
   const { data, error } = await resend.emails.send({
     from,

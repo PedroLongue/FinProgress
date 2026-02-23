@@ -105,7 +105,7 @@ export const Sidebar = () => {
               <Zap className="w-5 h-5 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold text-sidebar-foreground">
-              FinFlow
+              FinProgress
             </span>
           </div>
         </div>

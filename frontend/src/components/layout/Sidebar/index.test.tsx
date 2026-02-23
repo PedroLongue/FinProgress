@@ -29,7 +29,7 @@ describe("Sidebar Component", () => {
 
   it("should render brand title", () => {
     render(<Sidebar />);
-    expect(screen.getByText("FinFlow")).toBeInTheDocument();
+    expect(screen.getByText("FinProgress")).toBeInTheDocument();
   });
 
   it("should render all menu options texts", () => {

@@ -25,12 +25,12 @@ export function expiringBills(params: ExpiringBillsTemplateType) {
   const linkHtml = params.link
     ? `<p style="margin:16px 0 0 0;">
          <a href="${params.link}" style="display:inline-block;text-decoration:none;">
-           Ver detalhes no FinFlow
+           Ver detalhes no FinProgress
          </a>
        </p>`
     : "";
 
-  const subject = `FinFlow: boleto perto do vencimento (${params.dueDate})`;
+  const subject = `FinProgress: boleto perto do vencimento (${params.dueDate})`;
 
   const html = `
   <div style="font-family: Arial, sans-serif; line-height: 1.45; color: #111;">
@@ -50,7 +50,7 @@ export function expiringBills(params: ExpiringBillsTemplateType) {
     ${linkHtml}
 
     <p style="margin:16px 0 0 0; color:#666; font-size:12px;">
-      Mensagem automática do FinFlow. Se você já pagou, pode ignorar este aviso.
+      Mensagem automática do FinProgress. Se você já pagou, pode ignorar este aviso.
     </p>
   </div>
   `;
@@ -67,7 +67,7 @@ Este é um lembrete de que você tem um boleto próximo do vencimento.
       : ""
   }${params.link ? `\n\nVer detalhes: ${params.link}` : ""}
 
-Mensagem automática do FinFlow. Se você já pagou, pode ignorar este aviso.
+Mensagem automática do FinProgress. Se você já pagou, pode ignorar este aviso.
 `;
 
   return { subject, html, text };

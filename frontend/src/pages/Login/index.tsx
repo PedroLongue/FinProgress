@@ -87,7 +87,7 @@ const AuthPage = () => {
                 <Zap className="w-6 h-6 text-primary-foreground" />
               </div>
               <span className="text-3xl font-bold text-foreground">
-                FinFlow
+                FinProgress
               </span>
             </div>
 
@@ -99,7 +99,7 @@ const AuthPage = () => {
             </h1>
 
             <p className="text-lg text-muted-foreground mb-12 max-w-md">
-              Nunca mais perca uma data de vencimento. O FinFlow organiza,
+              Nunca mais perca uma data de vencimento. O FinProgress organiza,
               analisa e te alerta automaticamente.
             </p>
 
@@ -136,7 +136,7 @@ const AuthPage = () => {
                 <Zap className="w-5 h-5 text-primary-foreground" />
               </div>
               <span className="text-2xl font-bold text-foreground">
-                FinFlow
+                FinProgress
               </span>
             </div>
             <CardTitle className="text-2xl">
