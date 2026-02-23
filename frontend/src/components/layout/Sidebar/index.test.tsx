@@ -41,7 +41,6 @@ describe("Sidebar Component", () => {
     expect(screen.getByText("Boletos")).toBeInTheDocument();
     expect(screen.getByText("Análise de gastos")).toBeInTheDocument();
     expect(screen.getByText("Notificações")).toBeInTheDocument();
-    expect(screen.getByText("Configurações")).toBeInTheDocument();
   });
 
   it("should render logout button", () => {
