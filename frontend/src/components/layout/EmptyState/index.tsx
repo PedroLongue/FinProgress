@@ -42,7 +42,10 @@ export const EmptyState = ({ type, emptyBillListFilter }: IEmptyState) => {
   const Icon = config.icon;
 
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
+    <div
+      className="flex flex-col items-center justify-center py-12 px-6 text-center"
+      data-testid="empty-reports-state"
+    >
       <div className="relative mb-6">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-24 h-24 rounded-full bg-primary/5 animate-pulse" />

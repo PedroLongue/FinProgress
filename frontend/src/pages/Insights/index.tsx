@@ -24,7 +24,7 @@ import {
 import { Button } from "../../components/ui/button";
 import { EmptyInsightsCardsState } from "../../components/layout/EmptyInsightsCardsState";
 import { CreateOrupdateGoalModal } from "../../components/Modals/CreateOrUpdateGoalModal";
-import { useSpendingByCategoryReport } from "../../hooks/useSpendingByCategoryReport ";
+import { useSpendingByCategoryReport } from "../../hooks/useSpendingByCategoryReport";
 import { SpendingByCategory } from "../../components/reports/SpendingByCategory";
 import { GoalSpending } from "../../components/reports/GoalSpending";
 import type { MonthlyGoalHistory } from "../../types/goal.type";
@@ -125,10 +125,22 @@ export const Insights = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <div className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6">
-      <h1 className="text-2xl font-bold">Análise de gastos</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <Card variant="gradient" className="w-full">
+    <div
+      className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6"
+      data-testid="insights-page"
+    >
+      <h1 className="text-2xl font-bold" data-testid="insights-title">
+        Análise de gastos
+      </h1>
+      <div
+        className="grid grid-cols-1 lg:grid-cols-3 gap-5"
+        data-testid="insights-cards-grid"
+      >
+        <Card
+          variant="gradient"
+          className="w-full"
+          data-testid="insights-card-total"
+        >
           <CardContent className="pt-6">
             {currMonth && currMonth?.total > 0 ? (
               <>
@@ -145,6 +157,7 @@ export const Insights = () => {
                         isMobile ? "text-xl" : "text-2xl",
                         "font-bold text-foreground",
                       )}
+                      data-testid="insights-current-month-total"
                     >
                       {formatCurrency(currMonth.total)}
                     </p>
@@ -157,8 +170,12 @@ export const Insights = () => {
                   <div className="flex items-center gap-1 mt-3 text-sm">
                     <trend.Icon className={`h-4 w-4 ${trend.tone}`} />
                     <span className={trend.tone}>
-                      {trend.label}{" "}
-                      {trendValueAbs?.toString().replace(".", ",")}%
+                      <span data-testid="insights-trend-label">
+                        {trend.label}{" "}
+                      </span>
+                      <span data-testid="insights-trend-pct">
+                        {trendValueAbs?.toString().replace(".", ",")}%
+                      </span>
                     </span>
                     <span className="text-muted-foreground">
                       vs. mês anterior
@@ -172,7 +189,7 @@ export const Insights = () => {
           </CardContent>
         </Card>
 
-        <Card className="w-full">
+        <Card className="w-full" data-testid="insights-card-goal">
           <CardContent className="pt-6">
             {goalAmount > 0 ? (
               <>
@@ -225,7 +242,7 @@ export const Insights = () => {
           </CardContent>
         </Card>
 
-        <Card className="w-full">
+        <Card className="w-full" data-testid="insights-card-volume">
           <CardContent className="pt-6">
             {topMonth && topMonth.total > 0 ? (
               <>
@@ -255,14 +272,20 @@ export const Insights = () => {
                 <div className="mt-3 space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Mês</span>
-                    <span className="text-sm font-medium">
+                    <span
+                      className="text-sm font-medium"
+                      data-testid="insights-top-month-label"
+                    >
                       {topMonth?.month ? dateToText(topMonth.month) : "—"}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">Valor</span>
-                    <span className="text-sm font-medium">
+                    <span
+                      className="text-sm font-medium"
+                      data-testid="insights-top-month-total"
+                    >
                       {topMonth ? formatCurrency(topMonth.total) : "—"}
                     </span>
                   </div>

@@ -61,7 +61,10 @@ export const Notifications = () => {
   };
 
   return (
-    <div className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6">
+    <div
+      className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6"
+      data-testid="notifications-page"
+    >
       <div>
         <h1 className="text-2xl font-bold text-foreground">Notificações</h1>
         <p className="text-muted-foreground">
@@ -89,15 +92,22 @@ export const Notifications = () => {
                   />
                 </div>
                 <div>
-                  <p className="font-medium text-foreground">
+                  <p
+                    className="font-medium text-foreground"
+                    data-testid={`${notification.id}-title`}
+                  >
                     {notification.title}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p
+                    className="text-sm text-muted-foreground"
+                    data-testid={`${notification.id}-description`}
+                  >
                     {notification.description}
                   </p>
                 </div>
               </div>
               <Switch
+                data-testid={`${notification.id}-switch`}
                 checked={notification.enabled}
                 onCheckedChange={notification.onToggle}
               />
@@ -105,14 +115,23 @@ export const Notifications = () => {
           ))}
 
           {(emailEnabled || notificationsEnabled) && (
-            <div className="w-full flex flex-col items-center justify-between p-4 rounded-xl bg-secondary/30">
+            <div
+              className="w-full flex flex-col items-center justify-between p-4 rounded-xl bg-secondary/30"
+              data-testid="days-advance-section"
+            >
               <div className="w-full flex items-center gap-3">
                 <Clock className="w-5 h-5 text-muted-foreground" />
                 <div>
-                  <p className="font-medium text-foreground">
+                  <p
+                    className="font-medium text-foreground"
+                    data-testid="days-advance-title"
+                  >
                     Dias de antecedência
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p
+                    className="text-sm text-muted-foreground"
+                    data-testid="days-advance-description"
+                  >
                     Me avise {daysAdvance} {daysAdvance === 1 ? "dia" : "dias"}{" "}
                     antes do vencimento
                   </p>
@@ -126,6 +145,7 @@ export const Notifications = () => {
                   max={7}
                   step={1}
                   className="w-full"
+                  data-testid="days-advance-slider"
                 />
                 <div className="flex justify-between text-xs text-muted-foreground mt-2">
                   <span>1 dia</span>
@@ -139,6 +159,7 @@ export const Notifications = () => {
             onClick={handleNotifications}
             variant="success"
             className="w-full"
+            data-testid="save-notifications-button"
           >
             <Check className="w-4 h-4 mr-2" />
             Salvar Configurações

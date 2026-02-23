@@ -9,23 +9,23 @@ import {
   type TooltipItem,
 } from "chart.js";
 import { Pie } from "react-chartjs-2";
-import type { ISpendingByCategoryReportData } from "../../types/reports.type";
-import { formatCurrency } from "../../utils/bills.utils";
+import type { ISpendingByCategoryReportData } from "../../../types/reports.type";
+import { formatCurrency } from "../../../utils/bills.utils";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "../../ui/card";
 import { Calendar, PieChart } from "lucide-react";
-import { Button } from "../ui/button";
-import { EmptyState } from "../layout/EmptyState";
-import { FilterModal } from "../Modals/FilterModal";
-import type { DateFilterForm } from "../Modals/FilterModal/validator";
-import { dateInputToISO, isoToDateInput } from "../../utils/date.utils";
-import { cn } from "../../lib/utils";
-import { useIsMobile } from "../../hooks/useMobile";
+import { Button } from "../../ui/button";
+import { EmptyState } from "../../layout/EmptyState";
+import { FilterModal } from "../../Modals/FilterModal";
+import type { DateFilterForm } from "../../Modals/FilterModal/validator";
+import { dateInputToISO, isoToDateInput } from "../../../utils/date.utils";
+import { cn } from "../../../lib/utils";
+import { useIsMobile } from "../../../hooks/useMobile";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -164,7 +164,7 @@ export const SpendingByCategory = ({
   })();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-testid="spending-by-category-component">
       <Card variant="gradient" className="overflow-hidden">
         <CardHeader className="flex gap-3 flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-3">

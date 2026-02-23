@@ -3,6 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { Sidebar } from ".";
 import { useIsMobile } from "../../../hooks/useMobile";
 
+const onLogoutMock = vi.fn();
+
 vi.mock("@tanstack/react-router", () => ({
   Link: ({ children, ...props }: { children: React.ReactNode; to: string }) => (
     <a href={props.to} {...props}>
@@ -13,7 +15,7 @@ vi.mock("@tanstack/react-router", () => ({
 
 vi.mock("@/hooks/useAuth", () => ({
   useAuthActions: () => ({
-    logout: { mutate: vi.fn(), isPending: false },
+    logout: { mutate: onLogoutMock, isPending: false },
   }),
 }));
 
@@ -78,5 +80,17 @@ describe("Sidebar Component", () => {
       "false",
     );
     expect(document.body.style.overflow).toBe("");
+  });
+
+  it("should call logout on logout button click", async () => {
+    vi.clearAllMocks();
+
+    const user = userEvent.setup();
+    render(<Sidebar />);
+
+    const logoutButton = screen.getByTestId("logout-button");
+    await user.click(logoutButton);
+
+    expect(onLogoutMock).toHaveBeenCalledTimes(1);
   });
 });

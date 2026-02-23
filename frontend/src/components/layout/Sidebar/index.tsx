@@ -134,6 +134,7 @@ export const Sidebar = () => {
             className="w-full justify-start gap-3 hover:bg-destructive/80"
             onClick={() => logout.mutate()}
             disabled={logout.isPending}
+            data-testid="logout-button"
           >
             <LogOut className="w-5 h-5" />
             {logout.isPending ? "Saindo..." : "Sair"}

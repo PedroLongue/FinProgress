@@ -16,15 +16,15 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "../../ui/card";
 import { BarChart3 } from "lucide-react";
-import { AppSelect } from "../ui/app-select";
-import { EmptyState } from "../layout/EmptyState";
-import type { MonthlyGoalHistory } from "../../types/goal.type";
-import { formatCurrency } from "../../utils/bills.utils";
-import { useIsMobile } from "../../hooks/useMobile";
-import { formatMonthLabel } from "../../utils/date.utils";
-import { cn } from "../../lib/utils";
+import { AppSelect } from "../../ui/app-select";
+import { EmptyState } from "../../layout/EmptyState";
+import type { MonthlyGoalHistory } from "../../../types/goal.type";
+import { formatCurrency } from "../../../utils/bills.utils";
+import { useIsMobile } from "../../../hooks/useMobile";
+import { formatMonthLabel } from "../../../utils/date.utils";
+import { cn } from "../../../lib/utils";
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -187,7 +187,7 @@ export const GoalSpending = ({
   ] as const;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-testid="goal-spending-component">
       <Card variant="gradient" className="overflow-hidden">
         <CardHeader
           className={cn(
