@@ -21,7 +21,10 @@ export const Dashboard = () => {
     billDetails?.totalBills === 0 && billDetails?.totalPending === 0;
 
   return (
-    <div className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6">
+    <div
+      className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6"
+      data-testid="dashboard-page"
+    >
       <div>
         <h1 className="text-2xl font-bold text-foreground">
           Olá, {user?.name.split(" ")[0]}! 👋

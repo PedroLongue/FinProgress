@@ -8,7 +8,7 @@ import { changePasswordSchema } from "./validator";
 import { cn } from "../../lib/utils";
 import { useAuthActions } from "../../hooks/useAuth";
 
-const Profile = () => {
+export const Profile = () => {
   const { changePassword } = useAuthActions();
 
   const {
@@ -29,7 +29,10 @@ const Profile = () => {
   };
 
   return (
-    <div className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6">
+    <div
+      className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6"
+      data-testid="profile-page"
+    >
       <h1 className="text-2xl font-bold">Meu perfil</h1>
 
       <Card variant="gradient" className="overflow-hidden w-full max-w-xl">
@@ -48,9 +51,13 @@ const Profile = () => {
                 errors.currentPassword &&
                   "border-red-500! focus-visible:ring-red-500",
               )}
+              data-testid="current-password-input"
             />
             {errors.currentPassword?.message && (
-              <p className="text-sm text-destructive">
+              <p
+                className="text-sm text-destructive"
+                data-testid="current-password-error"
+              >
                 {errors.currentPassword.message}
               </p>
             )}
@@ -64,9 +71,13 @@ const Profile = () => {
                 errors.newPassword &&
                   "border-red-500! focus-visible:ring-red-500",
               )}
+              data-testid="new-password-input"
             />
             {errors.newPassword?.message && (
-              <p className="text-sm text-destructive">
+              <p
+                className="text-sm text-destructive"
+                data-testid="new-password-error"
+              >
                 {errors.newPassword.message}
               </p>
             )}
@@ -80,9 +91,13 @@ const Profile = () => {
                 errors.confirmNewPassword &&
                   "border-red-500! focus-visible:ring-red-500",
               )}
+              data-testid="confirm-new-password-input"
             />
             {errors.confirmNewPassword?.message && (
-              <p className="text-sm text-destructive">
+              <p
+                className="text-sm text-destructive"
+                data-testid="confirm-new-password-error"
+              >
                 {errors.confirmNewPassword.message}
               </p>
             )}
@@ -92,6 +107,7 @@ const Profile = () => {
               size="lg"
               className="w-full"
               variant="premium"
+              data-testid="save-changes-button"
             >
               Salvar alterações
             </Button>
@@ -101,5 +117,3 @@ const Profile = () => {
     </div>
   );
 };
-
-export default Profile;
