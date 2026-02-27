@@ -5,9 +5,6 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 
 export default defineConfig({
-  server: {
-    open: true,
-  },
   plugins: [
     tailwindcss(),
     tanstackRouter({
