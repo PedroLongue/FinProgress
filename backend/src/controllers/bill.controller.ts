@@ -332,7 +332,6 @@ export const usersBillsDetails = async (req: AuthRequest, res: Response) => {
     totalBills,
     totalPaidNotLate,
     totalPaidLate,
-    totalPending,
     totalLate,
   } as IBillScore);
 
@@ -378,7 +377,6 @@ export const usersBillsScoreExplanation = async (
     totalBills,
     totalPaidNotLate,
     totalPaidLate,
-    totalPending,
     totalLate,
   } as IBillScore);
 

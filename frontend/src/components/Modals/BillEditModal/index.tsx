@@ -77,7 +77,10 @@ export const BillEditModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className={cn(
+        "fixed inset-0 z-50 flex items-center justify-center p-4",
+        isMobile ? "overflow-auto" : "",
+      )}
       data-testid={`bill-editModal-${bill.id}`}
     >
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
@@ -127,7 +130,11 @@ export const BillEditModal = ({
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div
+              className={cn(
+                isMobile ? "grid grid-cols-1 gap-4" : "grid grid-cols-2 gap-4",
+              )}
+            >
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">
                   Valor (R$)
@@ -177,7 +184,9 @@ export const BillEditModal = ({
                   <span className="text-sm text-muted-foreground">
                     Data do pagamento
                   </span>
-                  <span className="font-medium">
+                  <span
+                    className={cn(isMobile ? "text-xs" : "", "font-medium")}
+                  >
                     {new Date(bill.paidAt).toLocaleDateString("pt-BR")}
                   </span>
                 </div>
