@@ -13,6 +13,13 @@ export default defineConfig({
     }),
     react(),
   ],
+  server: {
+    allowedHosts: [
+      "frontend-production-4aba.up.railway.app",
+      "fin-progress.com",
+      "www.fin-progress.com",
+    ],
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
