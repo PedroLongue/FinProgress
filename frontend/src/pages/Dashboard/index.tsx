@@ -22,7 +22,7 @@ export const Dashboard = () => {
 
   return (
     <div
-      className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6"
+      className="lg:p-6 space-y-6 pb-24 lg:pb-6"
       data-testid="dashboard-page"
     >
       <div>
