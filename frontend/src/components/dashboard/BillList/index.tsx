@@ -161,7 +161,7 @@ export const BillsList = ({
             <div
               className={cn(
                 isMobile
-                  ? "flex flex-col gap-2 items-start"
+                  ? "flex flex-col gap-2 items-end"
                   : "md:flex items-center gap-2",
               )}
             >
