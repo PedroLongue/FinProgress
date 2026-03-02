@@ -1,6 +1,8 @@
 import axios, { type AxiosRequestConfig } from "axios";
 
-const BASE_URL = "http://localhost:3000/api";
+const BASE_URL = window.location.origin.includes("localhost")
+  ? "http://localhost:3000/api"
+  : "https://api.fin-progress.com/api";
 
 const client = axios.create({
   baseURL: BASE_URL,
