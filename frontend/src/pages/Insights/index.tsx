@@ -125,10 +125,7 @@ export const Insights = () => {
   if (isLoading) return <Loading />;
 
   return (
-    <div
-      className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6"
-      data-testid="insights-page"
-    >
+    <div className="lg:p-6 space-y-6 pb-24 lg:pb-6" data-testid="insights-page">
       <h1 className="text-2xl font-bold" data-testid="insights-title">
         Análise de gastos
       </h1>

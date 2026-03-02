@@ -5,6 +5,8 @@ import { HealthScoreChart } from "../../../assets/HealthScoreChart";
 import { useState } from "react";
 import { Loading } from "../../ui/loading";
 import { ScoreDetailsModal } from "../../Modals/HealthScoreExplanationModal";
+import { useIsMobile } from "../../../hooks/useMobile";
+import { cn } from "../../../lib/utils";
 
 interface IHealthScoreCard {
   score: number;
@@ -18,6 +20,8 @@ export const HealthScoreCard = ({
   isLoading,
 }: IHealthScoreCard) => {
   const [openDetailsModel, setOpenDetailsModel] = useState(false);
+
+  const isMobile = useIsMobile();
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return "text-success";
@@ -38,7 +42,12 @@ export const HealthScoreCard = ({
     <>
       <Card variant="gradient" className="overflow-hidden">
         <CardContent className="p-6">
-          <div className="flex items-center justify-between gap-6">
+          <div
+            className={cn(
+              "flex items-center justify-between gap-6",
+              isMobile ? "flex-col items-center" : "",
+            )}
+          >
             <div className="relative w-32 h-32">
               <HealthScoreChart
                 score={isEmpty ? 0 : score}
@@ -59,7 +68,9 @@ export const HealthScoreCard = ({
               </div>
             </div>
 
-            <div className="flex-1">
+            <div
+              className={cn(isMobile ? "flex flex-col items-center" : "flex-1")}
+            >
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="w-4 h-4 text-primary" />
                 <h3 className="text-lg font-semibold text-foreground">

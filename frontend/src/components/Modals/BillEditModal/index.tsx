@@ -8,6 +8,7 @@ import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
 import { getStatusBadge } from "../../../functions";
 import { cn } from "../../../lib/utils";
 import { isPaid } from "../../../functions";
+import { useIsMobile } from "../../../hooks/useMobile";
 
 interface IEditBillModal {
   bill: Bill;
@@ -37,6 +38,8 @@ export const BillEditModal = ({
   const [titleError, setTitleError] = useState<string | null>("");
 
   const status = bill.status;
+
+  const isMobile = useIsMobile();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,6 +117,7 @@ export const BillEditModal = ({
                     titleError
                       ? "border-red-500! focus-visible:ring-red-500"
                       : "",
+                    isMobile ? "text-xs" : "",
                   )}
                   required
                 />
@@ -137,7 +141,7 @@ export const BillEditModal = ({
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="0,00"
-                    className="pl-10"
+                    className={cn("pl-10", isMobile ? "text-xs" : "")}
                     disabled={isEditing}
                   />
                 </div>
@@ -153,7 +157,7 @@ export const BillEditModal = ({
                     type="date"
                     value={dueDate}
                     onChange={(e) => setDueDate(e.target.value)}
-                    className="pl-10"
+                    className={cn("pl-10", isMobile ? "text-xs" : "")}
                     disabled={isEditing}
                   />
                 </div>
@@ -222,7 +226,10 @@ export const BillEditModal = ({
                   value={barcode}
                   onChange={(e) => setBarcode(e.target.value)}
                   placeholder="00000.00000 00000.000000 00000.000000 0 00000000000000"
-                  className="pl-10 font-mono text-xs"
+                  className={cn(
+                    "pl-10 font-mono",
+                    isMobile ? "text-xs" : "text-sm",
+                  )}
                 />
               </div>
             </div>

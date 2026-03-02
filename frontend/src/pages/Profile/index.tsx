@@ -29,10 +29,7 @@ export const Profile = () => {
   };
 
   return (
-    <div
-      className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6"
-      data-testid="profile-page"
-    >
+    <div className="lg:p-6 space-y-6 pb-24 lg:pb-6" data-testid="profile-page">
       <h1 className="text-2xl font-bold">Meu perfil</h1>
 
       <Card variant="gradient" className="overflow-hidden w-full max-w-xl">

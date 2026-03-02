@@ -37,10 +37,7 @@ export const Bills = () => {
   }
 
   return (
-    <div
-      className="p-4 lg:p-6 space-y-6 pb-24 lg:pb-6"
-      data-testid="bills-page"
-    >
+    <div className="lg:p-6 space-y-6 pb-24 lg:pb-6" data-testid="bills-page">
       <BillsList
         isLoading={isLoading}
         bills={bills as BillsResponse}
