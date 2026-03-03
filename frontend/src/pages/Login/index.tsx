@@ -63,7 +63,7 @@ const AuthPage = () => {
     {
       icon: Zap,
       title: "IA Inteligente",
-      description: "Escaneamento automático de boletos com OCR avançado",
+      description: "Escaneamento automático de boletos",
     },
     {
       icon: Shield,
@@ -260,7 +260,7 @@ const AuthPage = () => {
                   <button
                     data-testid="auth-forgot-password"
                     type="button"
-                    className="text-sm text-primary hover:underline"
+                    className="text-sm text-primary hover:underline cursor-pointer"
                   >
                     Esqueceu a senha?
                   </button>
@@ -285,7 +285,7 @@ const AuthPage = () => {
                 data-testid="auth-toggle-mode"
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-primary font-medium hover:underline"
+                className="text-primary font-medium hover:underline cursor-pointer"
               >
                 {isLogin ? "Criar conta" : "Entrar"}
               </button>

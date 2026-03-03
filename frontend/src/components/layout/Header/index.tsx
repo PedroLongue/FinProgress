@@ -50,7 +50,7 @@ const Header = () => {
   }, [notificationsCount, refetchNotifications]);
 
   return (
-    <header className="relative px-4 lg:px-6 border-b border-border bg-card/50 backdrop-blur-sm flex items-center justify-end gap-4 h-[89px]">
+    <header className="relative px-4 lg:px-6 border-b border-border bg-card/50 flex items-center justify-end gap-4 h-[89px]">
       <div className="md:hidden w-8" />
       <div className="flex items-center gap-2">
         <div ref={notifRef} className="relative">
@@ -91,9 +91,11 @@ const Header = () => {
                   ? `${notificationsCount.unread} não lida${notificationsCount.unread === 1 ? "" : "s"}`
                   : "Nenhuma notificação não lida"}
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Clique para marcar como lida
-              </p>
+              {notificationsCount && notificationsCount.unread > 0 && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Clique para marcar como lida
+                </p>
+              )}
               {user && user.notificationsEnabled === false && (
                 <Button
                   asChild
