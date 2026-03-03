@@ -2,6 +2,11 @@
 
 Aplicação full-stack para gerenciamento inteligente de finanças pessoais, permitindo controlar despesas, definir metas de gastos mensal e receber notificações sobre contas.
 
+## Swagger
+[Clique aqui](https://api.fin-progress.com/api/docs)
+
+---
+
 ## Sobre o Projeto
 
 FinProgress é uma plataforma web moderna desenvolvida para ajudar usuários a gerenciar suas finanças pessoais de forma eficiente e intuitiva. O sistema permite rastrear contas, categorizar despesas, estabelecer metas de gastos mensais e receber notificações automáticas sobre vencimentos de bills.

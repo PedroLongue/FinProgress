@@ -5,6 +5,7 @@ import http from "http";
 import cookieParser from "cookie-parser";
 import router from "./routes/Router";
 import { registerExpiringBillsJob } from "./jobs/expiringBills.jobs";
+import { setupSwagger } from "./docs/swagger";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.json());
+setupSwagger(app);
 
 app.use(router);
 
