@@ -7,7 +7,7 @@ describe("EmptyState Component", () => {
       type: "spending" as const,
       title: "Nenhum gasto registrado",
       description:
-        "Cadastre e pague seus boletos para visualizar o histórico de gastos mensais e comparativos.",
+        "Cadastre seus boletos para visualizar o histórico de gastos mensais e comparativos.",
     },
     {
       type: "billList" as const,
