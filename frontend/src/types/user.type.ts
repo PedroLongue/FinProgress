@@ -34,3 +34,9 @@ export type ChangePasswordBody = {
   newPassword: string;
   confirmNewPassword: string;
 };
+
+export type ResetPasswordBody = {
+  token: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};

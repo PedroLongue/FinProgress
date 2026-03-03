@@ -7,6 +7,7 @@ import type {
   ProfileUser,
   RegisterBody,
   RegisterUser,
+  ResetPasswordBody,
 } from "../types/user.type";
 
 type LoginResponse = { user: LoginUser };
@@ -56,6 +57,30 @@ export const usersMutations = {
       mutationFn: async (body: ChangePasswordBody) => {
         await patchData<void, ChangePasswordBody>(
           "/users/change-password",
+          body,
+        );
+      },
+    }),
+
+  sendResetPasswordEmail: () =>
+    mutationOptions({
+      mutationKey: ["forgot-password"],
+      mutationFn: async (email: string) => {
+        await postData<{ message: string }, { email: string }>(
+          "/users/forgot-password",
+          {
+            email,
+          },
+        );
+      },
+    }),
+
+  resetPassword: () =>
+    mutationOptions({
+      mutationKey: ["reset-password"],
+      mutationFn: async (body: ResetPasswordBody) => {
+        await postData<{ message: string }, ResetPasswordBody>(
+          "/users/reset-password",
           body,
         );
       },

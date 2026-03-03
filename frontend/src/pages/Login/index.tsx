@@ -33,12 +33,14 @@ type AuthFormData = {
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const { login, register } = useAuthActions();
+  const { login, register, sendResetPasswordEmail } = useAuthActions();
 
   const {
     register: loginRegister,
     handleSubmit,
     formState: { errors },
+    trigger,
+    getValues,
   } = useForm<AuthFormData>({
     resolver: zodResolver(isLogin ? loginSchema : registerSchema),
     defaultValues: isLogin
@@ -260,9 +262,21 @@ const AuthPage = () => {
                   <button
                     data-testid="auth-forgot-password"
                     type="button"
+                    onClick={async () => {
+                      const isValid = await trigger("email");
+
+                      if (!isValid) return;
+
+                      const emailValue = getValues("email");
+
+                      sendResetPasswordEmail.mutate(emailValue);
+                    }}
                     className="text-sm text-primary hover:underline cursor-pointer"
+                    disabled={sendResetPasswordEmail.isPending}
                   >
-                    Esqueceu a senha?
+                    {sendResetPasswordEmail.isPending
+                      ? "Enviando..."
+                      : "Esqueceu a senha?"}
                   </button>
                 </div>
               )}

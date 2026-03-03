@@ -70,6 +70,44 @@ export const useAuthActions = () => {
     },
   });
 
+  const baseSendResetPasswordEmail = usersMutations.sendResetPasswordEmail();
+  const sendResetPasswordEmailMutation = useMutation({
+    ...baseSendResetPasswordEmail,
+    onSuccess: () => {
+      showSnackbar({
+        severity: "success",
+        message: "Email de redefinição de senha enviado com sucesso.",
+      });
+    },
+    onError: (error: AxiosError<AuthErrorResponse>) => {
+      showSnackbar({
+        severity: "error",
+        message:
+          error.response?.data.errors[0] ??
+          "Erro ao enviar o email de redefinição de senha.",
+      });
+    },
+  });
+
+  const baseResetPassword = usersMutations.resetPassword();
+  const resetPasswordMutation = useMutation({
+    ...baseResetPassword,
+    onSuccess: () => {
+      showSnackbar({
+        severity: "success",
+        message: "Senha redefinida com sucesso.",
+      });
+
+      navigate({ to: "/login", replace: true });
+    },
+    onError: (error: AxiosError<AuthErrorResponse>) => {
+      showSnackbar({
+        severity: "error",
+        message: error.response?.data.errors[0] ?? "Erro ao redefinir a senha.",
+      });
+    },
+  });
+
   const baseLogout = usersMutations.logout();
   const logoutMutation = useMutation({
     ...baseLogout,
@@ -98,6 +136,8 @@ export const useAuthActions = () => {
     login: loginMutation,
     register: registerMutation,
     changePassword: changePasswordMutation,
+    sendResetPasswordEmail: sendResetPasswordEmailMutation,
+    resetPassword: resetPasswordMutation,
     logout: logoutMutation,
   };
 };

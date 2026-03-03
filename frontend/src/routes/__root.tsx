@@ -1,4 +1,8 @@
-import { Outlet, createRootRoute } from "@tanstack/react-router";
+import {
+  Outlet,
+  createRootRoute,
+  useRouterState,
+} from "@tanstack/react-router";
 import { Sidebar } from "../components/layout/Sidebar";
 import { useAuth } from "../hooks/useAuth";
 
@@ -12,6 +16,7 @@ import { BillCreateModal } from "../components/Modals/BillCreateModal";
 import { useBillsActions } from "../hooks/useBills";
 
 const RootLayout = () => {
+  const { location } = useRouterState();
   const { isLoading, isAuthenticated } = useAuth();
   const { createBill, createBillByPdf } = useBillsActions();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -22,9 +27,15 @@ const RootLayout = () => {
     setIsAddModalOpen(false);
   };
 
-  if (isLoading) return <Loading />;
+  const isResettingPassword = location.pathname === "/reset-password";
 
-  if (!isAuthenticated) return <Login />;
+  if (isLoading && !isResettingPassword) return <Loading />;
+
+  if (!isAuthenticated && !isResettingPassword) return <Login />;
+
+  if (isResettingPassword) {
+    return <Outlet />;
+  }
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100">
