@@ -4,11 +4,16 @@ import AuthPage from ".";
 
 const loginMutateAsyncMock = vi.fn().mockResolvedValue(undefined);
 const registerMutateAsyncMock = vi.fn().mockResolvedValue(undefined);
+const sendResetPasswordEmailMutateMock = vi.fn();
 
 vi.mock("@/hooks/useAuth", () => ({
   useAuthActions: () => ({
     login: { mutateAsync: loginMutateAsyncMock },
     register: { mutateAsync: registerMutateAsyncMock },
+    sendResetPasswordEmail: {
+      mutate: sendResetPasswordEmailMutateMock,
+      isPending: false,
+    },
   }),
 }));
 
@@ -126,5 +131,15 @@ describe("AuthPage", () => {
     });
 
     expect(loginMutateAsyncMock).not.toHaveBeenCalled();
+  });
+
+  it("should validate email and call sendResetPasswordEmail on forgot password click", async () => {
+    const user = userEvent.setup();
+    await user.type(screen.getByTestId("auth-email-input"), "invalid-email");
+    await user.click(screen.getByTestId("auth-forgot-password"));
+
+    expect(await screen.findByTestId("auth-email-error")).toBeInTheDocument();
+    expect(screen.getByTestId("auth-email-error").textContent).toMatch(/.+/);
+    expect(sendResetPasswordEmailMutateMock).not.toHaveBeenCalled();
   });
 });
