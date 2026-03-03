@@ -205,6 +205,9 @@ export const BillsList = ({
           <EmptyState type="billList" emptyBillListFilter={userCategories} />
         ) : (
           <>
+            <p className="text-sm text-muted-foreground mb-4">
+              Para editar o boleto ou marcar como pago, basta clicar nele.
+            </p>
             <div className="space-y-3">
               {bills?.bills?.map((bill, index) => (
                 <BillRow

@@ -25,7 +25,7 @@ export const EmptyInsightsCardsState = ({
       icon: DollarSign,
       defaultTitle: "Nenhum gasto registrado",
       defaultDescription:
-        "Cadastre seus boletos para visualizar o total gasto no mês e comparativos.",
+        "Cadastre e pague seus boletos para visualizar o total gasto no mês e comparativos.",
       bgColor: "bg-primary/5",
       iconColor: "text-primary",
       iconBg: "bg-primary/20",
