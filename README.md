@@ -2,9 +2,6 @@
 
 Aplicação full-stack para gerenciamento inteligente de finanças pessoais, permitindo controlar despesas, definir metas de gastos mensal e receber notificações sobre contas.
 
-## Swagger
-[Clique aqui](https://api.fin-progress.com/api/docs)
-
 ---
 
 ## Sobre o Projeto
