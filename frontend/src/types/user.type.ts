@@ -16,6 +16,8 @@ export type ProfileUser = RegisterUser & {
   billReminderDays: number;
   emailNotificationsEnabled: boolean;
   notificationsEnabled: boolean;
+  telegramNotificationsEnabled: boolean;
+  telegramChatId: string | null;
 };
 
 export type LoginBody = { email: string; password: string };

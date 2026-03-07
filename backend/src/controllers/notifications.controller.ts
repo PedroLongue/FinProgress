@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
 import { prisma } from "../db/prisma";
 import { sendEmail } from "../services/email.services";
+import { sendTelegramMessage } from "../services/telegram.services";
 import { expiringBills } from "../templates/expiringBills.templates";
 import { addDays, formatYMDToBR, startOfDay } from "../utils/date.utils";
-import axios from "axios";
 
 interface AuthRequest extends Request {
   userId?: string;
@@ -217,13 +217,14 @@ export const telegramWebhook = async (req: Request, res: Response) => {
           },
         });
 
-        await axios.post(
-          `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
-          {
-            chat_id: chatId,
-            text: "✅ Telegram conectado com sucesso! Você receberá notificações aqui.",
-          },
-        );
+        res.sendStatus(200);
+
+        await sendTelegramMessage({
+          chatId: String(chatId),
+          text: "✅ Telegram conectado com sucesso! Você receberá notificações aqui.",
+        });
+
+        return;
       }
     }
 

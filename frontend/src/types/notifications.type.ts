@@ -2,6 +2,8 @@ export type UpdateNotificationsSettingsBody = {
   emailNotificationsEnabled?: boolean;
   notificationsEnabled?: boolean;
   billReminderDays?: number;
+  telegramNotificationsEnabled?: boolean;
+  telegramChatId?: string | null;
 };
 
 export type UpdateNotificationsSettingsResponse = {

@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
-import { Bell, Check, Clock, Smartphone } from "lucide-react";
+import { Bell, Check, Clock, Mail, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { Switch } from "../../components/ui/switch";
 import { Button } from "../../components/ui/button";
@@ -19,19 +19,22 @@ export const Notifications = () => {
   const { updateNotificationsSettings } = useNotificationsActions();
 
   const [emailEnabled, setEmailEnabled] = useState(
-    user?.emailNotificationsEnabled,
+    user?.emailNotificationsEnabled ?? false,
   );
   const [notificationsEnabled, setNotificationsEnabled] = useState(
-    user?.notificationsEnabled,
+    user?.notificationsEnabled ?? false,
   );
-  const [daysAdvance, setDaysAdvance] = useState(user?.billReminderDays || 2);
+  const [telegramEnabled, setTelegramEnabled] = useState(
+    user?.telegramNotificationsEnabled ?? false,
+  );
+  const [daysAdvance, setDaysAdvance] = useState(user?.billReminderDays ?? 2);
 
   if (isLoading) return <Loading />;
 
   const notificationTypes = [
     {
       id: "push",
-      icon: Smartphone,
+      icon: Bell,
       title: "Notificações",
       description:
         "Alertas exibidos diretamente no sistema, acessíveis pelo ícone na barra superior.",
@@ -42,7 +45,7 @@ export const Notifications = () => {
     },
     {
       id: "email",
-      icon: Bell,
+      icon: Mail,
       title: "Alertas por E-mail",
       description: "Notificações detalhadas na sua caixa de entrada",
       enabled: emailEnabled,
@@ -50,13 +53,31 @@ export const Notifications = () => {
       color: "text-primary",
       bgColor: "bg-primary/20",
     },
+    {
+      id: "telegram",
+      icon: MessageCircle,
+      title: "Alertas por Telegram",
+      description: "Notificações detalhadas no seu Telegram",
+      enabled: telegramEnabled,
+      onToggle: setTelegramEnabled,
+      color: "text-success",
+      bgColor: "bg-success/20",
+    },
   ];
+
+  const connectTelegram = () => {
+    if (!user?.id) return;
+
+    const telegramLink = `https://t.me/finprogress_notify_bot?start=${user.id}`;
+    window.open(telegramLink, "_blank");
+  };
 
   const handleNotifications = () => {
     updateNotificationsSettings.mutate({
       emailNotificationsEnabled: emailEnabled,
       notificationsEnabled: notificationsEnabled,
       billReminderDays: daysAdvance,
+      telegramNotificationsEnabled: telegramEnabled,
     });
   };
 
@@ -79,6 +100,7 @@ export const Notifications = () => {
             Escolha onde deseja receber seus alertas
           </CardDescription>
         </CardHeader>
+
         <CardContent className="space-y-3">
           {notificationTypes.map((notification) => (
             <div
@@ -91,6 +113,7 @@ export const Notifications = () => {
                     className={`w-5 h-5 ${notification.color}`}
                   />
                 </div>
+
                 <div>
                   <p
                     className="font-medium text-foreground"
@@ -98,6 +121,7 @@ export const Notifications = () => {
                   >
                     {notification.title}
                   </p>
+
                   <p
                     className="text-sm text-muted-foreground"
                     data-testid={`${notification.id}-description`}
@@ -106,6 +130,7 @@ export const Notifications = () => {
                   </p>
                 </div>
               </div>
+
               <Switch
                 data-testid={`${notification.id}-switch`}
                 checked={notification.enabled}
@@ -114,6 +139,41 @@ export const Notifications = () => {
             </div>
           ))}
 
+          {telegramEnabled && (
+            <div className="flex flex-col gap-3 p-4 rounded-xl bg-secondary/30">
+              <p className="text-sm font-medium text-foreground">
+                Conectar Telegram
+              </p>
+
+              {user?.telegramChatId ? (
+                <p className="text-xs text-success">
+                  Telegram conectado com sucesso
+                </p>
+              ) : (
+                <>
+                  <p className="text-xs text-muted-foreground">
+                    Clique no botão abaixo para abrir o bot no Telegram e
+                    conectar sua conta.
+                  </p>
+
+                  <Button
+                    variant="default"
+                    onClick={connectTelegram}
+                    className="w-full"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Conectar Telegram
+                  </Button>
+
+                  <p className="text-xs text-muted-foreground text-center">
+                    Depois de clicar em <b>Start</b> no bot, volte aqui e
+                    atualize a página.
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+
           {(emailEnabled || notificationsEnabled) && (
             <div
               className="w-full flex flex-col items-center justify-between p-4 rounded-xl bg-secondary/30"
@@ -121,6 +181,7 @@ export const Notifications = () => {
             >
               <div className="w-full flex items-center gap-3">
                 <Clock className="w-5 h-5 text-muted-foreground" />
+
                 <div>
                   <p
                     className="font-medium text-foreground"
@@ -128,6 +189,7 @@ export const Notifications = () => {
                   >
                     Dias de antecedência
                   </p>
+
                   <p
                     className="text-sm text-muted-foreground"
                     data-testid="days-advance-description"
@@ -137,6 +199,7 @@ export const Notifications = () => {
                   </p>
                 </div>
               </div>
+
               <div className="w-full pt-2 mt-5">
                 <Slider
                   value={[daysAdvance]}
@@ -147,6 +210,7 @@ export const Notifications = () => {
                   className="w-full"
                   data-testid="days-advance-slider"
                 />
+
                 <div className="flex justify-between text-xs text-muted-foreground mt-2">
                   <span>1 dia</span>
                   <span>7 dias</span>
