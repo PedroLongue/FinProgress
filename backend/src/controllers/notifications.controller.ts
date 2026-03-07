@@ -88,8 +88,13 @@ export const updateNotificationsSettings = async (
   const userId = req.userId;
   if (!userId) return res.status(401).json({ errors: ["Não autenticado"] });
 
-  const { billReminderDays, emailNotificationsEnabled, notificationsEnabled } =
-    req.body;
+  const {
+    billReminderDays,
+    emailNotificationsEnabled,
+    notificationsEnabled,
+    telegramNotificationsEnabled,
+    telegramChatId,
+  } = req.body;
 
   if (
     billReminderDays !== undefined &&
@@ -114,11 +119,18 @@ export const updateNotificationsSettings = async (
       ...(notificationsEnabled !== undefined && {
         notificationsEnabled,
       }),
+      ...(telegramNotificationsEnabled !== undefined && {
+        telegramNotificationsEnabled,
+      }),
+      ...(telegramChatId !== undefined && {
+        telegramChatId,
+      }),
     },
     select: {
       billReminderDays: true,
       emailNotificationsEnabled: true,
       notificationsEnabled: true,
+      telegramNotificationsEnabled: true,
     },
   });
 
@@ -175,4 +187,40 @@ export const markNotificationRead = async (req: AuthRequest, res: Response) => {
   });
 
   return res.status(200).json({ ok: true });
+};
+
+export const telegramWebhook = async (req: Request, res: Response) => {
+  try {
+    const message = req.body?.message;
+
+    if (!message) {
+      return res.sendStatus(200);
+    }
+
+    const chatId = message.chat?.id;
+    const text = message.text;
+
+    if (!chatId || !text) {
+      return res.sendStatus(200);
+    }
+
+    if (text.startsWith("/start")) {
+      const userId = text.split(" ")[1];
+
+      if (userId) {
+        await prisma.user.update({
+          where: { id: userId },
+          data: {
+            telegramChatId: String(chatId),
+            telegramNotificationsEnabled: true,
+          },
+        });
+      }
+    }
+
+    return res.sendStatus(200);
+  } catch (err) {
+    console.error("Telegram webhook error:", err);
+    return res.sendStatus(500);
+  }
 };

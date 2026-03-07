@@ -1,6 +1,7 @@
 import cron from "node-cron";
 import { prisma } from "../db/prisma";
 import { sendEmail } from "../services/email.services";
+import { sendTelegramMessage } from "../services/telegram.services";
 import { expiringBills } from "../templates/expiringBills.templates";
 import { addDays, formatYMDToBR, startOfDay } from "../utils/date.utils";
 
@@ -18,6 +19,8 @@ export const registerExpiringBillsJob = () => {
           billReminderDays: true,
           notificationsEnabled: true,
           emailNotificationsEnabled: true,
+          telegramNotificationsEnabled: true,
+          telegramChatId: true,
         },
       });
 
@@ -90,6 +93,17 @@ export const registerExpiringBillsJob = () => {
             await prisma.notification.update({
               where: { id: notif.id },
               data: { emailSent: true },
+            });
+          }
+
+          if (user.telegramNotificationsEnabled && user.telegramChatId) {
+            await sendTelegramMessage({
+              chatId: user.telegramChatId,
+              text: `🔔 Boleto próximo do vencimento
+
+              ${bill.title}
+              Valor: R$ ${bill.amount}
+              Vence em: ${dueBR}`,
             });
           }
         }

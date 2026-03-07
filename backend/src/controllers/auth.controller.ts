@@ -88,6 +88,7 @@ export const login = async (req: Request, res: Response) => {
       email: user.email,
       emailNotificationsEnabled: user.emailNotificationsEnabled,
       notificationsEnabled: user.notificationsEnabled,
+      telegramNotificationsEnabled: user.telegramNotificationsEnabled,
       billReminderDays: user.billReminderDays,
     },
   });
@@ -115,6 +116,8 @@ export const getCurrentUser = async (req: IAuthRequest, res: Response) => {
       billReminderDays: true,
       emailNotificationsEnabled: true,
       notificationsEnabled: true,
+      telegramNotificationsEnabled: true,
+      telegramChatId: true,
     },
   });
 
