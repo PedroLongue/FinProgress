@@ -3,6 +3,7 @@ import { prisma } from "../db/prisma";
 import { sendEmail } from "../services/email.services";
 import { expiringBills } from "../templates/expiringBills.templates";
 import { addDays, formatYMDToBR, startOfDay } from "../utils/date.utils";
+import axios from "axios";
 
 interface AuthRequest extends Request {
   userId?: string;
@@ -215,6 +216,14 @@ export const telegramWebhook = async (req: Request, res: Response) => {
             telegramNotificationsEnabled: true,
           },
         });
+
+        await axios.post(
+          `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+          {
+            chat_id: chatId,
+            text: "✅ Telegram conectado com sucesso! Você receberá notificações aqui.",
+          },
+        );
       }
     }
 
