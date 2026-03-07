@@ -26,6 +26,7 @@ describe("Notifications Page", () => {
       user: {
         emailNotificationsEnabled: true,
         notificationsEnabled: true,
+        telegramNotificationsEnabled: true,
         billReminderDays: 2,
       },
       isLoading: false,
@@ -88,7 +89,7 @@ describe("Notifications Page", () => {
     });
   });
 
-  it("should call updateNotificationsSettings.mutate with current settings on save", async () => {
+  it("should call updateNotificationsSettings mutate with current settings on save", async () => {
     const user = userEvent.setup();
     render(<Notifications />);
 
@@ -101,6 +102,7 @@ describe("Notifications Page", () => {
       expect(mutateMock).toHaveBeenCalledWith({
         emailNotificationsEnabled: false,
         notificationsEnabled: true,
+        telegramNotificationsEnabled: true,
         billReminderDays: 2,
       });
     });
