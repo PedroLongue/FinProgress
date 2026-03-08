@@ -99,11 +99,15 @@ export const registerExpiringBillsJob = () => {
           if (user.telegramNotificationsEnabled && user.telegramChatId) {
             await sendTelegramMessage({
               chatId: user.telegramChatId,
-              text: `🔔 Boleto próximo do vencimento
+              text: `🔔 <b>Boleto próximo do vencimento</b>
 
-              ${bill.title}
-              Valor: R$ ${bill.amount}
-              Vence em: ${dueBR}`,
+                <b>${bill.title}</b>
+
+                💰 <b>Valor:</b> R$ ${bill.amount}
+                📅 <b>Vencimento:</b> ${dueBR}
+
+                ⏰ Falta(m) <b>${days}</b> dia(s).
+              `,
             });
           }
         }

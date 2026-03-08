@@ -24,6 +24,7 @@ describe("Notifications Page", () => {
 
     useAuthMock.mockReturnValue({
       user: {
+        id: "123",
         emailNotificationsEnabled: true,
         notificationsEnabled: true,
         telegramNotificationsEnabled: true,
@@ -105,6 +106,26 @@ describe("Notifications Page", () => {
         telegramNotificationsEnabled: true,
         billReminderDays: 2,
       });
+    });
+  });
+
+  it("should call connectTelegram when button is clicked", async () => {
+    const user = userEvent.setup();
+
+    const openSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+
+    render(<Notifications />);
+
+    const connectTelegramButton = screen.getByTestId("connect-telegram-button");
+    expect(connectTelegramButton).toBeInTheDocument();
+
+    await user.click(connectTelegramButton);
+
+    await waitFor(() => {
+      expect(openSpy).toHaveBeenCalledWith(
+        "https://t.me/finprogress_notify_bot?start=123",
+        "_blank",
+      );
     });
   });
 });

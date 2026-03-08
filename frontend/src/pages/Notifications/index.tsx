@@ -160,6 +160,7 @@ export const Notifications = () => {
                     variant="default"
                     onClick={connectTelegram}
                     className="w-full"
+                    data-testid="connect-telegram-button"
                   >
                     <MessageCircle className="w-4 h-4 mr-2" />
                     Conectar Telegram

@@ -15,6 +15,7 @@ export const sendTelegramMessage = async ({
       {
         chat_id: chatId,
         text,
+        parse_mode: "HTML",
       },
     );
   } catch (error) {

@@ -13,7 +13,7 @@ FinProgress é uma plataforma web moderna desenvolvida para ajudar usuários a g
 - **Autenticação Segura**: Sistema de login com JWT e criptografia bcrypt
 - **Gerenciamento de Contas**: Criar, atualizar e acompanhar status de contas (pendente, pago, pago com atraso)
 - **Metas de Gastos Mensais**: Definir limites de gastos por mês e acompanhar progresso
-- **Notificações Inteligentes**: Alertas via email e notificações na aplicação para contas vencendo
+- **Notificações Inteligentes**: Alertas via email, telegram e notificações na aplicação para contas vencendo
 - **Relatórios e Análises**: Gerar relatórios de gastos com visualizações em gráficos
 - **Sistema de Lembretes**: Configurar dias de aviso antes do vencimento das contas
 - **Upload de Arquivos**: Adicionar comprovantes e documentos relacionados às contas
@@ -112,7 +112,7 @@ O projeto utiliza os seguintes modelos principais:
 - **User**: Usuários com autenticação JWT
 - **Bill**: Contas com status (pendente, pago, pago_com_atraso)
 - **MonthlySpendingGoal**: Metas de gastos mensais por categoria
-- **Notification**: Sistema de notificações via email e push
+- **Notification**: Sistema de notificações via email, telegram e push
 - **BillReminderDays**: Configuração de dias para lembretes
 
 ---
