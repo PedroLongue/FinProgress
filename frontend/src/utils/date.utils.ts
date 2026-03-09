@@ -1,3 +1,5 @@
+import { mapMonths } from "../constants";
+
 const startOfDay = (d: Date) =>
   new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
@@ -26,22 +28,7 @@ export const formatDate = (dateString: string) => {
 export const dateToText = (date: string) => {
   const [year, month] = date.split("-");
 
-  const months: Record<string, string> = {
-    "01": "janeiro",
-    "02": "fevereiro",
-    "03": "março",
-    "04": "abril",
-    "05": "maio",
-    "06": "junho",
-    "07": "julho",
-    "08": "agosto",
-    "09": "setembro",
-    "10": "outubro",
-    "11": "novembro",
-    "12": "dezembro",
-  };
-
-  const monthText = months[month] ?? "";
+  const monthText = mapMonths[month] ?? "";
 
   if (!year || !monthText) return "";
 
