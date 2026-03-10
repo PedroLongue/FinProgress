@@ -86,6 +86,15 @@ export const BillsList = ({
     [],
   );
 
+  const noPaidTotal = useMemo(() => {
+    return bills?.bills.reduce((acc, bill) => {
+      if (bill.status !== "PAID" && bill.status !== "PAID_LATE") {
+        return acc + bill.amount;
+      }
+      return acc;
+    }, 0);
+  }, [bills]);
+
   const closeAllModals = useCallback(() => {
     setIsEditModalOpen(false);
     setIsDeleteModalOpen(false);
@@ -205,9 +214,22 @@ export const BillsList = ({
           <EmptyState type="billList" emptyBillListFilter={userCategories} />
         ) : (
           <>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-sm text-muted-foreground">
               Para editar o boleto ou marcar como pago, basta clicar nele.
             </p>
+            {dashpage && !isEmpty && (
+              <div className="mb-4 text-sm">
+                <div className="mt-2">
+                  <p className="text-muted-foreground">
+                    <strong>{bills.bills.length}</strong> a vencer/vencidos
+                  </p>
+
+                  <p className="text-muted-foreground">
+                    <strong>R$ {noPaidTotal.toFixed(2)}</strong> no total
+                  </p>
+                </div>
+              </div>
+            )}
             <div className="space-y-3">
               {bills?.bills?.map((bill, index) => (
                 <BillRow
