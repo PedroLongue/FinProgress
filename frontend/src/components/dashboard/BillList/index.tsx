@@ -220,11 +220,17 @@ export const BillsList = ({
             {dashpage && !isEmpty && (
               <div className="mb-4 text-sm">
                 <div className="mt-2">
-                  <p className="text-muted-foreground">
+                  <p
+                    className="text-muted-foreground"
+                    data-testid="upcoming-bills-info"
+                  >
                     <strong>{bills.bills.length}</strong> a vencer/vencidos
                   </p>
 
-                  <p className="text-muted-foreground">
+                  <p
+                    className="text-muted-foreground"
+                    data-testid="total-unpaid-amount"
+                  >
                     <strong>R$ {noPaidTotal.toFixed(2)}</strong> no total
                   </p>
                 </div>

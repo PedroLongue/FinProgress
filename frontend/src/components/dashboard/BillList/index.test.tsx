@@ -29,6 +29,12 @@ vi.mock("../../ui/app-select", () => ({
   },
 }));
 
+vi.mock("@tanstack/react-router", () => ({
+  Link: ({ children, to }: { children: React.ReactNode; to: string }) => (
+    <a href={to}>{children}</a>
+  ),
+}));
+
 describe("BillList component", () => {
   it("should render empty state without crashing", () => {
     render(
@@ -319,5 +325,25 @@ describe("BillList component", () => {
       { value: "Energia", label: "Energia" },
       { value: "Internet", label: "Internet" },
     ]);
+  });
+
+  it('should render total unpaid amount with "R$" prefix', () => {
+    render(
+      <BillsList
+        bills={{
+          bills: billsMock,
+          page: 1,
+          pageSize: 10,
+          total: billsMock.length,
+          totalPages: 1,
+          userCategories: [],
+        }}
+        isEmpty={false}
+        dashpage={true}
+      />,
+    );
+
+    expect(screen.getByTestId("total-unpaid-amount")).toBeInTheDocument();
+    expect(screen.getByTestId("total-unpaid-amount")).toBeInTheDocument();
   });
 });
